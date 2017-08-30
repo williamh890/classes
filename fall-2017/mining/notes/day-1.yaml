@@ -1,0 +1,105 @@
+Class:
+    Data Mining
+Name:
+    William Horn
+Date:
+    Aug 29, 2017
+
+Syllubus:
+    Software: Weka
+    Website:
+        http://www.math.uaa.alaska.edu/~afkas
+    
+    Project and Papers:
+        Use some data from asf to get an original data set to analyz
+
+        Ruberics:
+            on the website.
+    Book:
+        The book is essentially a manual for free software
+        Note:
+            There are youtube videos going over thing more in depth from the book
+    Test:
+        Dates are fixed for projects and tests.
+    
+Data Mining and Machine learning:
+    Data Mining:
+        Goal: 
+            Discover patterns in data
+        Patterns:
+            Meaningful, that they lead to some advantage.
+            what category? relation to other instances? 
+        Note:
+            Good pattern allow us to make predictions on new data.
+    Machine Learning (Pattern Discovery):
+        Goal: 
+            Mimic human inteligence.
+        Algorithms designed to look through data for patterns     
+
+        Note:   
+            Machine learning is a loaded term
+
+    Expressoins of Patterns:
+        Terms:
+            black box, transparent box.
+
+        Black Box:
+            The method doesn't expain the results, even if it does give them
+            Example:
+                Genetic Algo
+
+        Transparent Box:
+          
+            Method that shows the structure of the data and along with giving 
+            results along with increases the human understanding of the data.
+           
+            Note:
+                Algo needs to explain stituation.
+
+        Describing Structual Patterns:
+            Example (unrealastic):
+                Lookup Table
+
+            In the real world, there are too many variables/options to model data 
+            w/ simple lookup table.
+
+            Example:
+                Set of rules.
+            
+            Example:
+                Graphically with a descition tree.
+
+            Example:
+                first 5 col are dependent variables.
+                6th on is the dependent output.
+
+Simple Examples:
+    Weather and other Problems:
+        The weather problem
+        
+        variables:
+            (outlook, temp, humidity, windy) -> play
+
+            Note: The outlook depends on the other colomns. 
+        
+        Descition List:
+            Organized if/then rule serially to represent the structure of the data.
+
+            Note:
+                Exaulity: Boil down to yes/no questions.
+                Inequality: If numeric values are presnet 
+        
+        Assosiation Rules:
+            How independtend variables affect the outcome
+
+    Representing Structure:
+        exahstive listing of all cases contains all of the "knowledge" in the problem, 
+        but it doesn't need to be organized.
+
+    Descition Tree:
+        Vertex: is a comparision. 
+        Conclusions: are leafs
+
+    Visualizations: Charts, Rules, Trees
+
+        
