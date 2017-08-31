@@ -1,0 +1,71 @@
+Class: Computer Graphics
+Name: William Horn
+Date: AUG 30, 2017
+
+Website: https://www.cs.uaf.edu/users/chappell/public_html/class/2017_fall/cscea385/
+
+HTML Intro:
+    Hyper Text Markup Laguage
+
+    Elements and Tags:
+        element example: <title>My Web Page</title>
+        attributes: <title id="t" class="big"> ...
+
+        note: Elements are often nested.
+        
+    Comments:
+        <!-- ... -->
+    
+    Document Structure:
+        docement type declaration: <!DOCTYPE html>
+        
+        Head:
+            Character encoding: 
+                <meta charset="utf-8">
+            Title:
+                <title> </title>
+
+        Body:
+            Tones of stuff.
+           
+            Types: block or inline
+
+        Entity Codes:
+            Example:
+                &ldquo;, &omega; &lt; &amp;
+
+            ASCII: Represntation of specail or meaningful characters.
+
+Processing:
+    Programing language to make graphics easy.
+
+    Steps: to make processing js work.
+        load and run Processing.js
+        
+        href: "processing.min.js"
+        
+    Simplified version of java
+
+    Colors:
+        rgb: (0,0,0)
+
+        Stroke Color:
+            Color of the outline of a primative
+        Fill Color:
+            The color on the inside of the primative.
+        
+
+Rendering Context:
+    Where things about the rendering enviorment are stored.
+
+
+
+
+
+
+
+
+
+
+
+

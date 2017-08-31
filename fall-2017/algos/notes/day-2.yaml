@@ -1,0 +1,152 @@
+Class: 
+    Data Structures and Algorithms
+Name: 
+    William Horn
+Date:   
+    Aug 30, 2017
+Website:
+    https://www.cs.uaf.edu/~chappell/class/2017_fall/cs311
+
+Abstraction:
+    Separate the purpose of a module from its implementation
+
+    Functional abstraction:
+        Hiding implementation of function
+
+    Data abstraction:
+        abstract data type:
+            collection of data with operations of data bundled together.i
+
+    Example:
+        Describe function
+
+        Implimentation:
+            gory details of function.
+        Abstraction:
+            only describe what it does.
+
+Parameter Passing:
+    Ways to pass:
+        value, reference, reference to const, r-value reference
+
+    Terminology:
+        Lvalue:
+            Something that can be assigned a place in memory (can get an address from)
+        Rvalue:
+            not and Lvalue
+
+        Examples:
+            const int n = 6; # n: Lvalue     6: Rvalue
+        
+        Note:
+            Rvalue can be assumed to go away (they can be wreaked).
+
+    By Value:
+        void p1(Foo x); Foo y; p1(y) 
+
+        Note:
+            x is a copy of y, y stays the same.
+        Issuse:
+            copy can be slow. Type information is lost.
+
+    By Reference:
+        void p2(Foo & x); Foo y; p2(y);
+
+        Note:
+            x becomes an alias for y
+
+        Bad!:
+            int& square(int n){ int s = n*n; return s;}
+            
+            note: s is local so its ref is going away
+
+    By Ref to const:
+        same as ref, but the alias made cannot be changed
+
+    R-value Refernce:
+        only r-values can be passed.
+
+        Rules:
+            no copy is made
+            can be used to overload functions
+
+            Example:
+                void g(const F & p);
+                void g(F && p);       <- r-values go to this one.
+
+        Note: 
+            not used very often... only if operation is quicker if can wreak argument.
+
+    Rule:
+        pass by value if small, by ref is big(unless copy is needed).
+
+    Copy vs Move:
+        copy dublicates all the data, move can just move the pointer. (for a vertor)
+
+Operator Overloading:
+    Same name, two different things.
+
+    Note: can't make new operators, change asccociativity, or change presidence.
+          also arity (number of operands)
+
+    Example:
+        Num operator-(const Num & a, const Num & b); <- This way implicit type conversion can be done on.
+
+    Because Reasons:
+        f & operator++();  // ++a
+        f operator++(int); // a++
+    
+    Notes on overloading:
+        Member is generally perfered.
+
+Invisible Functions:
+    Classes have 6 auto generated functions:
+        default ctor, dtor, copy ctor, copy assignment, move ctor*, move assignment*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
