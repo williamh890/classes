@@ -1,0 +1,67 @@
+Class: Statistics 
+Name: William Horn
+Date: Sept 3, 2017  
+Assignment: Homework 1
+
+Problems:
+    2, 9, 12abc, 15, 22, 33ab, 34ab, 42, 46, 58
+
+Question 2:
+    Problem: For each of the following hypothetical populations, give a plausible sample of size 4
+        a. all distances that might result when you throw a football.
+        answer:
+           20 yards, 30 yards, 15 yards, 5 yards 
+
+        b. all companies listed on the new york stock exchange.
+        answer:
+            apple, google, gmc, microsoft
+
+        c. all students at your college or university
+        answer:
+            william horn, monica mikes, brady ingersol, trenton friend
+
+        d. all grade point averages of students at your college or university
+        answer:
+            2.3, 4.0, 3.8, 3.5
+
+Question 9:
+    problem: in a famous experiment carried out in 1882, michelson and newcomb obtained 
+             66 observations on the time it too for light to travel between two locations 
+             in a washington, d.c. a few of the measurements (coded in a certain manner) 
+             were 31, 23, 32, 36, -2, 26, 27 and 31.
+
+        a. why are these measurements not identical?
+            answer: whatever instrument they were using to measure the elapsed time could have had some inaccuracy.
+
+        b. is this an enumerative study? why or why not?
+           answer: no, the population is the time it took for the light to travel between the two locations. 
+                    they only got to measure 66 times, out of an inifite sample, so the study is analytical.
+
+
+Question 12:
+    problem: the accompanying summary data on ceo2 particle size (nm) under certain experimental 
+    conditions was read from a graph in the artical "nanoceria energetics of surfaces, 
+    interfaces and water absorption" 
+
+    3.0-<3.5  3.5-<4.0  4.0-<4.5  4.5-<5.0  5.0-<5.5  5.5-<6.0  6.0-<6.5  6.5-<7.0  7.0-<7.5  7.5-<8.0
+       5         15        27        34        22        14        7         2         4         1
+
+        a. What proportion of the observations are less than 5?
+            answer: 34 + 27 + 15 + 5 = 81
+
+        b. What proportion of the observations are less then 6?
+            answer: 7 + 2 + 4 + 1 = 14
+
+        c. Make a histogram with rel freq on y-axis and comment on its features.
+            answer: Most of the data is towards the lower forth, making this histogram
+                    into have a negatively-skewed shaped.
+
+Question 15:
+    problem: Do running times of American movies differ somehow from running times of French movies? The author investigated this question by randomly selecting 25 recent movies of each type, resulting in the following running times:
+        Am: 94 90 95 93 128 95 125 91 104 116 162 102 90 110 92 113 116 90 97 103 95 120 109 91 138
+        Fr: 123 116 90 158 122 119 125 90 96 94 137 102 105 106 95 125 122 103 96 111 81 113 128 93 92
+
+    Construct a stem an leaf plot with the stems in the middle and having the Am. leaves go out to the left and the Fr. leaves out to the right. Comment on some of the interesting features.
+
+        answer:
+            

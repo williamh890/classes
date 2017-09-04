@@ -1,0 +1,142 @@
+Class: Data Structure and Algorithms
+Name: William Horn
+Date: Aug 31, 2017
+
+
+Software Engineering Concepts:
+    Invariants:
+        A condition that is always true at a particular point in an 
+        algorithm. 
+
+        Note:
+            Typically the condition is something about the value of the
+            variable
+        Example:
+            item = vec[ix]
+            if (ix < 0) {return;}
+            // invariant ix >= 0
+
+        Usage:
+            Ensure an operation can be performed.
+
+        Preconditions:
+            invariant at the begining of a function
+
+            Note:
+                this is the callers responsibility
+
+        Postcondition:
+            invariant at the end of a function.
+           
+        Operation contracts:
+            if Preconditions true then the postconditions will be true.
+            
+            Errors:
+                if this false then the function should throw an error.
+
+        Note:
+            pre/post conditions will be used as documentation in class.
+
+            Example:
+                // avgSpeed
+                // Pre  - time != 0
+                // Post - return == dist / time, where dist, time are each
+                // converted to doulbe before the division.
+
+
+        Class Invariants:
+            for a class, an invariant taht holds whenever an object of the class exits,
+            and execution is not inside a member.
+ 
+            ctor ------> member func -------> member func --------> dtor
+                   ^                    ^                     ^
+                   |                    |                     | 
+                   |------------ class invariants ------------|
+                
+            Note:        
+                Ctors job is to make class invariant true!
+
+Invisible Functions:
+    Functions that the compiler will write for you.
+
+    Default Ctor's:
+        Dog mutt;   <-- Default ctor call
+        Dog mutt(); <-- Function definition that returns a Dog
+   
+    Destructior:
+        Called when object goes out of scope.
+
+        Example:
+            void func() { Dog x; } // Dog dtor is called here...
+        
+    Copy Ctor:
+        Dog(const Dog & other);
+        
+        Note: Written for you when none of the big 5 are declared.
+
+        Example:
+            myFunc(Dog(mutt)); // copy
+
+    Move Ctor:
+        Dog(Dog && other);
+
+    Copy Assignment:
+        Foo a(b); // ctor
+        a = b;    // assignment
+
+        Example:
+            Dog & operator=9const Dog & other); // copy assignment
+            
+    Special Operations:
+        Default:
+            Dog(Dog && other) = default; // Use the automatic version
+        Delete:
+              **************  = delete;  // Removes auto writen version if there, cant be written.
+
+    Note:
+        Automatically written functions are good!
+
+    RULE:
+        If one of the big 5 is written, then either define or delete all of them.
+
+    std::move:
+        turns things into rvalues
+
+        Note: might be faster
+            v.push_back(move(x));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
