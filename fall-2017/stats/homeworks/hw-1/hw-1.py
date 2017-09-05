@@ -4,6 +4,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import math
 
 
 def question12():
@@ -46,7 +47,7 @@ def steam_leaf(_list):
 def print_stem_and_leaf(sal_plot, label=""):
     print(label)
     for stem, leafs in sal_plot:
-        row = "{} |  ".format(stem)
+        row = "{:<3} |  ".format(stem)
 
         for leaf in leafs:
             row += "{} ".format(leaf)
@@ -67,5 +68,87 @@ def question15():
     print_stem_and_leaf(french, "French Runtimes")
 
 
+def mean(numbers):
+    return sum(numbers) / float(len(numbers))
+
+
+def median(numbers):
+    numbers = sorted(numbers[:])
+
+    length = len(numbers)
+
+    if len(numbers) % 2 == 1:
+        return numbers[(length) / 2]
+    else:
+        n1 = numbers[(length / 2) - 1]
+        n2 = numbers[-(length / 2)]
+        return mean([n1, n2])
+
+
+def question33():
+    house_prices = [590, 815, 575, 608, 350, 1285, 408, 540, 555, 679]
+    prices_mean = mean(house_prices)
+    prices_median = median(house_prices)
+
+    print("mean: {}".format(prices_mean))
+    print("median: {}".format(prices_median))
+
+    house_prices = [590, 815, 575, 608, 350, 985, 408, 540, 555, 679]
+    avg = mean(house_prices)
+    middle = median(house_prices)
+    print("mean: {}".format(avg))
+    print("median: {}".format(middle))
+
+
+def question34():
+    urban_dust = [6.0, 5.0, 11.0, 33.0, 4.0, 5.0, 80.0, 18.0, 35.0, 17.0, 23.0]
+    farm_dust = [4.0, 14.0, 11.0, 9.0, 9.0, 8.0, 4.0,
+                 20.0, 5.0, 8.9, 21.0, 9.2, 3.0, 2.0, 0.3]
+    print("Finding median from urban data {}".format(sorted(urban_dust)))
+    print("Finding median from farm data {}".format(sorted(farm_dust)))
+    f_mean = mean(farm_dust)
+    u_mean = mean(urban_dust)
+
+    print("Farm mean = {}".format(f_mean))
+    print("Urban mean = {}".format(u_mean))
+
+    f_median = median(farm_dust)
+    u_median = median(urban_dust)
+
+    print("Farm median = {}".format(f_median))
+    print("Urban median = {}".format(u_median))
+
+
+def standard_dev(nums):
+    n = float(len(nums))
+    sxx = sum([num**2 for num in nums]) - (1 / n) * (sum(nums))**2
+    return math.sqrt((1 / (n - 1)) * sxx)
+
+
+def question46():
+    cooler = [1.59, 1.43, 1.88, 1.26, 1.91, 1.86, 1.90,
+              1.57, 1.79, 1.72, 2.41, 2.34, 0.83, 1.34, 1.76]
+    control = [1.92, 2.00, 2.19, 1.12, 1.78,
+               1.84, 2.45, 2.03, 1.52, 0.53, 1.90]
+    warmer = [2.57, 2.60, 1.93, 1.58, 2.30, 0.84,
+              2.65, 0.12, 2.74, 2.53, 2.13, 2.86, 2.31, 1.91]
+    labels = ["cooler", "control", "warmer"]
+    for label in labels:
+        data = eval(label)
+        print("{} : {}".format(label, data))
+        avg, med = mean(data), median(data)
+        print("mean: {}, median: {}".format(avg, med))
+        print("standard dev: {}".format(standard_dev(data)))
+    # fake up some more data
+    data = [cooler, control, warmer]
+    plt.figure()
+    plt.boxplot(data)
+    plt.savefig('question46d.png')
+
+
 if __name__ == "__main__":
+    question12()
     question15()
+    question33()
+    question34()
+    question46()
