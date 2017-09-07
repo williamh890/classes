@@ -1,0 +1,24 @@
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Sep 6, 2017 
+
+invariant: condition thats always true at a point in an algo
+    types: precondition, postcondition, class invariant
+
+Software Engineering Concepts:
+    Testing:
+        To know the worth of code, need to be able to test.
+    
+    PRIORITY:
+        - get the code to compile! 
+        - continually get code to compile.
+        - get it finished after that.
+
+    Test-Driven Development:
+        - First write a test to see if it works,
+        - make sure that test fails,
+        - then make the test pass.
+
+        Note: Unit testing done with "catch.hpp".
+
+
