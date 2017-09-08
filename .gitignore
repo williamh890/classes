@@ -1,3 +1,7 @@
 processing.min.js
 processing.js
 cs381_2017_03
+*.gch
+*.out
+catch.hpp
+

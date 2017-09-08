@@ -1,6 +1,7 @@
 // product.h
 // William Horn
 // Sep 6, 2017
+//
 // prototypes of product class for hw-1 CS311
 
 #ifndef PRODUCT_H
@@ -14,10 +15,10 @@ class Product {
     public:
         Product(std::string name="", int sales=0);
 
-        ~TimeOfDay() = default;
-        TimeOfDay(const TimeOfDay & other) = default;
-        TimeOfDay & operator=(const TimeOfDay & other) = default;
-        TimeOfDay & operator=(TimeOfDay && other) = default;
+        ~Product() = default;
+        Product(const Product & other) = default;
+        Product & operator=(const Product & other) = default;
+        Product & operator=(Product && other) = default;
 
         std::string getName() const;
         int getSales() const;

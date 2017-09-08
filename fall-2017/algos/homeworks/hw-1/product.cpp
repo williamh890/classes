@@ -85,7 +85,12 @@ Product Product::operator++(int) {
 
 
 Product& Product::operator--() {
-    _sales--;
+    if (_sales <= 0) {
+        _sales = 0;
+    }
+    else {
+        _sales--;
+    }
     return *this;
 }
 
