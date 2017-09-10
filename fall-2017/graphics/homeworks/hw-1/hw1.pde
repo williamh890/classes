@@ -3,13 +3,13 @@
 // AUG 30, 2017
 
 // First time with processing
-int width = 500;
-int height = 500;
-int center_w = width / 2;
-int center_h = height / 2;
-int startingLimit = 20;
-int drag = 0.99;
-int padding = 10; 
+int width;
+int height;
+int center_w;
+int center_h;
+int startingLimit;
+int drag;
+int padding; 
 
 
 class Vec2 {
@@ -32,16 +32,24 @@ class Vec2 {
 }
 
 class Entity {
-    PVector pos, vel;
+    Vec2 pos, vel;
+    float size; 
 
     Entity() {
         pos = new Vec2(random(padding, width),
                           random(padding, height));
-        this.vel = new Vec2(random(-startingLimit, startingLimit), 
+        vel = new Vec2(random(-startingLimit, startingLimit), 
                           random(-startingLimit, startingLimit));
+        size = 5; 
     }
 
-    void applyForce(PVector force) {
+
+    int getBound() {
+        return 5 * size;
+    }
+
+
+    void applyForce(Vec2 force) {
         // Apply a force to the object
         vel.addVec(force);
     }
@@ -61,15 +69,18 @@ class Entity {
     }
     
     bool outOfBounds() {
-        return pos.x > width || pos.x < 0 || pos.y > height || pos.y < 0;
+        return pos.x  > width +  (getBound()) || 
+               pos.x  <         -(getBound()) ||
+               pos.y  > height + (getBound()) || 
+               pos.y  <         -(getBound());
     }
 
     void wrapEntity() {
-        if(pos.x < 0) pos.x = width;
-        if(pos.x > width) pos.x = 0;
+        if(pos.x < -getBound()) pos.x = width + getBound();
+        if(pos.x > width + getBound()) pos.x = -getBound();
 
-        if(pos.y < 0) pos.y = height;
-        if(pos.y > height) pos.y = 0;
+        if(pos.y < -getBound()) pos.y = height + getBound();
+        if(pos.y > height + getBound()) pos.y = -getBound();
     }
 
     void show() {
@@ -83,18 +94,41 @@ class Ameoba extends Entity {
 
     Ameoba() {
         super();
-        size = random(10, 15);
+        size = random(20, 50);
+        starting_noise = random(1000);
     }
 
 
-    void show() {    
-        strokeWeight(2);
-        beginShape(TRIANGLE_STRIP);
-        vertex(pos.x + 30 +  size, pos.y + 75 + size);
-        vertex(pos.x + 40 + size, pos.y + 20 + size);
-        vertex(pos.x + 50 + size, pos.y + 75 + size);
-        vertex(pos.x + 60 + size, pos.y + 20 + size);
-        vertex(pos.x + 70 + size, pos.y + 75 + size);
+    void show() {   
+        strokeWeight(1);
+        stroke(255);
+        noFill();
+
+        beginShape(TRIANGLE_FAN);
+        
+        step = 0.5;
+        noise_index = starting_noise;
+        vertex(pos.x, pos.y);
+
+        Vec2 first;
+        for(int d = 0; d < 2*PI; d += 2*PI/20) {
+            float x =  cos(d) * size + pos.x;
+            float y =  sin(d) * size + pos.y;
+            
+            Vec2 p = new Vec2(x, y);
+            Vec2 n = new Vec2(x, y);
+
+            n.mult((noise(noise_index) - 0.5) * 0.1);
+            noise_index += step;
+
+            p.addVec(n);
+            
+            if(d == 0) 
+                first = new Vec2(p.x, p.y);
+            
+            vertex(p.x, p.y);
+        }
+        vertex(first.x, first.y);
         endShape();
     }
 }
@@ -110,8 +144,10 @@ class Spiral extends Entity {
 
 
     void show() {    
-        strokeWeight(10);
+        strokeWeight(8);
+        stroke(255);
         beginShape(POINTS);
+        
         for(float d = 0; d < 2*PI; d = (d + 2*PI/8)) {
             float xloc = size * d * cos(d) + pos.x; 
             float yloc = size * d * sin(d) + pos.y;
@@ -121,21 +157,66 @@ class Spiral extends Entity {
     }
 }
 
-Spiral s = new Spiral();
-Ameoba a = new Ameoba();
 
-ArrayList<Entity> entites = new ArrayList<Entity>();
+class WaveyStrip extends Entity {
+    float size;
 
-entites.add(a);
-entites.add(s);
+    WaveyStrip() {
+        super();
+        size = random(4, 12);
+    }
+
+
+    void show() {    
+        strokeWeight(1);
+        stroke(255);
+        beginShape(TRIANGLE_STRIP);
+        vertex(30, 75);
+        vertex(40, 20);
+        vertex(50, 75);
+        vertex(60, 20);
+        vertex(70, 75);
+        vertex(80, 20);
+        vertex(90, 75);
+        endShape();
+    }
+}
+
+
+Entity randomEntity() {
+    int select = round(random(0,2));
+
+    if (select == 0) { 
+        return new Spiral();
+    }
+    else if (select == 1) {
+        return new Ameoba();
+    }
+    else if (select == 2) {
+        return new WaveyStrip();
+    }
+}
 
 
 void setup()
 {
+    width = 1000;
+    height = 1000;
+    center_w = width / 2;
+    center_h = height / 2;
+    startingLimit = 20;
+    drag = 0.99;
+    padding = 10; 
+
+    int numEntities = 10;
+    entites = new ArrayList<Entity>();
+    for(int i = 0; i < numEntities; ++i) {
+        entites.add(randomEntity());
+    } 
+
     size(width, height);
-    background(125);
-    fill(255);
 }
+
 
 
 void update() {
@@ -148,7 +229,7 @@ void update() {
 void draw(){  
     update();
 
-    background(204);
+    background(0);
 
     for( Entity entity : entites) {
         entity.show();
