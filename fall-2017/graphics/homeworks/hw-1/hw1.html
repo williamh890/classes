@@ -4,13 +4,30 @@
         <meta charset="utf-8">
         <title>Assignment 1</title>
     </head>
-    <body>
-        <h1> Assignment 1 </h1>
-        
-        <canvas data-processing-sources="hw1.pde"
-                style="border: 1px solid grey" autofocus></canvas>
+   
+    <style>
+        canvas {
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            outline: none;
+        } 
+    </style> 
 
-        <script type="text/javascript" src="processing.min.js"></script>
+    <body style="background-color:black"> 
+        <div>
+            <canvas id="canvas" 
+                    title="'+' to add, '-' to remove"
+                    data-processing-sources="hw1.pde"
+                    tabindex="1"></canvas>
+            <script type="text/javascript" src="processing.min.js"></script>
+        </div>   
     </body>
+ 
+    <script>
+        document.getElementById('canvas').focus();
+    </script>
 </html>
 

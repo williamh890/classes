@@ -1,0 +1,8 @@
+Processing Check:
+    The check_p5 canvas is a red star with a yellow outline and a green background
+    when the spacebar is used to toggle rotation on the star.
+
+Graphical Application in Processing:
+    controls:
+        - '+' is used to add objects
+        - '-' is used to remove them

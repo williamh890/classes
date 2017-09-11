@@ -9,6 +9,27 @@ int startingLimit;
 int drag;
 int padding; 
 
+// showOutline -> default beginShape 
+// 
+// 
+// class      | EXAMPLE
+// -----------------------------
+// Ameoba     | TRIANGLE_FAN 
+// BlockGroup | QUADS
+// Boing      | QUAD_STRIPS
+// Triangles  | TRIANGLES
+// Spiral     | POINTS
+// SpazeLine  | LINES
+// WaveyStrip | TRIANGLE_STRIP 
+//
+//
+// NOTE: Some of the updating of the internal state of the shapes are
+//       are modified in the show function. In a perfect world, this 
+//       would be moved out into the update function, possibly in an
+//       update function
+
+
+
 
 class Vec2 {
     float x, y;
@@ -295,10 +316,10 @@ class Spiral extends Entity {
 }
 
 
-class SomeLines extends Entity {
+class SpazeLine extends Entity {
     float length;
 
-    SomeLines() {
+    SpazeLine() {
         super();
         length = random(40, 50);
     }
@@ -392,7 +413,7 @@ Entity randomEntity() {
         return new Triangle();
     }
     else if (select == 6) {
-        return new SomeLines();
+        return new SpazeLine();
     }
 }
 
@@ -403,28 +424,28 @@ void showOutline() {
     strokeWeight(1);
     beginShape();
     vertex(padding, padding);
-    vertex(height - padding, padding);
-    vertex(height - padding, width - padding);
-    vertex(padding, width - padding);
+    vertex(padding, height - padding);
+    vertex(width - padding, height - padding);
+    vertex(width - padding, padding);
     endShape(CLOSE);
 }
 
 
 void setup()
 {
-    width = 1000;
-    height = 1000;
-    startingLimit = 10;
+    width = 1700;
+    height = 850;
+    startingLimit = 7;
     drag = 0.9999;
     padding = 10; 
 
+    size(width, height);
     int startingEntities = 3;
     entities = new ArrayList<Entity>();
     for(int i = 0; i < startingEntities; ++i) {
         entities.add(randomEntity());
     } 
 
-    size(width, height);
 }
 
 
