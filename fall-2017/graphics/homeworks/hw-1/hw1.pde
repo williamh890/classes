@@ -5,8 +5,6 @@
 // First time with processing
 int width;
 int height;
-int center_w;
-int center_h;
 int startingLimit;
 int drag;
 int padding; 
@@ -31,15 +29,16 @@ class Vec2 {
    } 
 }
 
+
 class Entity {
     Vec2 pos, vel;
     float size; 
 
     Entity() {
         pos = new Vec2(random(padding, width),
-                          random(padding, height));
+                       random(padding, height));
         vel = new Vec2(random(-startingLimit, startingLimit), 
-                          random(-startingLimit, startingLimit));
+                       random(-startingLimit, startingLimit));
         size = 5; 
     }
 
@@ -83,19 +82,20 @@ class Entity {
         if(pos.y > height + getBound()) pos.y = -getBound();
     }
 
+    // overriden in the derived class 
     void show() {
-        // overriden in the derived class 
         ellipse(pos.x, pos.y, 20, 30); 
     }
 }
 
+
 class Ameoba extends Entity {
-    float size;
+    float startingNoise;
 
     Ameoba() {
         super();
         size = random(20, 50);
-        starting_noise = random(1000);
+        startingNoise = random(10000000);
     }
 
 
@@ -107,7 +107,7 @@ class Ameoba extends Entity {
         beginShape(TRIANGLE_FAN);
         
         step = 0.5;
-        noise_index = starting_noise;
+        noiseIndex = startingNoise;
         vertex(pos.x, pos.y);
 
         Vec2 first;
@@ -118,8 +118,8 @@ class Ameoba extends Entity {
             Vec2 p = new Vec2(x, y);
             Vec2 n = new Vec2(x, y);
 
-            n.mult((noise(noise_index) - 0.5) * 0.1);
-            noise_index += step;
+            n.mult((noise(noiseIndex) - 0.5) * 0.1);
+            noiseIndex += step;
 
             p.addVec(n);
             
@@ -130,16 +130,149 @@ class Ameoba extends Entity {
         }
         vertex(first.x, first.y);
         endShape();
+        startingNoise += 0.001;
+    }
+}
+
+
+class BlockGroup extends Entity {
+    float rotationAngle, startingAngle, rotationSpeed;
+    float blockLength, blockWidth;
+    int numBlocks;
+    int numVertices;
+
+    BlockGroup() {
+        super();
+        startingAngle = 0;
+        blockLength = random(50, 100);
+        blockWidth = random(50, 100);
+        numBlocks = 5;
+        rotationAngle = random(0, TAU);
+        rotationSpeed = random(0.01, 0.1);
+    }
+
+
+    void show() {
+        pushMatrix();
+        translate(pos.x, pos.y);
+        rotate(rotationAngle);
+        rotationAngle += rotationSpeed;
+
+        beginShape(QUADS);
+        noFill();
+        strokeWeight(1);
+        stroke(255);
+
+        boolean evenSide = true;
+        for(float w = 0; w < blockWidth; w += blockWidth/numBlocks) {
+            if (evenSide){
+                vertex(w, blockLength);
+                vertex(w, 0);
+            } 
+            else {
+                vertex(w, 0);
+                vertex(w, blockLength);
+            }
+            evenSide = !evenSide;
+        }
+
+        endShape();
+        popMatrix();
+    }
+}
+
+
+class Boing extends Entity {
+    float startingAngle;
+    float lengthMin, lengthMax;
+    float currLength;
+    float growth;
+    float numBlocks;
+
+    Boing() {
+        super();
+        size = random(10, 20);
+        startingAngle = 0;
+        lengthMin = random(40, 60);
+        currLength = lengthMin;
+
+        lengthMax = random(currLength, currLength + 100);
+        growth = random(0.5, 1)
+        numBlocks = 8;
+        blockWidth = random(10, 40);
+    }
+
+
+    void show() {    
+        noFill();
+        strokeWeight(1);
+        stroke(255);
+
+        evenSide = true;
+        pushMatrix();
+        beginShape(QUAD_STRIP);
+
+        translate(pos.x, pos.y);
+        for(float w = 0; w < blockWidth; w += blockWidth/numBlocks) {
+            vertex(w, currLength);
+            vertex(w, 0);
+        }
+        endShape();
+        popMatrix();
+
+        currLength += growth;
+        
+        if (currLength <= lengthMin) {
+            growth *= -1;
+        }
+        
+        if (currLength >= lengthMax) {
+            growth *= -1;
+        }
+    }
+}
+
+class Triangle extends Entity {
+    float trianglesWidth, numVertices; 
+
+    Triangle() {
+        super();
+        trianglesWidth = random(50, 100)
+        size = random(50, 70);
+        numVertices = 8;
+    }
+
+    void show() {    
+        strokeWeight(8);
+        stroke(255);
+      
+        pushMatrix();
+        translate(pos.x, pos.y);
+        beginShape(TRIANGLES);
+        
+        boolean evenVertex = true;
+        for(int w = 0; w < trianglesWidth; w += trianglesWidth / numVertices) {
+            if (evenVertex) {
+                vertex(w, 0);
+            }
+            else {
+                vertex(w, size);
+            }
+            evenVertex = !evenVertex;
+        }
+
+        endShape();
+        popMatrix();
     }
 }
 
 
 class Spiral extends Entity {
-    float size;
-
+    float startingAngle;
     Spiral() {
         super();
-        size = random(4, 12);
+        size = random(10, 20);
+        startingAngle = 0;
     }
 
 
@@ -148,22 +281,61 @@ class Spiral extends Entity {
         stroke(255);
         beginShape(POINTS);
         
-        for(float d = 0; d < 2*PI; d = (d + 2*PI/8)) {
-            float xloc = size * d * cos(d) + pos.x; 
-            float yloc = size * d * sin(d) + pos.y;
+        for(float d = startingAngle; d < 2*PI + startingAngle; d = (d + 2*PI/8)) {
+            float xloc = size * (d - startingAngle) * cos(d) + pos.x; 
+            float yloc = size * (d - startingAngle) * sin(d) + pos.y;
             vertex(xloc, yloc);
         }
         endShape();
+        startingAngle += 0.1;
+        if (startingAngle > TAU) {
+            startingAngle = 0;
+        }
     }
 }
 
 
+class SomeLines extends Entity {
+    float length;
+
+    SomeLines() {
+        super();
+        length = random(40, 50);
+    }
+
+
+    void show() {    
+        strokeWeight(3);
+        stroke(255);
+
+        pushMatrix();
+        translate(pos.x, pos.y);
+        rotate(random(TAU));
+        
+        beginShape(LINES);
+        
+        vertex(0, 0);
+        vertex(length, 0);
+
+        endShape();
+        popMatrix();
+    }
+}
+
+
+
+
 class WaveyStrip extends Entity {
-    float size;
+    float length;
+    float startingAngle;
+    int amplitude;
 
     WaveyStrip() {
         super();
-        size = random(4, 12);
+        size = random(40, 60);
+        length = random(40, 150);
+        startingAngle = random(TAU);
+        amplitude = 5;
     }
 
 
@@ -171,20 +343,35 @@ class WaveyStrip extends Entity {
         strokeWeight(1);
         stroke(255);
         beginShape(TRIANGLE_STRIP);
-        vertex(30, 75);
-        vertex(40, 20);
-        vertex(50, 75);
-        vertex(60, 20);
-        vertex(70, 75);
-        vertex(80, 20);
-        vertex(90, 75);
+        
+        numVertices = 10;
+        angle = 0;
+        deltaAngle = 2*TAU / numVertices;
+
+        boolean isTopVertex = true;
+
+        int v, a;
+        for(v = 0, a = startingAngle; v < length; v += length/numVertices, a += 2*TAU/numVertices) {
+            int x = pos.x + v;
+            int y = pos.y + amplitude * cos(a); 
+
+            if (!isTopVertex) {
+                y -= size;
+            }
+            isTopVertex = !isTopVertex;
+
+            vertex(x, y);
+        }
+
+        startingAngle += PI / numVertices * 0.5;
+         
         endShape();
     }
 }
 
 
 Entity randomEntity() {
-    int select = round(random(0,2));
+    int select = round(random(0,6));
 
     if (select == 0) { 
         return new Spiral();
@@ -195,6 +382,31 @@ Entity randomEntity() {
     else if (select == 2) {
         return new WaveyStrip();
     }
+    else if (select == 3) {
+        return new BlockGroup();
+    }
+    else if (select == 4) {
+        return new Boing();
+    }
+    else if (select == 5) {
+        return new Triangle();
+    }
+    else if (select == 6) {
+        return new SomeLines();
+    }
+}
+
+
+// To demonstrate the standard beginShape()
+void showOutline() {
+    noFill();
+    strokeWeight(1);
+    beginShape();
+    vertex(padding, padding);
+    vertex(height - padding, padding);
+    vertex(height - padding, width - padding);
+    vertex(padding, width - padding);
+    endShape(CLOSE);
 }
 
 
@@ -202,25 +414,31 @@ void setup()
 {
     width = 1000;
     height = 1000;
-    center_w = width / 2;
-    center_h = height / 2;
-    startingLimit = 20;
-    drag = 0.99;
+    startingLimit = 10;
+    drag = 0.9999;
     padding = 10; 
 
-    int numEntities = 10;
-    entites = new ArrayList<Entity>();
-    for(int i = 0; i < numEntities; ++i) {
-        entites.add(randomEntity());
+    int startingEntities = 3;
+    entities = new ArrayList<Entity>();
+    for(int i = 0; i < startingEntities; ++i) {
+        entities.add(randomEntity());
     } 
 
     size(width, height);
 }
 
 
+void keyPressed() {
+    if (key == '+') {
+        entities.add(randomEntity());
+    }
+    else if (key == '-') {
+        entities.remove(0);
+    }
+}
 
 void update() {
-    for( Entity entity : entites) {
+    for( Entity entity : entities) {
         entity.update();
     }
 }
@@ -230,8 +448,8 @@ void draw(){
     update();
 
     background(0);
-
-    for( Entity entity : entites) {
+    showOutline();
+    for( Entity entity : entities) {
         entity.show();
     }
 }
