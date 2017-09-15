@@ -1,0 +1,72 @@
+Class: Data Mining 
+Name: William Horn
+Date: Sep 12, 2017 
+
+Oblique Splits:
+    - Split that is not parallel with an axis
+
+    note: any split in a plane that a slop
+
+Option Notes:
+    something
+
+Regression Trees:
+    Regression: y = ax1 + bx2 + cx3 + ...
+        - set of x values -> y
+        - in the tree, each branching vertex is an xi
+
+    note: Really a replacement for regression
+
+    output: getting numerical prediction out
+
+Model Tree:
+    - Each node is a reduced sized regression
+    - The tree is used to narrow down the number
+      of values in the regression
+   
+    output: returns miniture linear regressions
+        - nodes are -> peicewise linear
+        - each blob in space has its own split
+
+Rule Sets For Trees:
+    - each for in the tree is a rule in the rule set
+    - rule sets can be more compact than trees
+
+    Example:
+        Boolean Values: a,b,c,d -> x
+        Rules: 
+            if a and b are true -> x
+            if b and c are true - x
+
+        - In a complete tree, both the true and false values need to be represented
+
+Replicated Subtrees:
+    - Trees can be messier because the same logic 
+      can be repeated in the tree
+    - Cannot imply the disjuction that rules can
+
+Closed World Assumption:
+    - A simplifying assumption that conflicts with reality
+    - reality is more complexe than T/F for everything 
+    
+    Association Rules:
+        Finding dependencies between attributes
+
+        note:
+            - classical stats assumes that variables are independent
+            - This is where data mining is better
+
+Weak Rules:
+    - A rule that is a total subset of another rule (a strong rule)
+    - some rules can be weaker/stronger than others
+
+Exception:
+    - Another tool for writing rule sets
+
+Attribute-to-Attribute Comparisions:
+    Example:
+        - finding out whether a geometric object is standing or not
+        - the comparision is height to width comparision
+
+Instance Based Representation:
+    - Running the algorithm as instances come in.
