@@ -1,0 +1,34 @@
+Class: Data Structure and Algorithms
+Name: William Horn
+Date: Sep 14, 2017 
+
+Invisible Functions II:
+    The Rule of Five:
+        - If you define one of the big five, you should define them all
+        - this is a pain...
+
+    The Rule of Zero:
+        - Where possible, use already written RAII classes.
+
+    noexcept: a promise that a function will not throw an exception.
+
+Error Handling:
+    - error condition is a condition while a prog is running that 
+      cannot be handled by the normal flow of execution
+    - not a bug, or indication that the user did something wrong.
+
+    Dealing with Errors:
+        - prevent errors
+        - handle them when the occur
+        - signal client code
+        Types of signals:
+            - error codes
+            - setting flags
+            - best of all... throw exception
+
+    Guarantees:
+        - errors conditions will not wreck the prog ( basic guarantee )
+        - operation either completes entierly or nothing happends ( strong guarentee )
+        - never inform client code of errors at all ( no-throw guarentee )
+
+
