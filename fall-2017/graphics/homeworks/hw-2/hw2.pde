@@ -4,7 +4,10 @@
 // Hierarchical Objects
 
 float padding;
-int maxDepth = 4;
+int maxDepth = 7;
+float branchLengthDecay = 0.6;
+float branchWidthDecay = 0.65;
+
 
 class Branch {
     float radius;
@@ -21,8 +24,13 @@ class Branch {
         depth = d;
         
         if (depth <= maxDepth) {
-             left = new Branch(0.8 * r, 0.9 * l, PI / 4, d + 1);
-             right = new Branch(0.8 * r, 0.9 * l, -PI / 4, d + 1);
+             left = new Branch(branchWidthDecay * r,
+                               branchLengthDecay * l,
+                               PI / 4, d + 1);
+
+             right = new Branch(branchWidthDecay * r,
+                                branchLengthDecay * l,
+                                -PI / 4, d + 1);
         }
     }
 
@@ -63,7 +71,7 @@ class Tree {
         startX = x;
         startY = y;
         bottomPadding = p;
-        root = new Branch(10, 100, PI, 1);
+        root = new Branch(10, 300, PI, 1);
     }
 
     void show() {
@@ -80,7 +88,7 @@ void setup() {
     size(1700, 850);
     background(100);
 
-    padding = 15;
+    padding = 10;
 
     tree = new Tree(width / 2, height, padding);
 }
