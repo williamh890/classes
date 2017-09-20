@@ -3,42 +3,35 @@
 // Created: Sep 12, 2017
 // Hierarchical Objects
 
-float padding;
-int maxDepth = 5;
-float branchLengthDecay = 0.57;
-float branchWidthDecay = 0.60;
 
 float randomDirection() {
-    float dir = round(random(1));
-
-    if (dir == 0) {
-        return 1;
-    }
-    else {
-        return -1;
-    }
+    return (round(random(1)) == 0) ? 1 : -1;
 }
 
 
 class Branch {
     float radius;
     float length;
-    float angle, windForce, maxAngle, angleDeviation;
+    float angle, windSpeed, maxDeviationAngle, angleDeviation;
     float depth;
 
-    ArrayList<Branch> branches;
+    ArrayList<Branch> branches; // All the child branches
+
+    // ***************** Constructor ******************
 
     Branch(float r, float l, float a, float d) {
         radius = r;
         length = l;
         angle = a;
         depth = d;
-        windForce = calcWindForce();
-        maxAngle = calcMaxAngle();
-        angleDeviation = random(-maxAngle, maxAngle);
+
+        windSpeed = calcWindSpeed();
+        maxDeviationAngle = calcMaxAngle();
+        angleDeviation = random(-maxDeviationAngle, maxDeviationAngle);
 
         branches = new ArrayList<Branch>();
 
+        // Make all the child branches
         if (depth <= maxDepth) {
             for(int i = 0; i < depth; ++i) {
                 Branch newBranch = new Branch(
@@ -49,60 +42,36 @@ class Branch {
 
                 branches.add(newBranch);
             }
-
         }
     }
 
-    float calcMaxAngle() {
-        float maxAng = (PI / 22) * pow((depth - 1), 1.15) * 0.15;
-        return random(0.75 * maxAng, 1.5 * maxAng);
-    }
-
-
-    float calcWindForce() {
-        return 0.0005 * pow((depth - 1), 1.15) + random(-0.00005, 0.00005) * randomDirection();
-    }
-
-    float getTotalAngle() {
-        return angle + angleDeviation;
-    }
-
-    boolean hasPastCenter(float prevAngle) {
-        return (prevAngle > 0 && angleDeviation < 0) ||
-            (prevAngle < 0 && angleDeviation > 0);
-    }
-
-    void applyWindForce() {
-        angleDeviation += windForce + random(-(0.1 * windForce), 0.1 * windForce);
-    }
+    // **************** Animation Function ******************
 
     void update() {
-        // check if the branch is in the middle
         float prevAngleDev = angleDeviation;
 
-        applyWindForce();
+        // Apply the animation force
+        applyWindSpeed();
 
+        // Check to see if the wind force should change direction
         boolean changedDir = false;
-        if(angleDeviation > maxAngle) { 
-            windForce *= -1;
+        if(angleDeviation > maxDeviationAngle || angleDeviation < -maxDeviationAngle) { 
+            windSpeed *= -1;
             changedDir = true;
         }
-        else if (angleDeviation < -maxAngle) {
-            windForce *= -1;
-            changedDir = true;  
-        }
 
+        // Apply the force again if it has
         if (changedDir) {
-            applyWindForce();
-
+            applyWindSpeed();
         }
 
+        // If the branch is in the middle, then give it a new maxDeviationAngle and windSpeed
         if (hasPastCenter(prevAngleDev)) {
             calcMaxAngle(); 
-            windForce = calcWindForce();
+            windSpeed = calcWindSpeed();
         }
 
-
+        // Update all the child branches if not a leaf
         if (depth <= maxDepth) {
             for (Branch b : branches) {
                 b.update();
@@ -110,6 +79,7 @@ class Branch {
         }
     }
 
+    // ****************** Drawing Funciton **********************
 
     void show() {
         pushMatrix();
@@ -123,12 +93,10 @@ class Branch {
         vertex(-radius, -radius);
         endShape(CLOSE);
 
-        //beginShape(POINTS);
-        //vertex(0 , 0);
-        //vertex(0, length);
-        //endShape();
-
+        // Move to the tip of the branch
         translate(0, length);
+
+        // Draw its branches
         if(depth <= maxDepth) {
             for (Branch b : branches) {
                 b.show();
@@ -138,26 +106,53 @@ class Branch {
         popMatrix();
     }
 
+    // ************ Calculation Functions **************
+
+    float calcMaxAngle() {
+        float maxAng = (PI / 22) * pow((depth - 1), 1.15) * 0.15;
+        return random(0.75 * maxAng, 1.5 * maxAng) * windSpeedScale; 
+    }
+
+
+    float calcWindSpeed() {
+        return (0.0005 * pow((depth - 1), 1.15) + (random(-5, 5)/100000)) * randomDirection();
+    }
+
+
+    float getTotalAngle() {
+        return angle + angleDeviation;
+    }
+
+
+    boolean hasPastCenter(float prevAngle) {
+        return (prevAngle > 0 && angleDeviation < 0) ||
+            (prevAngle < 0 && angleDeviation > 0);
+    }
+
+
+    void applyWindSpeed() {
+        angleDeviation += (windSpeed + random(-(0.1 * windSpeed), 0.1 * windSpeed)) * windSpeedScale;
+    }
 }
 
 
 class Tree {
     float startX, startY;
-    float bottomPadding;
 
     Branch root;
 
-    Tree(float x, float y, float p) {
+    Tree(float x, float y) {
         startX = x;
         startY = y;
-        bottomPadding = p;
         root = new Branch(10, 300, PI, 2);
     }
 
     void show() {
         pushMatrix();
-        translate(startX, startY - bottomPadding);
+        translate(startX, startY);
+
         root.show();
+
         popMatrix();
     }
 
@@ -166,26 +161,59 @@ class Tree {
     }
 }
 
+
+// ************* Globals *************
+float padding;
+int maxDepth;
+float branchLengthDecay;
+float branchWidthDecay;
+
+float windSpeedScale;
+float maxWindSpeedScale;
+
 Tree tree;
+// ***********************************
+
 
 void setup() {
     size(1700, 850);
     background(0);
 
+    maxDepth = 5;
+    branchLengthDecay = 0.57;
+    branchWidthDecay = 0.60;
+
     padding = 10;
 
-    tree = new Tree(width / 2, height, padding);
+    windSpeedScale = 1.0;
+    maxWindSpeedScale = 8;    
+
+    tree = new Tree(width / 2, height - padding);
+}
+
+
+// Change the amount of wind with '+' and '-' keys
+void keyPressed() {
+    if (key == '+') {
+        windSpeedScale += 0.1;
+        windSpeedScale = min(windSpeedScale, maxWindSpeedScale);
+    }
+    if (key == '-') {
+        windSpeedScale -= 0.1;
+        windSpeedScale = max(0.1, windSpeedScale);
+    }
 }
 
 
 void draw() {
+    // Animation 
+    tree.update();
+
+    // Draw
     background(0);
     strokeWeight(1);
     stroke(255);
     noFill();
 
-    tree.update();
-
     tree.show();
-
 }

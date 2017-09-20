@@ -1,0 +1,16 @@
+Class: Computer Graphics
+Name: William Horn
+Date: Sep 18, 2017
+Assignment: 2
+
+Exercise A:
+    - The canvas has a brown background with a pink donut that is bouncing and
+      spinning.
+    - There are toggles for changing the object color (to green), the rotation speed,
+      the rotation itself, and to restart the bouncing.
+
+Exercise B:
+    Title: Windy Tree
+    Controls: '+' and '-' keys to increase of decrease the amount of wind
+
+
