@@ -162,6 +162,56 @@ class Tree {
 }
 
 
+class WindLine {
+   float x, y;
+   float len;
+   float vel;
+   
+   WindLine() {
+       setPos();
+       len = 6.0;
+       vel = 8.0;
+   }
+   
+   void show() {
+      pushMatrix();
+      
+      translate(x, y);
+      
+      strokeWeight(1);
+      stroke(255, 255, 255, getAlpha());
+      
+      line(0, 0, getLen(), 0);
+      
+      popMatrix();
+   }
+   
+   void update() {
+      x += getVel(); 
+      
+      if (x > width + 2 * getLen()) {
+        setPos();
+      }
+   }
+     
+   void setPos() {
+       x = -(2 * getLen() + random(width));
+       y = random(height);
+   }
+  
+   float getLen() {
+       return (windSpeedScale > 0.5) ? len * windSpeedScale : 0;
+   }
+   
+   float getAlpha() {
+     return 200 * (windSpeedScale / maxWindSpeedScale);
+   }
+   
+   float getVel() {
+      return windSpeedScale * vel;
+   }
+}
+
 // ************* Globals *************
 float padding;
 int maxDepth;
@@ -170,6 +220,9 @@ float branchWidthDecay;
 
 float windSpeedScale;
 float maxWindSpeedScale;
+
+int numWindLines;
+ArrayList<WindLine> lines;
 
 Tree tree;
 // ***********************************
@@ -187,7 +240,14 @@ void setup() {
 
     windSpeedScale = 1.0;
     maxWindSpeedScale = 8;    
-
+    
+    lines = new ArrayList<WindLine>();
+    
+    numWindLines = 14;
+    for(int i = 0; i < numWindLines; ++i) {
+      lines.add(new WindLine());   
+    }
+    
     tree = new Tree(width / 2, height - padding);
 }
 
@@ -204,16 +264,26 @@ void keyPressed() {
     }
 }
 
+void update() {
+  tree.update();
+  
+  for(WindLine wl : lines) {
+     wl.update(); 
+  }
+}
 
 void draw() {
     // Animation 
-    tree.update();
-
+    update();
+    
     // Draw
     background(0);
     strokeWeight(1);
     stroke(255);
     noFill();
-
+   
+    for(WindLine wl : lines) {
+     wl.show(); 
+    }
     tree.show();
 }
