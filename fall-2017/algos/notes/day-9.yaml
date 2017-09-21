@@ -1,0 +1,40 @@
+Class: Data Structures and Algorithms
+Name: William Horn
+Date: Sep 17, 2017 
+
+Using Exceptions:
+    - Exceptions are caught by the closest try block.
+    - always passed by reference.
+    
+    Throw: 
+        - exactly like return, used for raising errors
+        - be reluctant to write throws
+    
+        What may throw:
+            - throw, new, functions written by others
+        no-throw:
+            - built in operations on built-in types
+            - delete (itself)
+            - std::io libraries don't throw
+
+     Catches all exceptions:
+         - raii alternative
+
+         Syntax (catch-all): 
+              catch(...) {
+                  throw; // Returns the same exception that was caught
+              }
+
+    Exception Goals:
+        - primary concern is not how to signal or handle error conditions
+        - we want to write code that always works, in the conext where exceptions 
+          are  being used.
+
+    Destructors:
+        - dtors are called when obj goes out of scope, even if due to exception
+        - if dtor throws then program terminates
+        
+        Conclusion:
+            - dtors should not throw
+        
+        Note: Any finishing up operation should not throw

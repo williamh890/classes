@@ -1,0 +1,27 @@
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Sep 20, 2017 
+
+Linked List:
+    Basics:
+        Inserting:
+            - ll = linear time
+            - array = constant time
+
+            note: in ll, its fast.
+
+        Dtors:
+            - destructor calls recusivly delete items in the ll.
+            - if ll too long then stack can fill up. 
+
+Recursion and Searching:
+    Recursive:
+        - algo that makes use of itself.
+        - must have a base case to exit.
+        - every thing else, recusive case.
+
+        Direct: calls itself.
+        Indirect: calls a function that calls the parent func.
+
+        Note:
+            - base case must always be reached.

@@ -163,53 +163,53 @@ class Tree {
 
 
 class WindLine {
-   float x, y;
-   float len;
-   float vel;
-   
-   WindLine() {
-       setPos();
-       len = 6.0;
-       vel = 8.0;
-   }
-   
-   void show() {
-      pushMatrix();
-      
-      translate(x, y);
-      
-      strokeWeight(1);
-      stroke(255, 255, 255, getAlpha());
-      
-      line(0, 0, getLen(), 0);
-      
-      popMatrix();
-   }
-   
-   void update() {
-      x += getVel(); 
-      
-      if (x > width + 2 * getLen()) {
+    float x, y;
+    float len;
+    float vel;
+
+    WindLine() {
         setPos();
-      }
-   }
-     
-   void setPos() {
-       x = -(2 * getLen() + random(width));
-       y = random(height);
-   }
-  
-   float getLen() {
-       return (windSpeedScale > 0.5) ? len * windSpeedScale : 0;
-   }
-   
-   float getAlpha() {
-     return 200 * (windSpeedScale / maxWindSpeedScale);
-   }
-   
-   float getVel() {
-      return windSpeedScale * vel;
-   }
+        len = 6.0;
+        vel = .55;
+    }
+
+    void show() {
+        pushMatrix();
+
+        translate(x, y);
+
+        strokeWeight(1);
+        stroke(255, 255, 255, getAlpha());
+
+        line(0, 0, getLen(), 0);
+
+        popMatrix();
+    }
+
+    void update(float elapsedTime) {
+        x += getVel() * (elapsedTime); 
+
+        if (x > width + 2 * getLen()) {
+            setPos();
+        }
+    }
+
+    void setPos() {
+        x = -(2 * getLen() + random(width));
+        y = random(height);
+    }
+
+    float getLen() {
+        return (windSpeedScale > 0.5) ? len * windSpeedScale : 0;
+    }
+
+    float getAlpha() {
+        return 250 * (windSpeedScale / maxWindSpeedScale);
+    }
+
+    float getVel() {
+        return windSpeedScale * vel;
+    }
 }
 
 // ************* Globals *************
@@ -225,6 +225,8 @@ int numWindLines;
 ArrayList<WindLine> lines;
 
 Tree tree;
+
+int prevTime;
 // ***********************************
 
 
@@ -240,15 +242,17 @@ void setup() {
 
     windSpeedScale = 1.0;
     maxWindSpeedScale = 8;    
-    
+
     lines = new ArrayList<WindLine>();
-    
+
     numWindLines = 14;
     for(int i = 0; i < numWindLines; ++i) {
-      lines.add(new WindLine());   
+        lines.add(new WindLine());   
     }
-    
+
     tree = new Tree(width / 2, height - padding);
+
+    prevTime = millis();
 }
 
 
@@ -264,26 +268,37 @@ void keyPressed() {
     }
 }
 
+
 void update() {
-  tree.update();
-  
-  for(WindLine wl : lines) {
-     wl.update(); 
-  }
+    int currTime = millis();
+    int elapsedTime = currTime - prevTime;
+
+    if (elapsedTime > 50) {
+        elapsedTime = 50;
+    }
+
+    tree.update();
+
+    for(WindLine wl : lines) {
+        wl.update(elapsedTime); 
+    }
+
+    prevTime = currTime;
 }
+
 
 void draw() {
     // Animation 
     update();
-    
+
     // Draw
     background(0);
     strokeWeight(1);
     stroke(255);
     noFill();
-   
+
     for(WindLine wl : lines) {
-     wl.show(); 
+        wl.show(); 
     }
     tree.show();
 }

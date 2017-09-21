@@ -1,0 +1,17 @@
+Class: Computer Graphics 
+Name: William Horn
+Date: Sep 18, 2017 
+
+WebGL:
+    History:
+        - Iris GL -> OpenGL 
+        Problem: throughput bottleneck (sending data to graphics card slow)
+        
+        -> OpenGL ES/OpenGL 3.0
+        New Technique:
+            - put all data in big buffer, and send
+            - more effiecnt, less readable/usable
+
+        WebGL (2010-2015):
+            - js port of OpenGL ES
+
