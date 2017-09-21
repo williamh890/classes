@@ -6,129 +6,199 @@
 #ifndef KSARRAY_DEFINED
 #define KSARRAY_DEFINED
 
-#include<cstddef>
+#include<cstddef> // size_t
+#include<iostream> // cout
+#include<utility> //exchange
+#include<sstream>
 
 
 template<typename T>
 class KSArray {
 
 public:
+    using size_type = std::size_t;
     using value_type = T;
 
-    explicit KSArray(std::size_t initSize = 10);
-
+    explicit KSArray(size_type initSize = 10);
 
     ~KSArray();
-    KSArray(const KSArray & other);
-    KSArray(KSArray && other);
-    const KSArray & operator=(const KSArray & other);
-    KSArray & operator=(KSArray && other);
+    KSArray<value_type>(const KSArray<value_type> & other);
+    KSArray(KSArray<value_type> && other) noexcept;
+    KSArray & operator=(const KSArray<value_type> & other);
+    KSArray<value_type> & operator=(KSArray<value_type> && other) noexcept;
 
-    T operator[](std::size_t index);
-    const T operator[](std::size_t index) const;
+    value_type& operator[](size_type index);
+    const value_type& operator[](size_type index) const;
 
-    std::size_t size() const;
+    size_type size() const {
+        return _size;
+    }
 
-    T * begin();
-    const T * begin() const;
+    value_type * begin();
+    const value_type * begin() const;
 
-    T * end();
-    const T * end() const;
+    value_type * end();
+    const value_type * end() const;
 
-    bool operator==(const KSArray & other) const;
-    bool operator!=(const KSArray & other) const;
-    bool operator<=(const KSArray & other) const;
-    bool operator>=(const KSArray & other) const;
-    bool operator>(const KSArray & other) const;
-    bool operator<(const KSArray & other) const;
+    bool operator==(const KSArray<value_type> & other) const;
+    bool operator!=(const KSArray<value_type> & other) const;
+    bool operator<=(const KSArray<value_type> & other) const;
+    bool operator>=(const KSArray<value_type> & other) const;
+    bool operator>(const KSArray<value_type> & other) const;
+    bool operator<(const KSArray<value_type> & other) const;
 
 private:
-    T * _array;
-    std::size_t _size;
+    value_type * _array;
+    size_type _size;
 };
 
 
-template<typename T>
-KSArray<T>::KSArray(std::size_t initSize) : _size(initSize), _array(new T[_size]) {}
+template<typename value_type>
+KSArray<value_type>::KSArray(size_type initSize) : _size(initSize), _array(new value_type[initSize]) {}
 
 
-template<typename T>
-KSArray<T>::~KSArray() {
+template<typename value_type>
+KSArray<value_type>::~KSArray() {
     delete [] _array;
 }
 
 
-template<typename T>
-KSArray<T>::KSArray(const KSArray & other) : _size(other._size) {
-    T * arrCopy = new T[_size];
-
-
+template<typename value_type>
+KSArray<value_type>::KSArray(const KSArray<value_type> & other) : _size(other._size), _array(new value_type[other._size]) {
+    std::copy(other._array, other._array + other._size, _array);
 }
 
 
-template<typename T>
-KSArray<T>::KSArray(KSArray && other) {}
+template<typename value_type>
+KSArray<value_type>::KSArray(KSArray<value_type> && other) noexcept {
+    _array = std::exchange(other._array, nullptr);
+    _size = std::exchange(other._size, 0);
+}
 
 
-template<typename T>
-const KSArray<T> & KSArray<T>::operator=(const KSArray & other) {}
+template<typename value_type>
+KSArray<value_type> & KSArray<value_type>::operator=(const KSArray<value_type> & other) {
+    // Self assignment
+    if (this != &other) {
+        // Reallocate if different sizes
+        if (other._size != _size) {
+            delete[] _array;
+            _size = 0;
+            _array = nullptr;
+            _array = new value_type[other._size];
+            _size = other._size;
+        }
+
+        // Copy data
+        std::copy(other._array, other._array + other._size, _array);
+    }
+
+    return *this;
+}
 
 
-template<typename T>
-KSArray<T> & KSArray<T>::operator=(KSArray && other) {}
+template<typename value_type>
+KSArray<value_type> & KSArray<value_type>::operator=(KSArray<value_type> && other) noexcept{
+
+    if(this != &other) {
+        delete[] _array;
+        _array = std::exchange(other._array, nullptr);
+        _size = std::exchange(other._size, 0);
+    }
+
+    return *this;
+}
 
 
-template<typename T>
-T KSArray<T>::operator[](std::size_t index) {}
+template<typename value_type>
+value_type& KSArray<value_type>::operator[](size_type index) {
+    return _array[index];
+}
 
 
-template<typename T>
-const T KSArray<T>::operator[](std::size_t index) const {}
+template<typename value_type>
+const value_type& KSArray<value_type>::operator[](size_type index) const {
+    return _array[index];
+}
 
 
-template<typename T>
-std::size_t KSArray<T>::size() const { return 0; }
+template<typename value_type>
+value_type * KSArray<value_type>::begin() {return _array;}
 
 
-template<typename T>
-T * KSArray<T>::begin() {}
+template<typename value_type>
+const value_type * KSArray<value_type>::begin() const {return _array;}
 
 
-template<typename T>
-const T * KSArray<T>::begin() const {}
+template<typename value_type>
+value_type * KSArray<value_type>::end() {return _array + _size;}
 
 
-template<typename T>
-T * KSArray<T>::end() {}
+template<typename value_type>
+const value_type * KSArray<value_type>::end() const {return _array + _size;}
 
 
-template<typename T>
-const T * KSArray<T>::end() const {}
+template<typename value_type>
+bool KSArray<value_type>::operator==(const KSArray<value_type> & other) const {
+    bool areEq = true;
+
+    if (_size != other._size) areEq = false;
+
+    for(auto i = 0; i < _size; ++i) {
+        if (_array[i] != other._array[i]) {
+            areEq = false;
+            break;
+        }
+    }
+
+    return areEq;
+}
 
 
-template<typename T>
-bool KSArray<T>::operator==(const KSArray & other) const { return true; }
+template<typename value_type>
+bool KSArray<value_type>::operator!=(const KSArray<value_type> & other) const {
+    return !(*this == other);
+}
 
 
-template<typename T>
-bool KSArray<T>::operator!=(const KSArray & other) const { return true; }
+template<typename value_type>
+bool KSArray<value_type>::operator<=(const KSArray<value_type> & other) const {
+    return *this < other || *this == other;
+}
 
 
-template<typename T>
-bool KSArray<T>::operator<=(const KSArray & other) const { return false; }
+template<typename value_type>
+bool KSArray<value_type>::operator>=(const KSArray<value_type> & other) const {
+    return !(*this < other);
+}
 
 
-template<typename T>
-bool KSArray<T>::operator>=(const KSArray & other) const { return true; }
+template<typename value_type>
+bool KSArray<value_type>::operator>(const KSArray<value_type> & other) const {
+    return !(*this < other) && !(*this == other);
+}
 
 
-template<typename T>
-bool KSArray<T>::operator>(const KSArray & other) const { return true; }
+template<typename value_type>
+bool KSArray<value_type>::operator<(const KSArray<value_type> & other) const {
+    bool isLessThan = false;
 
+    auto len = (_size < other._size) ? _size :  other._size;
 
-template<typename T>
-bool KSArray<T>::operator<(const KSArray & other) const { return true; }
+    for(auto i = 0; i < len; ++i) {
+        if (_array[i] > other._array[i]) {
+            break;
+        }
+        if (_array[i] == other._array[i]) continue;
 
+        else if (_array[i] < other._array[i]) {
+            isLessThan = true;
+            break;
+        }
+    }
+
+    return isLessThan;
+}
 
 
 #endif // KSARRAY_DEFINED
