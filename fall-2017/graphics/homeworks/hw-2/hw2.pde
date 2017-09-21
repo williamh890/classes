@@ -37,7 +37,7 @@ class Branch {
                 Branch newBranch = new Branch(
                         branchWidthDecay * r,
                         branchLengthDecay * l,
-                        ((PI * i) / depth) - (PI / 4), 
+                        ((( initDepth*PI/depth )* i) / depth) - PI / initDepth, 
                         d + 1);
 
                 branches.add(newBranch);
@@ -144,7 +144,7 @@ class Tree {
     Tree(float x, float y) {
         startX = x;
         startY = y;
-        root = new Branch(10, 300, PI, 2);
+        root = new Branch(10, 300, PI, initDepth);
     }
 
     void show() {
@@ -215,6 +215,8 @@ class WindLine {
 // ************* Globals *************
 float padding;
 int maxDepth;
+int initDepth;
+
 float branchLengthDecay;
 float branchWidthDecay;
 
@@ -233,10 +235,11 @@ int prevTime;
 void setup() {
     size(1700, 850);
     background(0);
-
-    maxDepth = 5;
-    branchLengthDecay = 0.57;
-    branchWidthDecay = 0.60;
+    
+    initDepth = 3;
+    maxDepth = 6;
+    branchLengthDecay = 0.5;
+    branchWidthDecay = 0.45;
 
     padding = 10;
 
