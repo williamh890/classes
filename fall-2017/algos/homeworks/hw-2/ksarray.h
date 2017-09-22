@@ -300,15 +300,14 @@ bool operator<(const KSArray<value_type> & lhs, const KSArray<value_type> & rhs)
     }
 
     for(auto i = 0; i < len; ++i) {
-        if (lhs[i] == rhs[i]) continue;
+        if (lhs[i] > rhs[i])
+            return false;
 
-        else if (lhs[i] < rhs[i]) {
+        else if (lhs[i] < rhs[i])
             return true;
-        }
     }
 
     return isShorter;
-
 }
 
 
