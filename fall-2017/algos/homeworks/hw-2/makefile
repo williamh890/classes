@@ -1,10 +1,10 @@
-CMP=g++ -std=c++14
+CMP=g++ -std=c++14 -Wall 
 OFILES=main.o suites.o
 
-all: ksarray
+all: ksarray.out
 
-ksarray: $(OFILES)
-	$(CMP) -o ksarray $(OFILES)
+ksarray.out: $(OFILES)
+	$(CMP) -o ksarray.out $(OFILES)
 
 suites.o: ksarray_test_suites.cpp ksarray.h
 	$(CMP) -o suites.o -c ksarray_test_suites.cpp

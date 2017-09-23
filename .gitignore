@@ -1,3 +1,5 @@
+*.tgz
+*.out
 processing.min.js
 processing.js
 cs381_2017_03
@@ -6,3 +8,6 @@ cs381_2017_03
 catch.hpp
 class-repo/*
 *.o
+
+*_main.cpp
+*_suites.cpp

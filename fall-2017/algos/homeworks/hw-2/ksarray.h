@@ -84,9 +84,16 @@ public:
 
     // size
     // return the number of elements in the array
+    // defined in here so size_type can be used.
+    // ?
+    //   note: is there a way to access size_type outside the class.
+    //         I tried scope resolution on the class itself and
+    //         it threw and error?
+    // ?
     // Pre: None
     // Post: returns value of _size
     size_type size() const {
+
         return _size;
     }
 
@@ -127,13 +134,13 @@ private:
 
     value_type * _array; // Pointer to array data
     size_type _size;     // The size of the array
-
 };
 
 
 // (see definition for docs)
 template<typename value_type>
 void KSArray<value_type>::mswap(KSArray<value_type> & other) noexcept {
+
     using std::swap;
 
     swap(_array, other._array);
@@ -143,12 +150,15 @@ void KSArray<value_type>::mswap(KSArray<value_type> & other) noexcept {
 
 // (see definition for docs)
 template<typename value_type>
-KSArray<value_type>::KSArray(size_type initSize) : _size(initSize), _array(new value_type[initSize]) {}
+KSArray<value_type>::KSArray(size_type initSize) : _size(initSize), _array(new value_type[initSize]) {
+
+}
 
 
 // (see definition for docs)
 template<typename value_type>
 KSArray<value_type>::~KSArray() {
+
     delete [] _array;
 }
 
@@ -156,15 +166,15 @@ KSArray<value_type>::~KSArray() {
 // (see definition for docs)
 template<typename value_type>
 KSArray<value_type>::KSArray(const KSArray<value_type> & other) : _size(other._size), _array(new value_type[other._size]) {
+
     std::copy(other._array, other._array + other._size, _array);
 }
 
 
 // (see definition for docs)
 template<typename value_type>
-KSArray<value_type>::KSArray(KSArray<value_type> && other) noexcept
-    : _array(other._array), _size(other._size)
-{
+KSArray<value_type>::KSArray(KSArray<value_type> && other) noexcept : _array(other._array), _size(other._size) {
+
     other._array = nullptr;
     other._size = 0;
 }
@@ -173,6 +183,7 @@ KSArray<value_type>::KSArray(KSArray<value_type> && other) noexcept
 // (see definition for docs)
 template<typename value_type>
 KSArray<value_type> & KSArray<value_type>::operator=(const KSArray<value_type> & other) {
+
     // Self assignment
     if (this != &other) {
         // Reallocate if different sizes
@@ -184,7 +195,6 @@ KSArray<value_type> & KSArray<value_type>::operator=(const KSArray<value_type> &
             _size = other._size;
         }
 
-        // Copy data
         std::copy(other._array, other._array + other._size, _array);
     }
 
@@ -194,7 +204,7 @@ KSArray<value_type> & KSArray<value_type>::operator=(const KSArray<value_type> &
 
 // (see definition for docs)
 template<typename value_type>
-KSArray<value_type> & KSArray<value_type>::operator=(KSArray<value_type> && other) noexcept{
+KSArray<value_type> & KSArray<value_type>::operator=(KSArray<value_type> && other) noexcept {
 
     if(this != &other) {
        mswap(other);
@@ -207,6 +217,7 @@ KSArray<value_type> & KSArray<value_type>::operator=(KSArray<value_type> && othe
 // (see definition for docs)
 template<typename value_type>
 value_type& KSArray<value_type>::operator[](size_type index) {
+
     return _array[index];
 }
 
@@ -214,42 +225,52 @@ value_type& KSArray<value_type>::operator[](size_type index) {
 // (see definition for docs)
 template<typename value_type>
 const value_type& KSArray<value_type>::operator[](size_type index) const {
+
     return _array[index];
 }
 
 
 // (see definition for docs)
 template<typename value_type>
-value_type * KSArray<value_type>::begin() {return _array;}
+value_type * KSArray<value_type>::begin() {
+
+    return _array;
+}
 
 
 // (see definition for docs)
 template<typename value_type>
-const value_type * KSArray<value_type>::begin() const {return _array;}
+const value_type * KSArray<value_type>::begin() const {
+
+    return _array;
+}
 
 
 // (see definition for docs)
 template<typename value_type>
-value_type * KSArray<value_type>::end() {return _array + _size;}
+value_type * KSArray<value_type>::end() {
+
+    return _array + _size;
+}
 
 
 // (see definition for docs)
 template<typename value_type>
-const value_type * KSArray<value_type>::end() const {return _array + _size;}
+const value_type * KSArray<value_type>::end() const {
+
+    return _array + _size;
+}
 
 
 // (see definition for docs)
 template<typename value_type>
 bool operator==(const KSArray<value_type> & lhs, const KSArray<value_type> & rhs) {
-    bool areEq = true;
 
-    if (lhs.size() != rhs.size()) areEq = false;
+    auto areEq = (lhs.size() == rhs.size());
 
     for(auto i = 0; i < lhs.size(); ++i) {
-        if (lhs[i] != rhs[i]) {
-            areEq = false;
-            break;
-        }
+        if (lhs[i] != rhs[i])
+            return false;
     }
 
     return areEq;
@@ -259,6 +280,7 @@ bool operator==(const KSArray<value_type> & lhs, const KSArray<value_type> & rhs
 // (see definition for docs)
 template<typename value_type>
 bool operator!=(const KSArray<value_type> & lhs, const KSArray<value_type> & rhs) {
+
     return !(lhs == rhs);
 }
 
@@ -266,6 +288,7 @@ bool operator!=(const KSArray<value_type> & lhs, const KSArray<value_type> & rhs
 // (see definition for docs)
 template<typename value_type>
 bool operator<=(const KSArray<value_type> & lhs, const KSArray<value_type> & rhs) {
+
     return !(lhs > rhs);
 }
 
@@ -273,6 +296,7 @@ bool operator<=(const KSArray<value_type> & lhs, const KSArray<value_type> & rhs
 // (see definition for docs)
 template<typename value_type>
 bool operator>=(const KSArray<value_type> & lhs, const KSArray<value_type> & rhs) {
+
     return !(lhs < rhs);
 }
 
@@ -280,6 +304,7 @@ bool operator>=(const KSArray<value_type> & lhs, const KSArray<value_type> & rhs
 // (see definition for docs)
 template<typename value_type>
 bool operator>(const KSArray<value_type> & lhs, const KSArray<value_type> & rhs) {
+
     return !(lhs < rhs) && !(lhs == rhs);
 }
 
@@ -287,17 +312,9 @@ bool operator>(const KSArray<value_type> & lhs, const KSArray<value_type> & rhs)
 // (see definition for docs)
 template<typename value_type>
 bool operator<(const KSArray<value_type> & lhs, const KSArray<value_type> & rhs) {
-    bool isShorter;
-    std::size_t len;
 
-    if (lhs.size() < rhs.size()) {
-        isShorter = true;
-        len = lhs.size();
-    }
-    else {
-        isShorter = false;
-        len = rhs.size();
-    }
+    auto isShorter = (lhs.size() < rhs.size());
+    auto len = (isShorter) ? lhs.size() : rhs.size();
 
     for(auto i = 0; i < len; ++i) {
         if (lhs[i] > rhs[i])
