@@ -61,7 +61,7 @@ Measures of loaction and variability:
         Example:
             Weekly incomes, n=9
 
-                    Min     Q1 |        Q3
+                    Min     Q1 |        Q2
                     -----------------------
             values: 350, 410, 460, 525, 545, 720, 760, 800, 2500
                                         ------------------------
