@@ -2,16 +2,24 @@ Class:
 Name: William Horn
 Date:
 
+Ethics:
+    applied:
+        - analysis of particular moral issue.
+    theoretical:
+        - study of philosophical frameworks, figuring out how to analyze ethical situations.
+        
 Cyberthics:
     - The study of moral, legal, and social issues involving cybertechnology. 
     - Brach of applied ethics
     - Include all forms of computers.
+    Cybertechnologies:
+        - any computing or communication device. (smartphones, tables, desktops, laptops, mainframe computers)
 
     About:
         - computing machines
         - computing professionals
     
-    Phases:
+    Four Phases:
         50s-60s:
             - Huge standalone machines.
             - Feared by common person.
@@ -30,6 +38,11 @@ Cyberthics:
 
     Uniquness:
         The same issues or does cybertechnology bring new issues.
+        
+        For:
+            - stiuations that would not have been present w/o tech.
+        Against:
+            - same issue, just in a different form.
 
     Logically Malleable:
         Computers are not limited by our imaginations.
