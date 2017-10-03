@@ -8,6 +8,9 @@
 #include "da3.h"       // For Assignment 3 prototypes & templates
 #include <functional>
 using std::function;
+#include <utility>
+using std::swap;
+
 
 // (see header for docs)
 void callBetween(const function<void()> & start,
@@ -24,11 +27,24 @@ void callBetween(const function<void()> & start,
     finish();
 }
 
-// (see header for docs)
-int gcd(int a,
-        int b) {
-    if (a == 0) return b;
-    if ( a > b ) return gcd(b, a);
-    return gcd(b % a, a);
+// gcd_worker
+// pre: a > b
+// pos gcd will be returned
+int gcd_worker(int a, int b) {
+    if (a == 0)
+        return b;
+    else
+        return gcd(b % a, a);
 }
+
+
+// (see header for docs)
+int gcd(int a, int b) {
+    if ( a > b )
+        swap(a,b);
+
+    return gcd_worker(a,b);
+
+}
+
 

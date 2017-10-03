@@ -66,11 +66,11 @@ template <typename ValueType>
 ValueType lookUp(const LLNode<ValueType> * head,
                  size_t index) {
 
-    for (auto i = 0; i < index; ++i) {
-        if (head == nullptr)
-            throw std::out_of_range("out of range index given to linked list lookup");
+    size_t i = 0;
 
+    while(head != nullptr && i < index) {
         head = head->_next;
+        i++;
     }
 
     if (head == nullptr)
@@ -93,14 +93,8 @@ template <typename RAIter>
 size_t uniqueCount(RAIter first,
                    RAIter last) {
     using valueType = typename std::iterator_traits<RAIter>::value_type;
-    std::set<valueType> uniqueValues;
 
-    auto len = last - first;
-    for (auto i = 0; i < len; ++i) {
-        uniqueValues.insert(first[i]);
-    }
-
-    return uniqueValues.size();
+    return std::set<valueType>(first, last).size();
 }
 
 
