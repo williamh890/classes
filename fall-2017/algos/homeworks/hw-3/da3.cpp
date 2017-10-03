@@ -9,11 +9,10 @@
 #include <functional>
 using std::function;
 
-
+// (see header for docs)
 void callBetween(const function<void()> & start,
                  const function<void()> & middle,
-                 const function<void()> & finish)
-{
+                 const function<void()> & finish) {
     start();
     try {
         middle();
@@ -25,10 +24,9 @@ void callBetween(const function<void()> & start,
     finish();
 }
 
-
+// (see header for docs)
 int gcd(int a,
-        int b)
-{
+        int b) {
     if (a == 0) return b;
     if ( a > b ) return gcd(b, a);
     return gcd(b % a, a);

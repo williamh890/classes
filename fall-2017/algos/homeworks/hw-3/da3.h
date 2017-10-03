@@ -6,10 +6,7 @@
 // Header for Assignment 3 Functions
 
 #ifndef FILE_DA3_H_INCLUDED
-#define FILE_DA3_H_INCLUDED
-
-#include <cstddef>
-using std::size_t;
+#define FILE_DA3_H_INCLUDED #include <cstddef> using std::size_t;
 #include <functional>
 using std::function;
 #include <iterator>
@@ -64,11 +61,11 @@ struct LLNode {                                                     // *
 // Do not alter the lines above                                     // *
 // **************************************************************** // *
 
-
+// (see def'n for docs)
 template <typename ValueType>
 ValueType lookUp(const LLNode<ValueType> * head,
-                 size_t index)
-{
+                 size_t index) {
+
     for (auto i = 0; i < index; ++i) {
         if (head == nullptr)
             throw std::out_of_range("out of range index given to linked list lookup");
@@ -83,16 +80,18 @@ ValueType lookUp(const LLNode<ValueType> * head,
 }
 
 
-// Implementation in source file
+// callBetween
+// call a middle function with the garentee that finish will always run
+// pre: finish will not throw
+// post: if middle executes, finish will as well regardless if middle throws
 void callBetween(const function<void()> & start,
                  const function<void()> & middle,
                  const function<void()> & finish);
 
-
+// (see def'n for docs)
 template <typename RAIter>
 size_t uniqueCount(RAIter first,
-                   RAIter last)
-{
+                   RAIter last) {
     using valueType = typename std::iterator_traits<RAIter>::value_type;
     std::set<valueType> uniqueValues;
 
@@ -105,7 +104,10 @@ size_t uniqueCount(RAIter first,
 }
 
 
-// Implementation in source file
+// gcd
+// claculate the gcd of 2 integers
+// pre: none
+// post: the gcd will be returned
 int gcd(int a,
         int b);
 
