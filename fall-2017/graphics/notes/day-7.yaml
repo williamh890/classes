@@ -1,0 +1,161 @@
+Class: Computer Graphics 
+Name: William Horn
+Date: Sep 27, 2017
+
+WebGL Primitives:
+    Attributes:
+        - property of a vertex
+    Uniforms:
+        - property of a pimatives
+
+3D Intro:
+    Hidden Surface Removal (HSR):
+        When off:
+            - see objects in order in which they are drawn
+
+    Perspective: 
+        - Closer objects appear bigger.
+
+    Lighting:
+        - Makes things actually look 3D
+
+
+Hidden Surface Removal:
+    - what is hidden behind obj is not drawn.
+    
+    Translucency:
+        - looking -through something and seeing distorted view
+
+    Methods:
+        Geometry-based: In vertex processing
+            - front-to-back
+            - back to front
+        Pixel-based: In fragment processing
+
+        note:
+            bottle neck of the pipeline is the slowerst part in the pipe.
+
+    Geometry Based:
+        Painters Algorithms:
+            - regular
+            - reversed
+
+        Geometry Based Algos:
+            Simple Depth Sort:
+                - really just depth sort
+
+                barycenter of a triangle:
+                    - point whose point coord is the average coord of all vertices (x, y, z)
+                    - can be incorrect
+                    - intrusive, has to be built into code has to be in or befor vertex processing
+
+            Newell's Algorithm:
+                Plane of the polygon:
+                    - usually all polygons reside in a plane
+
+                x,y,z intervals:
+                    diff in min/max of all coords
+
+                6 questions (a yes quits):
+                    - are x,y,z intervals overlaping (in that order)
+                    - are all vertices of P behind the plane of polygon Q
+                    - are all vertices of Q in front of the plane of polygon P
+                    - do P and Q completely non-overlapping, if so, doesn't matter
+
+                    If all no, a split is needed in P or Q.
+
+                Note: 
+                    - camera cannot be moved without doing it all over again
+                    - extremely intrusive
+                    - this can be solved using a bsp tree
+
+
+            Binary Space Partitioning Tree (BSP Tree):
+                - Cuts space along the planes of polygons
+                - procedure does not require knowledge of the camera
+
+                - Process:
+                    - stuff on front of polygon or back of polygon
+                    - left side of tree contains stuff on front
+                    - right contains thing son back
+    Pixel Based:
+        z(or depth)-buffer:
+            - array size of framebuffer (typically as part of it), holds depth info 
+              at each pixel location (z-coord).
+
+            Procedure:
+                - Initially all pixels have infite value.
+                - Each time fragment, is pixel close than value in z buffer?
+                    - if yes store fragment
+                    - else discard the fragment
+
+            Downside: 
+                - doesn't do translucency.
+                - memory intensive.
+            Upside:
+                - generally built into graphics hardware.
+
+        Buffers:
+            - color  (4 nums for every pixel)
+            - depths (1 num for every pixel)
+
+            Note: 
+                - depth buffer needs to be checked for existence in webgl.
+
+
+            gl.clear:
+                - used to clear buffers in webgl
+                - can be sepcified what the buffer gets cleared to.
+
+            depth test:
+                choose if the fragment should be keep or discarded.
+
+                syntax:
+                    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                    gl.enable(gl.DEPTH_TEST);
+
+                    note: this enables hsr in webgl ^
+
+
+    Math:
+        - transformation are stored in 4x4 matrix
+        - apply transformation is done with matrix-vector mult
+        - compose multiple transformation using matrix-matrix multiplcation.
+
+        Matrix Multiplication Rule:
+            associative:
+                (AB)C = A(BC)
+            not communitive:
+                AB != BA, usually
+
+        Coords:
+            - x is always right, y is always up, z is towards the user.
+
+
+        Transformations:
+            rotate:
+                - gets called with a line through the origin and a specified point.
+                - for 2D that point is given as (0, 0, 1)
+
+            perspective:
+                viewing frustum:
+                    - the viewport/camera/eye that the scene is being viewed 
+                      through
+                    - looks light a chopped pyriamid pointing towards the camera.
+                    - this is called a frustum.
+
+                    - lines are drawn between object and camera
+                    - where ever this line intersects the viewport,
+                      is where the object is draw.
+
+                    - objects need to be translated into the viewing frustum
+                    - move the camera back from the scene (+z direction)
+
+                Example Call:
+                      mat4.perspective(
+                        projection matrix,
+                        y field of view angle, 
+                        viewport aspect ratio (w/h),
+                        near clipping plane,
+                        far clipping plane
+                      )

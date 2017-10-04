@@ -1,0 +1,23 @@
+Class: Computer Graphics 
+Name: William Horn
+Date: Oct 11, 2017
+
+Shaders:
+    communications with shaders:
+        - uniform and attribute have 'location'
+
+        attribute:
+            - per vertex input to application
+
+        uniform: 
+            - per-primative data
+            - sent from application to vertex/fragment shaders
+
+        varying:
+            - between vertex shader and fragment shader
+
+            Process:
+              - vertex shader sets variable
+              - fragment shader reads it
+    fog:
+        - as things get farther away, they get more grey

@@ -1,3 +1,37 @@
+Class: Data Structures and Algorithms
+Name: William Horn
+Date: Sep 27, 2017 
+
+
+Recursion vs. Iteration:
+    Function-call Overhead:
+        - function calls are not free
+    
+    Inherent Inefficiency:
+        - Many recusive algos have some inifeciencies
+
+    Memory-management:
+        - running out of memory for the call stack.
+
+
+Tail Recursion:
+    example:
+        void foo(...) {           int bar(...) { 
+            ... code here ...         ... code here ... 
+
+            foo(...)                  return bar(...) 
+        }                         }
+
+    note: 
+        - This is good because its easy to get ride of.
+
+Recusive Backtracking:
+    - searching for a solution, find dead end.
+    - solution to deadend is backtracking.
+
+    Partial Solution:
+        - a way to increamentally get to solution.
+        
 Class: Data Structures and Algorthims 
 Name: William Horn
 Date: Sep 22, 2017 
