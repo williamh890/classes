@@ -1,0 +1,39 @@
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Sep 29, 2017
+
+Algorithmic Efficiency and Sorting:
+    Efficiency:
+        - something that uses a few resources.
+
+        Resources:
+            - something that is limited. 
+            - in algos, usually this is time.
+            - can also be memory efficient
+    
+    Way to measure independent of hardware?:
+        Steps counted:
+            - basic operations
+            - the largest exponent in a formula
+
+        Input Size:
+            - how does this effect runtime?
+
+        Worst-Case Behavior:
+            - max ops for a given sized input.
+
+    Model of Computation:
+        operations:
+            - counting base c++ ops
+        basic operations: 
+            - built in type ops
+
+
+    Big-O Notation:
+        - Algorithm A is order f(n) [written O(f(n))]
+
+        - A performs no more than k*f(n) basic ops n >= n0.
+        this ignores small sized sets.
+
+        - analyzig worst case.
+        - also can analyze avg cases.
