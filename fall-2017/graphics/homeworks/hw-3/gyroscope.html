@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<!--
+  manipulate2.html
+  Glenn G. Chappell
+  2 Oct 2017
+
+  For CS 381 Fall 2017
+  3-D Object Manipulation Done Right
+
+  Requires gl-matrix-min.js, quoll.js
+-->
+
+<!-- ************************************************************** -->
+<!-- * Core HTML                                                  * -->
+<!-- ************************************************************** -->
+
+<head>
+<meta charset="utf-8">
+<title>Gyroscope</title>
+
+</head>
+<body onload="appMain('can1')">
+<canvas id="can1" width="500" height="500"
+    style="border: 1px gray solid"</canvas>
+<script type="text/javascript" src="gl-matrix-min.js"></script>
+<script type="text/javascript" src="quoll.js"></script>
+
+<!-- ************************************************************** -->
+<!-- * GLSL Shaders                                               * -->
+<!-- ************************************************************** -->
+
+<script id="vshader1" type="x-shader/x-vertex">
+// Vertex Shader #1
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+attribute vec4 vertex_attr;
+attribute vec4 color_attr;
+
+varying vec4 paintcolor_var;
+
+void main() {
+    // Compute projected vertex position
+    gl_Position = projectionMatrix * modelViewMatrix * vertex_attr;
+
+    // Send paint color to fragment shader
+    paintcolor_var = color_attr;
+}
+</script>
+<script id="fshader1" type="x-shader/x-fragment">
+// Fragment Shader #1
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+varying vec4 paintcolor_var;
+
+void main() {
+    // Final color is paint color
+    gl_FragColor = paintcolor_var;
+}
+</script>
+
+<!-- END GLSL Shaders -->
+
+<!-- ************************************************************** -->
+<!-- * JavaScript Application                                     * -->
+<!-- ************************************************************** -->
+
+<script type="text/javascript">
+// Global variables
+
+// WebGL General
+var gl;                 // WebGL rendering context
+
+// Shaders
+var shaderprog1;        // Shader program object
+
+// Object
+var anglestep = Math.PI/180. * 5.;
+                        // Amount to change angles on keypress (rad)
+var rotationmatrix;     // Rotations of our object
+
+
+function appMain(canvasid) {
+    // Initialize quoll.js & WebGL
+    gl = quollInit(canvasid);
+    if (!gl) return;  // Could not intialize; exit
+
+    // Shaders
+    shaderprog1 = makeProgramObjectFromIds(gl, 'vshader1', 'fshader1');
+
+    // Register callbacks with quoll.js
+    registerDisplay(myDisplay);
+    registerReshape(myReshape);
+
+    // Set up other event handlers
+    document.addEventListener('keypress', myKeyboard, false);
+
+    rotationmatrix = mat4.create();
+
+    // GL States
+    gl.enable(gl.DEPTH_TEST);
+}
+
+
+function drawGyro() {
+  let rad = 1;
+  let height = 3.;
+
+  // Cap
+  pushMvMatrix(gl);
+    mat4.rotate(gl.mvMatrix, gl.mvMatrix, tau()/ 4., [1., 0., 0.]);
+    drawCircle(rad, 30);
+
+    
+  // Outside of cylinder
+  drawRing(rad, height);
+
+  pushMvMatrix(gl);
+    mat4.translate(gl.mvMatrix, gl.mvMatrix, [0., -height, 0.]);
+    drawCircle(rad, 30);
+  popMvMatrix(gl);
+  
+  popMvMatrix(gl);
+}
+
+
+function tau() {
+  return Math.PI * 2
+}
+
+
+function white() {
+  primColor(gl, 255.,255.,255.);
+}
+
+
+function black() { 
+  primColor(gl, 0., 0., 0.,);
+}
+
+function vertexCircle(rad, vertices) {
+  let color = true;
+  for (let a = 0; a < tau(); a += tau()/vertices) {
+    (color) ? white() : black();
+    color = !color;
+    
+    primVertex(gl, rad * Math.cos(a), rad * Math.sin(a), 0.);
+  } 
+}
+
+function drawCircle(rad, numVertices) {
+  let vertices = (typeof numVertices === 'undefined') ? 10. : numVertices;
+
+  primBegin(gl, gl.TRIANGLE_FAN);
+    vertexCircle(rad,vertices); 
+  primEnd(gl);
+}
+
+function drawRing(rad, height, numVertices) {
+  let vertices = (typeof numVertices === 'undefined') ? 10. : numVertices;
+
+  primBegin(gl, gl.TRIANGLE_STRIP);
+    vertexCircle(rad, vertices); 
+
+    pushMvMatrix(gl);
+      mat4.translate(gl.mvMatrix, gl.mvMatrix, [0., -height, 0.])    
+      vertexCircle(rad, vertices);
+    popMvMatrix(gl);
+
+  primEnd(gl);
+}
+
+function myDisplay() {
+    gl.useProgram(shaderprog1);
+
+    gl.clearColor(0.9, 0.9, 0.9, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    // Camera transformation
+    mat4.identity(gl.mvMatrix);
+    mat4.translate(gl.mvMatrix, gl.mvMatrix,
+        [0., -1., -4.]);
+    mat4.rotate(gl.mvMatrix, gl.mvMatrix, tau() / 16., [1., 0., 0.]);
+
+    // Place and draw object
+    mat4.translate(gl.mvMatrix, gl.mvMatrix,
+        [0., 0., 0.]);
+    mat4.multiply(gl.mvMatrix, gl.mvMatrix,
+        rotationmatrix);
+    var objscale = 1.;
+    mat4.scale(gl.mvMatrix, gl.mvMatrix,
+        [objscale, objscale, objscale]);
+
+    drawGyro();
+
+    gl.flush();
+}
+
+
+function myReshape(w, h) {
+    // Set up viewport
+    gl.viewport(0, 0, w, h);
+
+    // Set up projection
+    mat4.perspective(gl.pMatrix,
+                     Math.PI/180. * 60.,  // y field-of-view angle
+                     w/h,                 // Viewport aspect ratio
+                     0.1, 20.);           // Near & far distances
+}
+
+
+function myKeyboard(evt) {
+
+}
+</script>
+</body>
+</html>
+
