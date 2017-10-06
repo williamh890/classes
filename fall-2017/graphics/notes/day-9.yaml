@@ -1,0 +1,12 @@
+Class: Computer Graphics 
+Name: William Horn
+Date: Oct 04, 2017
+
+Coordinates:
+    camera -> world -> object
+
+    model transformation:
+        world -> object
+
+    view transformation:
+        camera -> world

@@ -1,0 +1,49 @@
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Oct 04, 2017
+
+Big O Notation:
+    constant: O(1)
+    logarithmic: log(n)
+
+    linear: O(n)
+    quadratic: O(n^2)
+    log-linear: O(nlog(n))
+
+        * HUGE TIME GAP HERE *
+
+    exponential: O(2^n)
+
+Assignment 4:
+    - write recursive backtracking algo
+    - look at slides for assignment 4 solution.
+
+Sorting:
+    Bubble:
+        - trash in every way.
+
+    Insertion:    
+        | sorted data | unsorted |
+                      ^
+                    item i
+
+        - move items from the unsorted section to the sorted section in the correct place 
+
+        Required Operations:
+            - find, remove, insert
+
+        note: 
+            - if looking at 2 functions, pick the one with the 
+              bigger big O value
+
+        Implementation:
+            Q1: what does i go befor?
+            Q2: put it there.
+        
+        Use cases:
+            - not suited for general use
+            - linear time for nearly sorted data
+            - fast for small lists
+
+            - optimized algos switch to insertion sort for small lists,
+              or when the list is nearly sorted.
