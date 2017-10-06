@@ -20,7 +20,7 @@
 <title>Gyroscope</title>
 
 </head>
-<body onload="appMain('can1')">
+<body onload="canvas_main('can1')">
 <canvas id="can1" width="500" height="500"
     style="border: 1px gray solid"</canvas>
 <script type="text/javascript" src="gl-matrix-min.js"></script>
@@ -71,6 +71,98 @@ void main() {
 <!-- ************************************************************** -->
 
 <script type="text/javascript">
+
+// Cylindar class definition
+class Cylinder {
+  constructor(height, radius, num_vertices) {
+    this.num_vertices = num_vertices || 30;
+    this.height = height;
+    this.radius = radius;
+  }
+
+  show() {
+    pushMvMatrix(gl);
+      // Cap
+      this.__drawCircle();
+
+      // Outside of cylinder
+      this.__drawRing();
+
+      // Base
+      mat4.translate(gl.mvMatrix, gl.mvMatrix, [0.,0.,this.height]);
+
+      this.__drawCircle();
+    popMvMatrix(gl);
+  }
+
+  __drawCircle() {
+    let color = true;
+
+    primBegin(gl, gl.TRIANGLE_FAN);
+      for (let a = 0; a < tau(); a += this.__get_step()) {
+        (color) ? white() : black();
+        color = !color;
+
+        let x = this.radius * Math.cos(a);
+        let y = this.radius * Math.sin(a);
+        let z = 0;
+
+        primVertex(gl, x, y, z);
+      }
+    primEnd(gl);
+  }
+
+  __drawRing() {
+    primBegin(gl, gl.TRIANGLE_STRIP);
+      let color = true;
+
+      for (let a = 0; a < tau(); a+= this.__get_step()) {
+        (color) ? white() : black();
+        color = !color;
+
+        let x = this.radius * Math.cos(a);
+        let y = this.radius * Math.sin(a);
+
+        primVertex(gl, x, y, 0.);
+        primVertex(gl, x, y, this.height)
+      }
+    primEnd(gl);
+  }
+
+__get_step() {
+    return tau() / this.num_vertices;
+  }
+}
+
+// Gyroscope class definition
+class Gyroscope {
+  constructor(spindal_height, spindal_radius,
+              gyro_width, gyro_radius) {
+
+    this.spindal = new Cylinder(spindal_height, spindal_radius);
+    this.gyro = new Cylinder(gyro_width, gyro_radius);
+
+    this.rotation_angle = 0.;
+    this.angular_vel = tau() / 360 * 80.;
+  }
+
+  show() {
+    pushMvMatrix(gl);
+    this.spindal.show();
+    mat4.rotate(gl.mvMatrix, gl.mvMatrix, this.rotation_angle, [0., 0., 1.]);
+    
+    let spindal_z = (this.spindal.height / 2.) - this.gyro.height;
+    mat4.translate(gl.mvMatrix, gl.mvMatrix, [0., 0, spindal_z])
+
+    this.gyro.show();
+    popMvMatrix(gl);
+  }
+
+  update() {
+    this.rotation_angle += this.angular_vel * getElapsedTime(0.1);
+    postRedisplay();
+  }
+}
 // Global variables
 
 // WebGL General
@@ -80,12 +172,10 @@ var gl;                 // WebGL rendering context
 var shaderprog1;        // Shader program object
 
 // Object
-var anglestep = Math.PI/180. * 5.;
-                        // Amount to change angles on keypress (rad)
-var rotationmatrix;     // Rotations of our object
+let gyroscope;
 
 
-function appMain(canvasid) {
+function canvas_main(canvasid) {
     // Initialize quoll.js & WebGL
     gl = quollInit(canvasid);
     if (!gl) return;  // Could not intialize; exit
@@ -94,115 +184,58 @@ function appMain(canvasid) {
     shaderprog1 = makeProgramObjectFromIds(gl, 'vshader1', 'fshader1');
 
     // Register callbacks with quoll.js
-    registerDisplay(myDisplay);
-    registerReshape(myReshape);
+    registerDisplay(display);
+    registerReshape(reshape);
+    registerIdle(update);
+    canvasFullWindow(true);
 
     // Set up other event handlers
     document.addEventListener('keypress', myKeyboard, false);
 
-    rotationmatrix = mat4.create();
+    let spindal_height = 1.5;
+    let spindal_radius = 0.07;
 
+    let gyro_radius = 1.;
+    let gyro_width = 0.05;
+
+    gyroscope = new Gyroscope(spindal_height, spindal_radius,
+                              gyro_width, gyro_radius);
     // GL States
     gl.enable(gl.DEPTH_TEST);
 }
 
 
-function drawGyro() {
-  let rad = 1;
-  let height = 3.;
-
-  // Cap
-  pushMvMatrix(gl);
-    mat4.rotate(gl.mvMatrix, gl.mvMatrix, tau()/ 4., [1., 0., 0.]);
-    drawCircle(rad, 30);
-
-    
-  // Outside of cylinder
-  drawRing(rad, height);
-
-  pushMvMatrix(gl);
-    mat4.translate(gl.mvMatrix, gl.mvMatrix, [0., -height, 0.]);
-    drawCircle(rad, 30);
-  popMvMatrix(gl);
-  
-  popMvMatrix(gl);
+function update() {
+  gyroscope.update();
 }
 
 
-function tau() {
-  return Math.PI * 2
-}
-
-
-function white() {
-  primColor(gl, 255.,255.,255.);
-}
-
-
-function black() { 
-  primColor(gl, 0., 0., 0.,);
-}
-
-function vertexCircle(rad, vertices) {
-  let color = true;
-  for (let a = 0; a < tau(); a += tau()/vertices) {
-    (color) ? white() : black();
-    color = !color;
-    
-    primVertex(gl, rad * Math.cos(a), rad * Math.sin(a), 0.);
-  } 
-}
-
-function drawCircle(rad, numVertices) {
-  let vertices = (typeof numVertices === 'undefined') ? 10. : numVertices;
-
-  primBegin(gl, gl.TRIANGLE_FAN);
-    vertexCircle(rad,vertices); 
-  primEnd(gl);
-}
-
-function drawRing(rad, height, numVertices) {
-  let vertices = (typeof numVertices === 'undefined') ? 10. : numVertices;
-
-  primBegin(gl, gl.TRIANGLE_STRIP);
-    vertexCircle(rad, vertices); 
-
-    pushMvMatrix(gl);
-      mat4.translate(gl.mvMatrix, gl.mvMatrix, [0., -height, 0.])    
-      vertexCircle(rad, vertices);
-    popMvMatrix(gl);
-
-  primEnd(gl);
-}
-
-function myDisplay() {
+function display() {
     gl.useProgram(shaderprog1);
 
-    gl.clearColor(0.9, 0.9, 0.9, 1.0);
+    gl.clearColor(0.7, 0.7, 0.7, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     // Camera transformation
     mat4.identity(gl.mvMatrix);
     mat4.translate(gl.mvMatrix, gl.mvMatrix,
-        [0., -1., -4.]);
-    mat4.rotate(gl.mvMatrix, gl.mvMatrix, tau() / 16., [1., 0., 0.]);
+        [0., 0., -4.]);
+    mat4.rotate(gl.mvMatrix, gl.mvMatrix, tau() / 20., [1., 0., 0.]);
 
     // Place and draw object
     mat4.translate(gl.mvMatrix, gl.mvMatrix,
-        [0., 0., 0.]);
-    mat4.multiply(gl.mvMatrix, gl.mvMatrix,
-        rotationmatrix);
+        [0., 1., 0.]);
     var objscale = 1.;
     mat4.scale(gl.mvMatrix, gl.mvMatrix,
         [objscale, objscale, objscale]);
+    mat4.rotate(gl.mvMatrix, gl.mvMatrix, tau()/ 4., [1., 0., 0.]);
 
-    drawGyro();
-
+    gyroscope.show()
     gl.flush();
 }
 
 
-function myReshape(w, h) {
+function reshape(w, h) {
     // Set up viewport
     gl.viewport(0, 0, w, h);
 
@@ -217,7 +250,24 @@ function myReshape(w, h) {
 function myKeyboard(evt) {
 
 }
+
+
+// ******************* Simple helper functions ******************
+function tau() {
+  return Math.PI * 2
+}
+
+
+function white() {
+  primColor(gl, 255.,255.,255.);
+}
+
+
+function black() {
+  primColor(gl, 0., 0., 0.,);
+}
+
+
 </script>
 </body>
 </html>
-
