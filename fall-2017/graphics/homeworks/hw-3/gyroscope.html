@@ -72,7 +72,9 @@ void main() {
 
 <script type="text/javascript">
 
-// Cylindar class definition
+// ******************* OBJECT DEFINITIONS **********************
+
+// Cylinder class definition
 class Cylinder {
   constructor(height, radius, num_vertices) {
     this.num_vertices = num_vertices || 30;
@@ -143,14 +145,25 @@ class Gyroscope {
     this.gyro = new Cylinder(gyro_width, gyro_radius);
 
     this.rotation_angle = 0.;
-    this.angular_vel = tau() / 360 * 80.;
+    this.angular_vel = 0.;
+
+    this.min_vel = 0.001;
   }
 
   show() {
+    // Place and draw object
+    mat4.translate(gl.mvMatrix, gl.mvMatrix,
+        [0., 1., 0.]);
+    var objscale = 1.;
+    mat4.scale(gl.mvMatrix, gl.mvMatrix,
+        [objscale, objscale, objscale]);
+    mat4.rotate(gl.mvMatrix, gl.mvMatrix, tau()/ 4., [1., 0., 0.]);
+
+    // Update gyro parts
     pushMvMatrix(gl);
     this.spindal.show();
     mat4.rotate(gl.mvMatrix, gl.mvMatrix, this.rotation_angle, [0., 0., 1.]);
-    
+
     let spindal_z = (this.spindal.height / 2.) - this.gyro.height;
     mat4.translate(gl.mvMatrix, gl.mvMatrix, [0., 0, spindal_z])
 
@@ -159,11 +172,47 @@ class Gyroscope {
   }
 
   update() {
-    this.rotation_angle += this.angular_vel * getElapsedTime(0.1);
+    this.rotation_angle -= 4 * this.angular_vel * getElapsedTime(0.1);
     postRedisplay();
   }
+
+  set_angular_vel(new_vel) {
+    if (new_vel < this.min_vel && new_vel > -this.min_vel)
+      new_vel = 0;
+
+    this.angular_vel = new_vel;
+  }
 }
-// Global variables
+
+
+class Mouse {
+  constructor(x, y) {
+    this.pos = vec2.fromValues(x, y);
+    this.vel = vec2.fromValues(0, 0);
+    this.isClicked = false;
+  }
+
+  update(newPos) {
+    // Save old position
+    let oldPos = vec2.clone(this.pos);
+
+    // Calculate the distance the mouse move
+    let dist = vec2.create();
+    vec2.sub(dist, newPos, oldPos);
+
+    vec2.scale(this.vel, dist, getElapsedTime(0.1));
+
+    // Set position to new position
+    vec2.copy(this.pos, newPos);
+  }
+
+  set_button(state) {
+    this.isClicked = state;
+  }
+}
+
+
+// ******************** GLOBAL VARIABLES *****************
 
 // WebGL General
 var gl;                 // WebGL rendering context
@@ -171,8 +220,9 @@ var gl;                 // WebGL rendering context
 // Shaders
 var shaderprog1;        // Shader program object
 
-// Object
+// Objects
 let gyroscope;
+let mouse;
 
 
 function canvas_main(canvasid) {
@@ -190,7 +240,9 @@ function canvas_main(canvasid) {
     canvasFullWindow(true);
 
     // Set up other event handlers
-    document.addEventListener('keypress', myKeyboard, false);
+    document.addEventListener('mousedown', grab_gyroscope, false);
+    document.addEventListener('mouseup', release_gyroscope, false);
+    document.addEventListener('mousemove', update_mouse_velocity, false);
 
     let spindal_height = 1.5;
     let spindal_radius = 0.07;
@@ -200,13 +252,27 @@ function canvas_main(canvasid) {
 
     gyroscope = new Gyroscope(spindal_height, spindal_radius,
                               gyro_width, gyro_radius);
+    mouse = new Mouse(0,0);
     // GL States
     gl.enable(gl.DEPTH_TEST);
 }
 
 
 function update() {
-  gyroscope.update();
+  if (mouse.isClicked) {
+    gyroscope.set_angular_vel(mouse.vel[0]);
+  }
+
+    gyroscope.update();
+}
+
+
+function camera_transformation() {
+    // Camera transformation
+    mat4.identity(gl.mvMatrix);
+    mat4.translate(gl.mvMatrix, gl.mvMatrix,
+        [0., 0., -4.]);
+    mat4.rotate(gl.mvMatrix, gl.mvMatrix, tau() / 20., [1., 0., 0.]);
 }
 
 
@@ -216,19 +282,7 @@ function display() {
     gl.clearColor(0.7, 0.7, 0.7, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    // Camera transformation
-    mat4.identity(gl.mvMatrix);
-    mat4.translate(gl.mvMatrix, gl.mvMatrix,
-        [0., 0., -4.]);
-    mat4.rotate(gl.mvMatrix, gl.mvMatrix, tau() / 20., [1., 0., 0.]);
-
-    // Place and draw object
-    mat4.translate(gl.mvMatrix, gl.mvMatrix,
-        [0., 1., 0.]);
-    var objscale = 1.;
-    mat4.scale(gl.mvMatrix, gl.mvMatrix,
-        [objscale, objscale, objscale]);
-    mat4.rotate(gl.mvMatrix, gl.mvMatrix, tau()/ 4., [1., 0., 0.]);
+    camera_transformation();
 
     gyroscope.show()
     gl.flush();
@@ -246,13 +300,26 @@ function reshape(w, h) {
                      0.1, 20.);           // Near & far distances
 }
 
-
-function myKeyboard(evt) {
-
+// ******************* EVENT HANDLERS *********************
+function grab_gyroscope(evt) {
+  update_mouse_velocity(evt);
+  mouse.set_button(true);
 }
 
+function release_gyroscope(evt) {
+  update_mouse_velocity(evt);
+  mouse.set_button(false);
+}
 
-// ******************* Simple helper functions ******************
+function update_mouse_velocity(evt) {
+  if (mouse.isClicked) {
+    let newPos = vec2.fromValues(evt.pageX, evt.pageY);
+
+    mouse.update(newPos);
+  }
+}
+
+// ******************* SIMPLE HELPER FUNCTIONS ******************
 function tau() {
   return Math.PI * 2
 }
