@@ -1,5 +1,5 @@
-// da3.h  INCOMPLETE
-// Glenn G. Chappell
+// da3.h
+// William Horn
 // 24 Sep 2017
 //
 // For CS 311 Fall 2017
@@ -7,11 +7,14 @@
 
 #ifndef FILE_DA3_H_INCLUDED
 #define FILE_DA3_H_INCLUDED
-
 #include <cstddef>
 using std::size_t;
 #include <functional>
 using std::function;
+#include <iterator>
+#include <set>
+
+
 // **************************************************************** // *
 // Begin DO-NOT-CHANGE section                                      // *
 // Do not alter the lines below                                     // *
@@ -60,25 +63,29 @@ struct LLNode {                                                     // *
 // Do not alter the lines above                                     // *
 // **************************************************************** // *
 
-
 // (see def'n for docs)
 template <typename ValueType>
 ValueType lookUp(const LLNode<ValueType> * head,
-                 size_t index)
-{
-    return ValueType();  // Dummy return, so that it compiles
-                         // Elminate this return statement!
-    // TODO: Write this!!!
+                 size_t index) {
+
+    size_t i = 0;
+
+    while(head != nullptr && i < index) {
+        head = head->_next;
+        i++;
+    }
+
+    if (head == nullptr)
+        throw std::out_of_range("out of range index given to linked list lookup");
+
+    return head->_data;
 }
 
 
 // callBetween
-// the function in the middle will only be called if start
-// succeeds, and even if middle throws, finish will be called.
-// pre:
-//  finish must not throw
-// post:
-//  finish will always be called if start suceeds.
+// call a middle function with the garentee that finish will always run
+// pre: finish will not throw
+// post: if middle executes, finish will as well regardless if middle throws
 void callBetween(const function<void()> & start,
                  const function<void()> & middle,
                  const function<void()> & finish);
@@ -87,18 +94,17 @@ void callBetween(const function<void()> & start,
 // (see def'n for docs)
 template <typename RAIter>
 size_t uniqueCount(RAIter first,
-                   RAIter last)
-{
-    return size_t(42);  // Dummy return, so that it compiles
-                        // Elminate this return statement!
-    // TODO: Write this!!!
+                   RAIter last) {
+    using valueType = typename std::iterator_traits<RAIter>::value_type;
+
+    return std::set<valueType>(first, last).size();
 }
 
 
 // gcd
-// compute the gcd of 2 integers
-// Pre: None
-// Post: An integer will be returned.
+// claculate the gcd of 2 integers
+// pre: none
+// post: the gcd will be returned
 int gcd(int a,
         int b);
 

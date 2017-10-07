@@ -32,3 +32,31 @@ Recusive Backtracking:
     Partial Solution:
         - a way to increamentally get to solution.
         
+Class: Data Structures and Algorthims 
+Name: William Horn
+Date: Sep 22, 2017 
+
+Binary Search:
+    - Used to find key in a sorted list.
+
+    Key: something to lookup a peice of data.
+    Sorted: in some sepcified order.
+
+    Procedure:
+        - pick middle item (the pivot)
+        - cmp pair with pivot.
+        - use this to search top or bottom half
+        - recurse
+
+    Recusive Questions:
+        Smaller Problem: Top or bottom half
+        Problem Size Reduction: Half
+        Will Base Case Always Reached: Yes
+
+    Parameters:
+        - iterators to front and back
+        - key to search for
+        - return a flag if the key was found or not
+
+Sequenctial Search:
+    - Search list from beginning to end check every value.

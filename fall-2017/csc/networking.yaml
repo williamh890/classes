@@ -1,0 +1,103 @@
+Class: Cyber Security Club 
+Name: William Horn
+Date: Sep 30, 2017
+
+Networking:
+    Layers:
+        - 7 layers total
+        - 1,4 are really what we care about.
+
+    Layer 4 (trasport):
+        TCP (Transmission Control Protocol):
+            - Trustworthy service to get data.
+
+            
+        UDP: Data is not sure to arive. 
+        ICMP: basically ping...
+            - useful to check connection
+            - ping 8.8.8.8 (google server)
+
+    Layer 3 (networking):
+        lo: loopback
+            - used to send yourself packets
+        IP Address:
+            - internet protocol address
+
+        Netmask/Subnet Mask:
+            - closesly related to IP address
+            - used to determine valid ip's for 
+              network.
+            - can be done w/ binary math or tools. 
+            - used to break big netorks up into smaller 
+              networks.
+
+        CIDR Prefix:
+            - 2 digit number used to represent subnet mask
+            - subnet mask determines number of hosts.
+
+        NAT (Network Address Translation):
+            - makes IPV4 usable.
+            - used to translate private to public ips.
+
+            Public IP:
+                - IP that everyone outside network sees.
+                  shared by all systems no the network.
+                - unique on the internet. 
+            Private IP:
+                - Used to identify system on network. Only makes
+                  sense inside the network.
+                - no unique on internet.
+
+        Reserved Addresses:
+            - reseved for use within internal networks. 
+            - VLSM is a thing. 
+
+        Network Classes:
+            - A, B, and C
+
+    Layer 2 (Data Link):
+        MAC Address:
+            - unique id for network interface card (NIC)
+
+        ARP Table:
+            - Maps ip to mac address.
+
+    Layer 1 (Physical Layer):
+        - wires (or radios) that connect your device to the network.
+        - Hubs a thing.
+
+    Solarius:
+        - oracals operating system.
+
+    Networking Commands:
+        ping:
+            - sends packet and waits for reply.
+            - usful for checking for connectivity.
+        ifconfig:
+            show interfaces on machine.
+            - conrtol interfaces
+            - <interface> up or down will do this.
+            - '-a' shows all 
+
+        netcat (nc):
+            - make connections to arbitrary servers on arbitrary ports.
+            - can be used to check filewalls.
+            - nc <url> port
+
+        nslookup:
+            dnslookup <url>
+        
+        netstat:
+            shows active connections on computer.
+            flags: tulpan
+                example: netstat -tulpan
+
+        mtr:
+            - ping and traceroute combined.
+        nmap:
+            - port scanner
+            - could be view as an offensive act
+
+            Exapmle:
+              nmap -sV ww.cs.uaf.edu -p 80
+

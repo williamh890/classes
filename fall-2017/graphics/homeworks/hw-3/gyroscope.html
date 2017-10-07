@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<!--
+  manipulate2.html
+  Glenn G. Chappell
+  2 Oct 2017
+
+  For CS 381 Fall 2017
+  3-D Object Manipulation Done Right
+
+  Requires gl-matrix-min.js, quoll.js
+-->
+
+<!-- ************************************************************** -->
+<!-- * Core HTML                                                  * -->
+<!-- ************************************************************** -->
+
+<head>
+<meta charset="utf-8">
+<title>Gyroscope</title>
+
+</head>
+<body onload="canvas_main('can1')">
+<canvas id="can1" width="500" height="500"
+    style="border: 1px gray solid"</canvas>
+<script type="text/javascript" src="gl-matrix-min.js"></script>
+<script type="text/javascript" src="quoll.js"></script>
+
+<!-- ************************************************************** -->
+<!-- * GLSL Shaders                                               * -->
+<!-- ************************************************************** -->
+
+<script id="vshader1" type="x-shader/x-vertex">
+// Vertex Shader #1
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+attribute vec4 vertex_attr;
+attribute vec4 color_attr;
+
+varying vec4 paintcolor_var;
+
+void main() {
+    // Compute projected vertex position
+    gl_Position = projectionMatrix * modelViewMatrix * vertex_attr;
+
+    // Send paint color to fragment shader
+    paintcolor_var = color_attr;
+}
+</script>
+<script id="fshader1" type="x-shader/x-fragment">
+// Fragment Shader #1
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+varying vec4 paintcolor_var;
+
+void main() {
+    // Final color is paint color
+    gl_FragColor = paintcolor_var;
+}
+</script>
+
+<!-- END GLSL Shaders -->
+
+<!-- ************************************************************** -->
+<!-- * JavaScript Application                                     * -->
+<!-- ************************************************************** -->
+
+<script type="text/javascript">
+
+// ******************* OBJECT DEFINITIONS **********************
+
+// Cylinder class definition
+class Cylinder {
+  constructor(height, radius, num_vertices) {
+    this.num_vertices = num_vertices || 30;
+    this.height = height;
+    this.radius = radius;
+  }
+
+  show() {
+    pushMvMatrix(gl);
+      // Cap
+      this.__drawCircle();
+
+      // Outside of cylinder
+      this.__drawRing();
+
+      // Base
+      mat4.translate(gl.mvMatrix, gl.mvMatrix, [0.,0.,this.height]);
+
+      this.__drawCircle();
+    popMvMatrix(gl);
+  }
+
+  __drawCircle() {
+    let color = true;
+
+    primBegin(gl, gl.TRIANGLE_FAN);
+      for (let a = 0; a < tau(); a += this.__get_step()) {
+        (color) ? white() : black();
+        color = !color;
+
+        let x = this.radius * Math.cos(a);
+        let y = this.radius * Math.sin(a);
+        let z = 0;
+
+        primVertex(gl, x, y, z);
+      }
+    primEnd(gl);
+  }
+
+  __drawRing() {
+    primBegin(gl, gl.TRIANGLE_STRIP);
+      let color = true;
+
+      for (let a = 0; a < tau(); a+= this.__get_step()) {
+        (color) ? white() : black();
+        color = !color;
+
+        let x = this.radius * Math.cos(a);
+        let y = this.radius * Math.sin(a);
+
+        primVertex(gl, x, y, 0.);
+        primVertex(gl, x, y, this.height)
+      }
+    primEnd(gl);
+  }
+
+__get_step() {
+    return tau() / this.num_vertices;
+  }
+}
+
+// Gyroscope class definition
+class Gyroscope {
+  constructor(spindal_height, spindal_radius,
+              gyro_width, gyro_radius) {
+
+    this.spindal = new Cylinder(spindal_height, spindal_radius);
+    this.gyro = new Cylinder(gyro_width, gyro_radius);
+
+    this.rotation_angle = 0.;
+    this.angular_vel = 0.;
+
+    this.min_vel = 0.001;
+  }
+
+  show() {
+    // Place and draw object
+    mat4.translate(gl.mvMatrix, gl.mvMatrix,
+        [0., 1., 0.]);
+    var objscale = 1.;
+    mat4.scale(gl.mvMatrix, gl.mvMatrix,
+        [objscale, objscale, objscale]);
+    mat4.rotate(gl.mvMatrix, gl.mvMatrix, tau()/ 4., [1., 0., 0.]);
+
+    // Update gyro parts
+    pushMvMatrix(gl);
+    this.spindal.show();
+    mat4.rotate(gl.mvMatrix, gl.mvMatrix, this.rotation_angle, [0., 0., 1.]);
+
+    let spindal_z = (this.spindal.height / 2.) - this.gyro.height;
+    mat4.translate(gl.mvMatrix, gl.mvMatrix, [0., 0, spindal_z])
+
+    this.gyro.show();
+    popMvMatrix(gl);
+  }
+
+  update() {
+    this.rotation_angle -= 4 * this.angular_vel * getElapsedTime(0.1);
+    postRedisplay();
+  }
+
+  set_angular_vel(new_vel) {
+    if (new_vel < this.min_vel && new_vel > -this.min_vel)
+      new_vel = 0;
+
+    this.angular_vel = new_vel;
+  }
+}
+
+
+class Mouse {
+  constructor(x, y) {
+    this.pos = vec2.fromValues(x, y);
+    this.vel = vec2.fromValues(0, 0);
+    this.isClicked = false;
+  }
+
+  update(newPos) {
+    // Save old position
+    let oldPos = vec2.clone(this.pos);
+
+    // Calculate the distance the mouse move
+    let dist = vec2.create();
+    vec2.sub(dist, newPos, oldPos);
+
+    vec2.scale(this.vel, dist, getElapsedTime(0.1));
+
+    // Set position to new position
+    vec2.copy(this.pos, newPos);
+  }
+
+  set_button(state) {
+    this.isClicked = state;
+  }
+}
+
+
+// ******************** GLOBAL VARIABLES *****************
+
+// WebGL General
+var gl;                 // WebGL rendering context
+
+// Shaders
+var shaderprog1;        // Shader program object
+
+// Objects
+let gyroscope;
+let mouse;
+
+
+function canvas_main(canvasid) {
+    // Initialize quoll.js & WebGL
+    gl = quollInit(canvasid);
+    if (!gl) return;  // Could not intialize; exit
+
+    // Shaders
+    shaderprog1 = makeProgramObjectFromIds(gl, 'vshader1', 'fshader1');
+
+    // Register callbacks with quoll.js
+    registerDisplay(display);
+    registerReshape(reshape);
+    registerIdle(update);
+    canvasFullWindow(true);
+
+    // Set up other event handlers
+    document.addEventListener('mousedown', grab_gyroscope, false);
+    document.addEventListener('mouseup', release_gyroscope, false);
+    document.addEventListener('mousemove', update_mouse_velocity, false);
+
+    let spindal_height = 1.5;
+    let spindal_radius = 0.07;
+
+    let gyro_radius = 1.;
+    let gyro_width = 0.05;
+
+    gyroscope = new Gyroscope(spindal_height, spindal_radius,
+                              gyro_width, gyro_radius);
+    mouse = new Mouse(0,0);
+    // GL States
+    gl.enable(gl.DEPTH_TEST);
+}
+
+
+function update() {
+  if (mouse.isClicked) {
+    gyroscope.set_angular_vel(mouse.vel[0]);
+  }
+
+    gyroscope.update();
+}
+
+
+function camera_transformation() {
+    // Camera transformation
+    mat4.identity(gl.mvMatrix);
+    mat4.translate(gl.mvMatrix, gl.mvMatrix,
+        [0., 0., -4.]);
+    mat4.rotate(gl.mvMatrix, gl.mvMatrix, tau() / 20., [1., 0., 0.]);
+}
+
+
+function display() {
+    gl.useProgram(shaderprog1);
+
+    gl.clearColor(0.7, 0.7, 0.7, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    camera_transformation();
+
+    gyroscope.show()
+    gl.flush();
+}
+
+
+function reshape(w, h) {
+    // Set up viewport
+    gl.viewport(0, 0, w, h);
+
+    // Set up projection
+    mat4.perspective(gl.pMatrix,
+                     Math.PI/180. * 60.,  // y field-of-view angle
+                     w/h,                 // Viewport aspect ratio
+                     0.1, 20.);           // Near & far distances
+}
+
+// ******************* EVENT HANDLERS *********************
+function grab_gyroscope(evt) {
+  update_mouse_velocity(evt);
+  mouse.set_button(true);
+}
+
+function release_gyroscope(evt) {
+  update_mouse_velocity(evt);
+  mouse.set_button(false);
+}
+
+function update_mouse_velocity(evt) {
+  if (mouse.isClicked) {
+    let newPos = vec2.fromValues(evt.pageX, evt.pageY);
+
+    mouse.update(newPos);
+  }
+}
+
+// ******************* SIMPLE HELPER FUNCTIONS ******************
+function tau() {
+  return Math.PI * 2
+}
+
+
+function white() {
+  primColor(gl, 255.,255.,255.);
+}
+
+
+function black() {
+  primColor(gl, 0., 0., 0.,);
+}
+
+
+</script>
+</body>
+</html>
