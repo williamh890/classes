@@ -17,4 +17,4 @@ $(NAME).o: $(NAME).cpp $(NAME).h
 	$(CMP) -o $(NAME).o -c $(NAME).cpp
 
 clean:
-	rm $(OFILES) ksarray
+	rm *.o *.out
