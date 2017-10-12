@@ -7,6 +7,8 @@
 using std::pair;
 #include<vector>
 using std::vector;
+#include<stack>
+using std::stack;
 #include<cstddef>
 using std::size_t;
 #include<stdexcept>
@@ -14,6 +16,8 @@ using std::out_of_range;
 
 using Vec2I = pair<int, int>;
 using BoardType = vector<int>;
+using ChangePairType = pair<Vec2I, int>; // Position and value changed to
+using StackType = stack<ChangePairType>;
 
 
 class HoleySpiderRun {
@@ -100,7 +104,7 @@ class HoleySpiderRun {
         // _run
         // recursive workhorse function for computations
         // pre: covered by ctor preconditions
-        int _run(BoardType board, Vec2I pos, size_t squaresLeft) {
+        int _run(BoardType & board, Vec2I pos, size_t squaresLeft) {
 
             // Base case
             if (squaresLeft == 0 && pos == _finish) {
@@ -134,6 +138,7 @@ class HoleySpiderRun {
 
         BoardType _initBoard;              // inital board state
         vector<Vec2I> _adjacentSquares;    // Relative coords of all neighboring squares
+        StackType _changeStack;
 };
 
 
