@@ -2,23 +2,29 @@
 // William Horn
 // Oct 11, 2017
 // cs311 assignment 4 source file
-
+#include<iostream>
 #include<utility>
 using std::pair;
 #include<vector>
 using std::vector;
-#include<stack>
-using std::stack;
+#include<numeric>
+using std::accumulate;
 #include<cstddef>
 using std::size_t;
 #include<stdexcept>
 using std::out_of_range;
+#include<thread>
+using std::thread;
+#include<mutex>
+using std::lock_guard;
+using std::mutex;
+
 
 using Vec2I = pair<int, int>;
 using BoardType = vector<int>;
 using ChangePairType = pair<Vec2I, int>; // Position and value changed to
-using StackType = stack<ChangePairType>;
 
+const size_t THREAD_RUN_DIM = 20;
 
 class HoleySpiderRun {
     public:
@@ -39,7 +45,8 @@ class HoleySpiderRun {
                     _start(start),
                     _finish(finish),
                     _initLeft((_dim.first * _dim.second) - 2),
-                    _initBoard(dim.first * dim.second, 1) {
+                    _initBoard(dim.first * dim.second, 1),
+                    _threadsAvailable(thread::hardware_concurrency()) {
 
             _get2D(_initBoard, _hole) = 0;
             _get2D(_initBoard, _start) = 0;
@@ -48,14 +55,29 @@ class HoleySpiderRun {
                     {-1,  1}, {0,  1}, {1,  1},
                     {-1,  0}  /*pos*/, {1,  0},
                     {-1, -1}, {0, -1}, {1, -1}};
+
+            std::cout << "Availble Threads: " << _threadsAvailable << std::endl;
         }
 
         // op()
         // call the object as a functition
         // pre: none
         int operator()() {
+            // only run threading on larger problems
+            if (_initLeft > THREAD_RUN_DIM && _threadsAvailable > 1) {
+                std::cout << "Availble Threads: " << _threadsAvailable << std::endl;
+                _thread_run(_initBoard, _start, _initLeft);
 
-            return _run(_initBoard, _start, _initLeft);
+                for (auto & t: _threads) {
+                    t.join();
+                }
+
+                return (int)accumulate(_returnVals.begin(), _returnVals.end(), 0);
+
+            }
+            else {
+                return _run(_initBoard, _start, _initLeft);
+            }
         }
 
     private:
@@ -101,6 +123,55 @@ class HoleySpiderRun {
             }
         }
 
+        void _thread_run(BoardType board, Vec2I pos, size_t squaresLeft) {
+            // Base case (probably wont happen, but just to be safe)
+            if (squaresLeft == 0 && pos == _finish) {
+                {
+                    lock_guard<mutex> lock(_threadLock);
+                    _returnVals.push_back(1);
+                }
+            }
+
+            // Recursive Case
+            else {
+                vector<Vec2I> toRecurse;
+                _validMoves(board, toRecurse, pos);
+
+                // Recuse on all possible moves
+                for(auto & pos : toRecurse) {
+                    bool startNewThread = false;
+
+                    // scope for lock_guard
+                    {
+                        lock_guard<mutex> lock(_threadLock);
+
+                        if (_threadsAvailable > 0) {
+                            _threadsAvailable -= 1;
+                            startNewThread = true;
+                        }
+                    }
+
+                    _get2D(board, pos) = 0;
+
+                    if (startNewThread) {
+                        _threads.push_back(
+                            thread(&HoleySpiderRun::_thread_run, this, board, pos, squaresLeft - 1 )
+                        );
+                    }
+
+                    else {
+
+                        auto to_add = _run(board, pos, squaresLeft - 1);
+                        {
+                            lock_guard<mutex> lock(_threadLock);
+                            _returnVals.push_back(to_add);
+                        }
+                    }
+                    _get2D(board, pos) = 1;
+                }
+            }
+        }
+
         // _run
         // recursive workhorse function for computations
         // pre: covered by ctor preconditions
@@ -138,7 +209,11 @@ class HoleySpiderRun {
 
         BoardType _initBoard;              // inital board state
         vector<Vec2I> _adjacentSquares;    // Relative coords of all neighboring squares
-        StackType _changeStack;
+
+        size_t _threadsAvailable;
+        vector<thread> _threads;
+        mutex _threadLock;
+        vector<int> _returnVals;
 };
 
 
