@@ -9,78 +9,148 @@ using std::pair;
 using std::vector;
 #include<cstddef>
 using std::size_t;
-#include<iostream>
-using std::cout;
-using std::endl;
+#include<stdexcept>
+using std::out_of_range;
 
 using Vec2I = pair<int, int>;
+using BoardType = vector<int>;
 
 
 class HoleySpiderRun {
-public:
-    HoleySpiderRun(
-        const Vec2I & dim,
-        const Vec2I & hole,
-        const Vec2I & start,
-        const Vec2I & finish
-    ) : _dim(dim),
-        _hole(hole),
-        _start(start),
-        _finish(finish),
-        _board(dim.first * dim.second, 1) {
+    public:
+        // ***************** CONSTRUCTORS ******************
 
-        get2D(_hole) = 0;
-        get2D(_start) = 0;
-        printBoard();
-    }
+        // ctor
+        // sets the inital board and makes _adjacentSquares array for use later
+        // pre: dim must be positive ints
+        //      hole, start, finish must be coordinates in dimension
+        //      total dim area must be > 2
+        HoleySpiderRun(
+                const Vec2I & dim,
+                const Vec2I & hole,
+                const Vec2I & start,
+                const Vec2I & finish
+                ) : _dim(dim),
+                    _hole(hole),
+                    _start(start),
+                    _finish(finish),
+                    _initLeft((_dim.first * _dim.second) - 2),
+                    _initBoard(dim.first * dim.second, 1) {
 
-    void printBoard() {
-        for (auto x = 0; x < _dim.first + 2; ++x) {
-            for (auto y = 0; y < _dim.second + 2; ++y) {
-                cout << get2D(x, y) << " ";
-            }
-            cout << endl;
+            _get2D(_initBoard, _hole) = 0;
+            _get2D(_initBoard, _start) = 0;
+
+            _adjacentSquares = vector<Vec2I> {
+                    {-1,  1}, {0,  1}, {1,  1},
+                    {-1,  0}  /*pos*/, {1,  0},
+                    {-1, -1}, {0, -1}, {1, -1}};
         }
-    }
 
-    int& get2D(size_t x, size_t y) {
-        return _board[x * _dim.second + y];
-    }
+        // op()
+        // call the object as a functition
+        // pre: none
+        int operator()() {
 
-    int& get2D(const Vec2I & index) {
-        return get2D(index.first, index.second);
-    }
+            return _run(_initBoard, _start, _initLeft);
+        }
 
-   int operator()() {
-        return _run();
-    }
+    private:
+        // ************** PRIVATE FUNCTIONS ********************
 
-private:
+        // _get2D
+        // access a 1D array like a 2D one
+        // pre: index is within board
+        // throw: will throw std::out_of_range if index is totally out of array
+        int& _get2D(BoardType & board, const Vec2I & index) {
 
-    int _run() {
-        return 0;
-    }
+            return board.at( index.first * _dim.second + index.second );
+        }
 
-    Vec2I _dim;
-    Vec2I _hole;
-    Vec2I _start;
-    Vec2I _finish;
+        // _isOffBoard
+        // checks whether a coordinate is off the board
+        // pre: none
+        bool _isOffBoard(const Vec2I & pos) {
 
-    vector<int> _board;
+            return (pos.first > _dim.first - 1 || pos.first < 0 ||
+                    pos.second > _dim.second - 1 || pos.second < 0);
+        }
+
+        // _validMoves
+        // fills toRecurse with all possible valid moves
+        // pre: toRecurse is empty
+        // post: toRecurse only contains valid moves
+        void _validMoves(BoardType & board,
+                          vector<Vec2I> & toRecurse,
+                          const Vec2I & pos) {
+
+            for(const auto & p : _adjacentSquares) {
+                Vec2I checkPos = Vec2I{p.first + pos.first,
+                                       p.second + pos.second};
+
+                if(!_isOffBoard(checkPos)) {
+                    auto squareVal = _get2D(board, checkPos);
+
+                    if(squareVal == 1) {
+                        toRecurse.push_back(checkPos);
+                    }
+                }
+            }
+        }
+
+        // _run
+        // recursive workhorse function for computations
+        // pre: covered by ctor preconditions
+        int _run(BoardType board, Vec2I pos, size_t squaresLeft) {
+
+            // Base case
+            if (squaresLeft == 0 && pos == _finish) {
+                return 1;
+            }
+
+            // Recursive Case
+            else {
+                auto total = 0;
+
+                vector<Vec2I> toRecurse;
+                _validMoves(board, toRecurse, pos);
+
+                // Recuse on all possible moves
+                for(auto & pos : toRecurse) {
+                    _get2D(board, pos) = 0;
+                    total += _run(board, pos, squaresLeft - 1);
+                    _get2D(board, pos) = 1;
+                }
+
+                return total;
+            }
+        }
+
+        Vec2I _dim;        // dimension of the board
+        Vec2I _hole;       // the coordinate of the hole
+        Vec2I _start;      // the starting position of the 'spider'
+        Vec2I _finish;     // the finishing location
+
+        size_t _initLeft;  // initial amount of squares left
+
+        BoardType _initBoard;              // inital board state
+        vector<Vec2I> _adjacentSquares;    // Relative coords of all neighboring squares
 };
 
 
+// (see header for docs)
 int countHSR(int dim_x, int dim_y,
              int hole_x, int hole_y,
              int start_x, int start_y,
              int finish_x, int finish_y) {
 
-    Vec2I dim{dim_x, dim_y};
-    Vec2I hole{hole_x, hole_y};
-    Vec2I start{start_x, start_y};
-    Vec2I finish{finish_x, finish_y};
-
-    HoleySpiderRun run{dim, hole, start, finish};
+    HoleySpiderRun run{
+        Vec2I{dim_x, dim_y},
+        Vec2I{hole_x, hole_y},
+        Vec2I{start_x, start_y},
+        Vec2I{finish_x, finish_y}
+    };
 
     return run();
 }
+
+
