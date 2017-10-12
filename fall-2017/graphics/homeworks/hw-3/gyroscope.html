@@ -21,6 +21,10 @@
 
 </head>
 <body onload="canvas_main('can1')">
+  <h1>GYROSCOPE</h1>
+  <p>
+    Controls: click and drag to spin the gyroscope.
+  </p>
 <canvas id="can1" width="500" height="500"
     style="border: 1px gray solid"</canvas>
 <script type="text/javascript" src="gl-matrix-min.js"></script>
@@ -149,7 +153,7 @@ class Gyroscope {
     this.friction = 0.997;
 
     this.min_vel = 0.1;
-    this.max_vel = 6;
+    this.max_vel = 4;
 
     this.wobble = 0.0;
     this.max_wobble = 1;
@@ -170,7 +174,7 @@ class Gyroscope {
     mat4.rotate(gl.mvMatrix, gl.mvMatrix, tau() / 2, [1., 0., 0.]);
 
     // Update gyro parts
-    
+
     this.spindal.show();
     mat4.rotate(gl.mvMatrix, gl.mvMatrix, this.rotation_angle, [0., 0., 1.]);
 
@@ -193,7 +197,7 @@ class Gyroscope {
     if (new_vel < this.min_vel && new_vel > -this.min_vel)
       new_vel = 0;
 
-    if (new_vel > this.max_vel && new_vel < -this.max_vel) 
+    if (new_vel > this.max_vel && new_vel < -this.max_vel)
       new_vel = this.max_vel;
 
     this.angular_vel = new_vel;
