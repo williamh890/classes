@@ -48,13 +48,10 @@ public:
     }
 
     int& get2D(const Vec2I & index) {
-        auto x = index.first;
-        auto y = index.second;
-        return get2D(x, y);
+        return get2D(index.first, index.second);
     }
 
-
-    int operator()() {
+   int operator()() {
         return _run();
     }
 
