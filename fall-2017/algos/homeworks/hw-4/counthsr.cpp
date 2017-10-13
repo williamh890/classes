@@ -2,23 +2,22 @@
 // William Horn
 // Oct 11, 2017
 // cs311 assignment 4 source file
-#include<iostream>
-#include<utility>
+
+#include <utility>
 using std::pair;
 using std::move;
-#include<vector>
+#include <vector>
 using std::vector;
-#include<numeric>
+#include <numeric>
 using std::accumulate;
-#include<cstddef>
+#include <cstddef>
 using std::size_t;
-#include<stdexcept>
-using std::out_of_range;
-#include<thread>
+#include <thread>
 using std::thread;
-#include<mutex>
+#include <mutex>
 using std::lock_guard;
 using std::mutex;
+
 
 // Typedefs for HoleySpiderRun classes
 using Pair2I = pair<int, int>;
@@ -27,16 +26,18 @@ using Pair2IVec = vector<Pair2I>;
 
 // Thread constants
 const bool USE_THREADS = true;
-const size_t THREAD_RUN_DIM = 15;
+const size_t THREAD_RUN_DIM = 10;
 const size_t MIN_DIM = 2;
 
 // Forward declaration for friend class
 class ThreadedHoleySpiderRun;
 
+
 // HoleySpiderRun
 // Worker class to recusively calculate number of 'holey spider runs'
 // invarients: dim, hole, start are constant
 class HoleySpiderRun {
+
 public:
 
     // Just to make life easier
@@ -82,6 +83,7 @@ public:
     }
 
 private:
+
     // ************** PRIVATE FUNCTIONS ********************
 
     // _get2D
@@ -169,7 +171,9 @@ private:
 // Wrapper for hsr class to add threading
 // invarients: same as HSR
 class ThreadedHoleySpiderRun {
+
 public:
+
     // ************************ CONSTRUTOR ****************************
 
     // ctor
@@ -184,6 +188,7 @@ public:
                 _threadsAvailable(thread::hardware_concurrency()) {
 
     }
+
     // **************************** OPERATORS ************************
 
     // op()
@@ -202,6 +207,7 @@ public:
     }
 
 private:
+
     // ************************ PRIVATE MEMBER FUNCTIONS ********************
 
     // _shouldUseThreads
