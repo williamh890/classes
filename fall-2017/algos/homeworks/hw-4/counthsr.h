@@ -7,7 +7,10 @@
 #ifndef COUNTHSR_H
 #define COUNTHSR_H
 
-
+// countHSR
+// find the total number of 'holey spider runs'
+// pre: all values must be positive,
+//      hole, start, and finish must be coordinates inside dimension
 int countHSR(int dim_x, int dim_y,
              int hole_x, int hole_y,
              int start_x, int start_y,
