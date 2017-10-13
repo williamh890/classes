@@ -20,12 +20,13 @@ using std::thread;
 using std::lock_guard;
 using std::mutex;
 
-
-using Vec2I = pair<int, int>;
+// Typedefs for HoleySpiderRun classes
+using Pair2I = pair<int, int>;
 using BoardType = vector<int>;
-using ChangePairType = pair<Vec2I, int>; // Position and value changed to
+using Pair2IVec = vector<Pair2I>;
 
-const bool USER_THREADS = true;
+// Thread constants
+const bool USE_THREADS = true;
 const size_t THREAD_RUN_DIM = 15;
 const size_t MIN_DIM = 2;
 
@@ -38,7 +39,7 @@ class ThreadedHoleySpiderRun;
 class HoleySpiderRun {
 public:
 
-    // Make life easier
+    // Just to make life easier
     friend class ThreadedHoleySpiderRun;
 
     // ***************** CONSTRUCTORS ******************
@@ -49,10 +50,10 @@ public:
     //      hole, start, finish must be coordinates in dimension
     //      total dim area must be > 2
     HoleySpiderRun(
-            const Vec2I & dim,
-            const Vec2I & hole,
-            const Vec2I & start,
-            const Vec2I & finish
+            const Pair2I & dim,
+            const Pair2I & hole,
+            const Pair2I & start,
+            const Pair2I & finish
             ) : _dim(dim),
                 _hole(hole),
                 _start(start),
@@ -63,10 +64,11 @@ public:
         _get2D(_board, _hole) = 0;
         _get2D(_board, _start) = 0;
 
-        _adjacentSquares = vector<Vec2I> {
+        _adjacentSquares = Pair2IVec {
                 {-1,  1}, {0,  1}, {1,  1},
                 {-1,  0}  /*pos*/, {1,  0},
-                {-1, -1}, {0, -1}, {1, -1}};
+                {-1, -1}, {0, -1}, {1, -1}
+              };
     }
 
     // *************** OPERATORS ********************
@@ -75,6 +77,7 @@ public:
     // call the object as a functition
     // pre: none
     int operator()() {
+
         return _run(_board, _start, _initLeft);
     }
 
@@ -85,7 +88,7 @@ private:
     // access a 1D array like a 2D one
     // pre: index is within board
     // throw: will throw std::out_of_range if index is totally out of array
-    int& _get2D(BoardType & board, const Vec2I & index) {
+    int& _get2D(BoardType & board, const Pair2I & index) {
 
         return board.at( index.first * _dim.second + index.second );
     }
@@ -93,7 +96,7 @@ private:
     // _isOffBoard
     // checks whether a coordinate is off the board
     // pre: none
-    bool _isOffBoard(const Vec2I & pos) {
+    bool _isOffBoard(const Pair2I & pos) {
 
         return (pos.first > _dim.first - 1 || pos.first < 0 ||
                 pos.second > _dim.second - 1 || pos.second < 0);
@@ -104,11 +107,11 @@ private:
     // pre: toRecurse is empty
     // post: toRecurse only contains valid moves
     void _validMoves(BoardType & board,
-                      vector<Vec2I> & toRecurse,
-                      const Vec2I & pos) {
+                     Pair2IVec & toRecurse,
+                     const Pair2I & pos) {
 
         for(const auto & p : _adjacentSquares) {
-            Vec2I checkPos = Vec2I{p.first + pos.first,
+            Pair2I checkPos = Pair2I{p.first + pos.first,
                                    p.second + pos.second};
 
             if(!_isOffBoard(checkPos)) {
@@ -124,7 +127,7 @@ private:
     // _run
     // recursive workhorse function for computations
     // pre: covered by ctor preconditions
-    int _run(BoardType & board, Vec2I pos, size_t squaresLeft) {
+    int _run(BoardType & board, Pair2I pos, size_t squaresLeft) {
 
         // Base case
         if (squaresLeft == 0 && pos == _finish) {
@@ -135,7 +138,7 @@ private:
         else {
             auto total = 0;
 
-            vector<Vec2I> toRecurse;
+            Pair2IVec toRecurse;
             _validMoves(board, toRecurse, pos);
 
             // Recuse on all possible moves
@@ -150,15 +153,15 @@ private:
     }
     // *********************** MEMBER VARIABLES **************************
 
-    Vec2I _dim;        // dimension of the board
-    Vec2I _hole;       // the coordinate of the hole
-    Vec2I _start;      // the starting position of the 'spider'
-    Vec2I _finish;     // the finishing location
+    Pair2I _dim;        // dimension of the board
+    Pair2I _hole;       // the coordinate of the hole
+    Pair2I _start;      // the starting position of the 'spider'
+    Pair2I _finish;     // the finishing location
 
     size_t _initLeft;  // initial amount of squares left
 
     BoardType _board;              // inital board state
-    vector<Vec2I> _adjacentSquares;    // Relative coords of all neighboring squares
+    Pair2IVec _adjacentSquares;    // Relative coords of all neighboring squares
 };
 
 
@@ -173,19 +176,21 @@ public:
     // make a holey spider run to spawn threaded runs off of
     // pre: same as HSR ctor
     ThreadedHoleySpiderRun(
-                const Vec2I & dim,
-                const Vec2I & hole,
-                const Vec2I & start,
-                const Vec2I & finish
+                const Pair2I & dim,
+                const Pair2I & hole,
+                const Pair2I & start,
+                const Pair2I & finish
             ) : _run(HoleySpiderRun(dim, hole, start, finish)),
                 _threadsAvailable(thread::hardware_concurrency()) {
-        }
+
+    }
     // **************************** OPERATORS ************************
 
     // op()
     // start HSR with or without threads
     // pre: none
     int operator()() {
+
         if (_shouldUseThreads()) {
             _thread_run(_run, _run._board, _run._start, _run._initLeft);
 
@@ -197,42 +202,51 @@ public:
     }
 
 private:
+    // ************************ PRIVATE MEMBER FUNCTIONS ********************
 
     // _shouldUseThreads
     // pre: none
     bool _shouldUseThreads() {
-        return _run._initLeft > THREAD_RUN_DIM &&
-               _run._dim.first > 3 && _run._dim.second > 3 &&
-               _threadsAvailable > 1;
+
+        return (_run._initLeft > THREAD_RUN_DIM &&
+                _run._dim.first > 3 && _run._dim.second > 3 &&
+                _threadsAvailable > 1);
     }
 
     // _thread_run
     // find all valid first moves then spawn threads off for each move
     // pre: none
-    // post: will only spawn at most 8 threads (this is inefficent, but it just makes life simpler)
-    void _thread_run(HoleySpiderRun run, BoardType board, Vec2I pos, size_t squaresLeft) {
+    // post: will only spawn at most 8 threads
+    //       (this is inefficent, but it just makes life simpler)
+    void _thread_run(HoleySpiderRun run,
+                     BoardType board,
+                     Pair2I pos,
+                     size_t squaresLeft) {
+
         // Base case (probably wont happen, but just to be safe)
         if (squaresLeft == 0 && pos == run._finish) {
             _returnVals.push_back(1);
             return;
         }
 
-        vector<Vec2I> toRecurse;
+        Pair2IVec toRecurse;
         run._validMoves(board, toRecurse, pos);
 
-        // Recuse on all possible moves
+        // Start threads on all possible valid first moves
         for(auto & pos : toRecurse) {
             lock_guard<mutex> lock(_threadLock);
 
             _threads.push_back(
-                move(thread(&ThreadedHoleySpiderRun::_thread_run_main,
+                move(
+                  thread(&ThreadedHoleySpiderRun::_thread_run_main,
                      this,
                      _run,
                      pos))
             );
         }
-        _joinThreads();
 
+        // join all threads after they are started
+        _joinThreads();
     }
 
     // _joinThreads
@@ -246,10 +260,10 @@ private:
     }
 
     // _thread_run_main
-    // recusive worker function for threads
+    // recusive worker function for threads. Each thread gets its own HSP object
     // pre: none
     // post: all possible answer from that branch will be found
-    void _thread_run_main(HoleySpiderRun run, Vec2I pos) {
+    void _thread_run_main(HoleySpiderRun run, Pair2I pos) {
 
         // Setup the run at first step
         run._get2D(run._board, pos) = 0;
@@ -275,32 +289,29 @@ private:
 };
 
 
-
 // (see header for docs)
 int countHSR(int dim_x, int dim_y,
              int hole_x, int hole_y,
              int start_x, int start_y,
              int finish_x, int finish_y) {
 
-    if (USER_THREADS) {
+    if (USE_THREADS) {
         ThreadedHoleySpiderRun run{
-            Vec2I{dim_x, dim_y},
-            Vec2I{hole_x, hole_y},
-            Vec2I{start_x, start_y},
-            Vec2I{finish_x, finish_y}
+            Pair2I{dim_x, dim_y},
+            Pair2I{hole_x, hole_y},
+            Pair2I{start_x, start_y},
+            Pair2I{finish_x, finish_y}
         };
         return run();
     }
 
     else {
         HoleySpiderRun run{
-            Vec2I{dim_x, dim_y},
-            Vec2I{hole_x, hole_y},
-            Vec2I{start_x, start_y},
-            Vec2I{finish_x, finish_y}
+            Pair2I{dim_x, dim_y},
+            Pair2I{hole_x, hole_y},
+            Pair2I{start_x, start_y},
+            Pair2I{finish_x, finish_y}
         };
         return run();
     }
 }
-
-
