@@ -55,7 +55,8 @@ attribute vec4 vertex_attr;
 attribute vec4 color_attr;
 
 varying vec4 paintcolor_var;
-varying vec4 position;
+varying vec4 vertex_pos;
+varying vec4 world_position;
 
 void main()
 {
@@ -64,7 +65,8 @@ void main()
 
     // Send paint color and position to fragment shader
     paintcolor_var = color_attr;
-    position = gl_Position;
+    vertex_pos = vertex_attr;
+    world_position = modelViewMatrix * vertex_attr;
 }
 </script>
 <script id="fshader1" type="x-shader/x-fragment">
@@ -75,22 +77,40 @@ precision mediump float;
 #endif
 
 varying vec4 paintcolor_var;
-varying vec4 position;
+varying vec4 vertex_pos;
+varying vec4 world_position;
 
-vec4 linearFog() {
-    vec4 fogColor = vec4(0.8, 0.8, 0.8, 1.);
+vec4 linearFog(vec4 position,
+               vec4 vertexColor,
+               vec4 fogColor,
+               float fogStart,
+               float fogEnd) {
     float dist = 0.;
 
-    dist = length(position.xyz);
-    float fogAmount = (23. - dist) / (20.);
+    dist = length(position.xyz / position.w);
+    float fogAmount = (fogEnd - dist) / (fogEnd - fogStart);
 
     fogAmount = clamp(fogAmount, 0., 1.);
 
-    return mix(fogColor, paintcolor_var, fogAmount);
+    return mix(fogColor, vertexColor, fogAmount);
 }
 
 void main() {
-    gl_FragColor = linearFog();
+    vec4 fogColor = vec4(.8, .8, .8, 1.);
+
+    vec4 inverseColor = vec4(1. - paintcolor_var.rgb + normalize(vertex_pos.xyz / vertex_pos.w), 1.);
+
+    vec4 localColor = linearFog(
+            vertex_pos,
+            paintcolor_var,
+            inverseColor,
+            3., -2.);
+
+    gl_FragColor = linearFog(
+             world_position,
+             localColor,
+             fogColor,
+             0., 20.);
 }
 </script>
 
