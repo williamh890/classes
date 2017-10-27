@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<!--
+  shaders_plain.html
+  Glenn G. Chappell
+  23 Oct 2017
+
+  For CS 381 Fall 2017
+  Shader Example: Plain Shaders
+
+  Requires gl-matrix-min.js, quoll.js
+-->
+
+<!-- ************************************************************** -->
+<!-- * Core HTML                                                  * -->
+<!-- ************************************************************** -->
+
+<head>
+<meta charset="utf-8">
+<title>Using Shaders</title>
+</head>
+<body onload="appMain('can1')"
+  style="overflow: hidden; margin: 0; padding: 0;">
+<table style="position: absolute; left: 20px; top: 10px; spacing: 20pt;
+  color: #6666ff">
+<tr>
+<td style="padding: 5pt">1&ndash;5</td>
+<td style="padding: 5pt">Select object to draw</td>
+</tr>
+<tr>
+<td style="padding: 5pt">R</td>
+<td style="padding: 5pt">Toggle rotation</td>
+</tr>
+<tr>
+<td style="padding: 5pt">B</td>
+<td style="padding: 5pt">Toggle background color</td>
+</tr>
+</table>
+<canvas id="can1" width="500" height="400"
+    style="display: block; margin: 0; padding: 0;"></canvas>
+<script type="text/javascript" src="gl-matrix-min.js"></script>
+<script type="text/javascript" src="quoll.js"></script>
+
+<!-- ************************************************************** -->
+<!-- * GLSL Shaders                                               * -->
+<!-- ************************************************************** -->
+
+<script id="vshader1" type="x-shader/x-vertex">
+// Vertex Shader #1
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+attribute vec4 vertex_attr;
+attribute vec4 color_attr;
+
+varying vec4 paintcolor_var;
+varying vec4 position;
+
+void main()
+{
+    // Compute projected vertex position
+    gl_Position = projectionMatrix * modelViewMatrix * vertex_attr;
+
+    // Send paint color and position to fragment shader
+    paintcolor_var = color_attr;
+    position = gl_Position;
+}
+</script>
+<script id="fshader1" type="x-shader/x-fragment">
+// Fragment Shader #1
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+varying vec4 paintcolor_var;
+varying vec4 position;
+
+vec4 linearFog() {
+    vec4 fogColor = vec4(0.8, 0.8, 0.8, 1.);
+    float dist = 0.;
+
+    dist = length(position.xyz);
+    float fogAmount = (23. - dist) / (20.);
+
+    fogAmount = clamp(fogAmount, 0., 1.);
+
+    return mix(fogColor, paintcolor_var, fogAmount);
+}
+
+void main() {
+    gl_FragColor = linearFog();
+}
+</script>
+
+<!-- END GLSL Shaders -->
+
+<!-- ************************************************************** -->
+<!-- * JavaScript Application                                     * -->
+<!-- ************************************************************** -->
+
+<script type="text/javascript">
+// Global variables
+
+// WebGL General
+var gl;                 // WebGL rendering context
+
+// Shaders
+var shaderprog1;        // Shader program object
+
+// Object
+var numscenes = 5;
+var whichscene;         // Which scene to draw: 0 .. numscenes-1
+var rotangle;           // Rotation angle for object (rad)
+var rotspeed;           // Rotation speed (rad/sec)
+var rotflag;            // Boolean: rotating?
+var blackbackgnd;       // Boolean: black background?
+
+
+// appMain
+// Our Main program.
+// Given ID of canvas.
+function appMain(canvasid)
+{
+    // Check that function drawCubeArray exists
+    if (typeof(drawCubeArray) != 'function')
+    {
+        alert('It looks like you are not using the latest version of '
+          + 'quoll.js. Please download it!');
+        return;
+    }
+
+    // Initialize quoll.js & WebGL
+    gl = quollInit(canvasid);
+    if (!gl) return;  // Could not intialize; exit
+
+    // Shaders
+    shaderprog1 = makeProgramObjectFromIds(gl, 'vshader1', 'fshader1');
+
+    // Register callbacks with quoll.js
+    registerDisplay(myDisplay);
+    registerIdle(myIdle);
+    registerReshape(myReshape);
+    canvasFullWindow(true);  // Make canvas fill the window
+
+    // Set up other event handlers
+    document.addEventListener('keypress', myKeyboard, false);
+
+    // Object
+    whichscene = 0;
+    rotangle = 0.;
+    rotspeed = Math.PI/180. * 50.;
+    rotflag = true;
+    blackbackgnd = false;
+
+    // GL States
+    gl.enable(gl.DEPTH_TEST);
+}
+
+
+// drawObject
+// Our object drawing function.
+function drawObject(r, g, b)
+{
+    switch (whichscene)
+    {
+    case 0:
+        drawSquare(gl, 2.0,
+                   r, g, b, 1.0);
+        break;
+    case 1:
+        drawTorus(gl, 0.3, 1.0, 20, 50,
+                  r, g, b, 1.0);
+        break;
+    case 2:
+        drawSphere(gl, 1.0, 50, 20,
+                   r, g, b, 1.0);
+        break;
+    case 3:
+        drawCylinder(gl, 20,
+                     r, g, b, 1.0);
+        break;
+    case 4:
+        drawCubeArray(r, g, b, 1.0);
+        break;
+    }
+}
+
+
+// myDisplay
+// The display function.
+function myDisplay()
+{
+    gl.useProgram(shaderprog1);
+
+    if (blackbackgnd)
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    else
+        gl.clearColor(0.8, 0.8, 0.8, 1.0);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    // Camera transformation
+    mat4.identity(gl.mvMatrix);
+    mat4.translate(gl.mvMatrix, gl.mvMatrix,
+        [0., 0., -4.]);
+
+    // Place and draw object
+    mat4.translate(gl.mvMatrix, gl.mvMatrix,
+        [0., 0., 0.]);
+    mat4.rotate(gl.mvMatrix, gl.mvMatrix,
+        rotangle, [1.,2.,0.]);
+
+    drawObject(0.8, 0.4, 0.6);
+
+    gl.flush();
+}
+
+
+// myIdle
+// The idle function.
+function myIdle()
+{
+    var elapsedtime = getElapsedTime(0.1);
+
+    // Move object
+    if (rotflag)
+    {
+        rotangle += rotspeed * elapsedtime;
+        postRedisplay();
+    }
+}
+
+
+// myReshape
+// The reshape callback function. Called by quoll.js.
+function myReshape(w, h)
+{
+    // Set up viewport
+    gl.viewport(0, 0, w, h);
+
+    // Set up projection
+    mat4.perspective(gl.pMatrix,
+                     Math.PI/180. * 60.,  // y field-of-view angle
+                     w/h,                 // Viewport aspect ratio
+                     0.1, 30.);           // Near & far distances
+}
+
+
+function myKeyboard(evt)
+{
+    var ch = keyFromEvent(evt);
+
+    // Note: Keys like [Esc] may be handled inconsistently between
+    // browsers. Alas! So we only deal with printable ASCII here.
+
+    switch (ch)
+    {
+    // Digits: select scene
+    case '1':
+        whichscene = 0;
+        postRedisplay();
+        break;
+    case '2':
+        whichscene = 1;
+        postRedisplay();
+        break;
+    case '3':
+        whichscene = 2;
+        postRedisplay();
+        break;
+    case '4':
+        whichscene = 3;
+        postRedisplay();
+        break;
+    case '5':
+        whichscene = 4;
+        postRedisplay();
+        break;
+    case 'r':  // R: Toggle rotation
+    case 'R':
+        rotflag = !rotflag;
+        break;
+    case 'b':  // B: Toggle background color
+    case 'B':
+        blackbackgnd = !blackbackgnd;
+        postRedisplay();
+        break;
+    }
+}
+</script>
+</body>
+</html>
