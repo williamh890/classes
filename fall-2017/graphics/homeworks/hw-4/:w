@@ -16,12 +16,8 @@
 <!-- ************************************************************** -->
 
 <head>
-  <meta charset="utf-8">
-  <title>Using Shaders</title>
-
-  <!-- jQuery (for easy adding of event listeners) -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
+<meta charset="utf-8">
+<title>Using Shaders</title>
 </head>
 <body onload="appMain('can1')"
   style="overflow: hidden; margin: 0; padding: 0;">
@@ -35,7 +31,6 @@
 <!-- * GLSL Shaders                                               * -->
 <!-- ************************************************************** -->
 
-<!-- Shaders are taken from class repo -->
 <script id="vshader1" type="x-shader/x-vertex">
 // Vertex Shader #1
 
@@ -123,14 +118,14 @@ vec4 bpLight(
     return clamp(ambientcolor + diffusecolor + specularcolor,
                  0., 1.);
 }
-
-void main() {
+void main()
+{
     // Surface normal
     vec3 surfnorm = normalize(surfnorm_var);
 
     // Light-source color & position/direction
     vec4 lightcolor = vec4(1., 1., 1., 1.);  // White
-    vec4 lightpos4 =  vec4(.0, 0., -2.5, 1.);
+    vec4 lightpos4 =  vec4(-1., 2., 2., 1.);
 
     // Apply Blinn-Phong Illumination Model
     vec4 litcolor = bpLight(
@@ -155,25 +150,23 @@ void main() {
 // Global variables
 
 // WebGL General
-var gl;                 // WebGL rendering context
+let gl;                 // WebGL rendering context
 
 // Shaders
-var shaderprog1;        // Shader program object
+let shaderprog1;        // Shader program object
 
-var farClipping;
+let cameraPos;
+let farClipping;
 
 // Ground
-var ground;             // Stores the ground
-
-// Player   
-var player;
+let ground;             // Stores the ground
 
 // Colors
-var BLACK = [0., 0., 0.];
-var WHITE = [.9, 1., .8];
+let BLACK = [0., 0., 0.];
+let WHITE = [1., 1., 1.];
 
 // Classes Definitions
-class Ground { 
+class Ground {
   constructor() {
     this.colors = [BLACK, WHITE];
     
@@ -184,120 +177,36 @@ class Ground {
   show() {
     pushMvMatrix(gl);
     
+    mat4.rotate(gl.mvMatrix, gl.mvMatrix,
+        -Math.PI / 3., [1.,0.,0.]);
+
+    //mat4.translate(gl.mvMatrix, gl.mvMatrix,
+        //[-5, -1., -5.]);
+
     let gap = this.tileSize; 
 
     for (let r = 0; r < this.numTiles; ++r) {
-      // Draw a row of the checkerboard  
-      pushMvMatrix(gl);
       for (let c = 0; c < this.numTiles; ++c) {
-        let color = this.colors[(c+r) % 2];
 
         mat4.translate(gl.mvMatrix, gl.mvMatrix,
            [gap, 0.0 , 0.]);
-        drawSquare(gl, this.tileSize, color[0], color[1], color[2], 1.);
+        drawSquare(gl, this.tileSize, this.colors[0][1], this.colors[0][2], this.colors[0][2], 1.);
         
       }
-      popMvMatrix(gl);
-      
-      // Move to next column
-      mat4.translate(gl.mvMatrix, gl.mvMatrix,
-         [0., gap , 0.]);
+      //mat4.translate(gl.mvMatrix, gl.mvMatrix,
+       //   [gap, 0.0 , 0.]);
     }
+
+
     popMvMatrix(gl);
-
-
   }
 }
-
-class Player {
-  constructor(height) {
-    this.view = [0., -height, 0.];
-    this.speed = 2;
-    this.moveDirection = [0., 0.];
-
-    this.viewAngle = 0.;
-    this.rotationDirection = 0.;
-    this.rotationSpeed = 1.;
-  }
-
-  move(time) {
-    // Position
-    this.view[0] += this.moveDirection[0] * this.speed * time;
-    this.view[2] += this.moveDirection[1] * this.speed * time;
-    
-    // Rotation 
-    this.viewAngle += this.rotationDirection * this.rotationSpeed * time;
-  }
-
-  getPosition() {
-    return this.view;
-  }
-
-  getViewDirection() {
-    return this.viewAngle;
-  }
-
-  // Movement functions
-  startMovement(key) {
-    // Camera Rotation
-    // Rotation doesn't work
-    if ( key === "'" ) {
-      //this.rotationDirection = 1.;
-    }
-
-    if ( key === "%" ) {
-      //this.rotationDirection = -1.;
-    }
-
-    // Z-Movement
-    if ( key === "w" ) {
-      this.moveDirection[1] = 1.;
-    }
-    if ( key === "s" ) {
-      this.moveDirection[1] = -1.;
-    }
-    
-    // X-Movement
-    if ( key === "d") {
-      this.moveDirection[0] = -1.;
-    }
-    if ( key === "a") {
-      this.moveDirection[0] = 1.;
-    }
-  }
-
-  stopMovement(key) {
-    // Camera Rotation
-    if ( key === "'" ) {
-      this.rotationDirection = 0.;
-    }
-    if ( key === "%" ) {
-      this.rotationDirection = 0.;
-    }
-
-    // Z-Movement
-    if ( key === "w" ) {
-      this.moveDirection[1] = 0.;
-    }
-    if ( key === "s" ) {
-      this.moveDirection[1] = 0.;
-    }
-
-    // X-Movement
-    if ( key === "d") {
-      this.moveDirection[0] = 0.;
-    }
-    if ( key === "a") {
-      this.moveDirection[0] = 0.;
-    }
-  }
-}
-
 
 // appMain
 // Our Main program.
 // Given ID of canvas.
-function appMain(canvasid) {
+function appMain(canvasid)
+{
     // Initialize quoll.js & WebGL
     gl = quollInit(canvasid);
     if (!gl) return;  // Could not intialize; exit
@@ -305,6 +214,7 @@ function appMain(canvasid) {
     // Shaders
     shaderprog1 = makeProgramObjectFromIds(gl, 'vshader1', 'fshader1');
     farClipping = 30.; 
+    cameraPos = [0., 0., -4.];
 
     // Register callbacks with quoll.js
     registerDisplay(myDisplay);
@@ -312,87 +222,53 @@ function appMain(canvasid) {
     registerReshape(myReshape);
     canvasFullWindow(true);  // Make canvas fill the window
 
-      // Set up other event handlers
-      document.addEventListener('keypress', myKeyboard, false);
-      
-      ground = new Ground();
-      player = new Player(1.);
-      // GL States
-      gl.enable(gl.DEPTH_TEST);
+    // Set up other event handlers
+    document.addEventListener('keypress', myKeyboard, false);
+    
+    ground = new Ground();
+
+    // GL States
+    gl.enable(gl.DEPTH_TEST);
 }
 
 
 // myDisplay
 // The display function.
-function myDisplay() {
-  gl.useProgram(shaderprog1);
+function myDisplay()
+{
+    gl.useProgram(shaderprog1);
 
-  // Camera transformation
-  mat4.identity(gl.mvMatrix);
+    // Camera transformation
+    mat4.identity(gl.mvMatrix);
+    mat4.translate(gl.mvMatrix, gl.mvMatrix,
+        cameraPos);
 
-  mat4.translate(gl.mvMatrix, gl.mvMatrix,
-      player.getPosition());
+    // Place and draw object
+    mat4.translate(gl.mvMatrix, gl.mvMatrix,
+        [0., 0., 0.]);
+    mat4.rotate(gl.mvMatrix, gl.mvMatrix,
+        0, [1.,2.,0.]);
 
+    ground.show(); 
 
-  mat4.rotate(gl.mvMatrix, gl.mvMatrix,
-      player.getViewDirection(), [1.,0.,0.]);
-
-  mat4.rotate(gl.mvMatrix, gl.mvMatrix,
-      -Math.PI / 2, [1.,0.,0.]);
-
-  // Place and draw object
-  mat4.translate(gl.mvMatrix, gl.mvMatrix,
-      [-10, -10, -0]);
-
-  ground.show(); 
-
-  gl.flush();
+    gl.flush();
 }
 
 
 // myIdle
 // The idle function.
-function myIdle() {
+function myIdle()
+{
     let elapsedtime = getElapsedTime(0.1);
-    player.move(elapsedtime);
 
-    postRedisplay();
+    
 }
 
-// Event listeners for controling player movement
-// keyup and keydown used to allow diagonal movement
-$(document).on('keydown', function(e) {
-  let keypressed = String.fromCharCode(e.which).toLowerCase();
-
-  if(!validMovementKey(keypressed)) {
-    return;
-  }
-
-  player.startMovement(keypressed);
-  postRedisplay();
-});
-
-$(document).on('keyup', function(e) {
-  let keypressed = String.fromCharCode(e.which).toLowerCase();
-  console.log(keypressed);
-
-  if(!validMovementKey(keypressed)) {
-    return;
-  }
-
-  player.stopMovement(keypressed);
-  postRedisplay();
-});
-
-
-function validMovementKey(key) {
-  return ( key === "w" || key === "a" || key === "s" || key === "d" ||
-           key === "'" || key === "%");
-}
 
 // myReshape
 // The reshape callback function. Called by quoll.js.
-function myReshape(w, h) {
+function myReshape(w, h)
+{
     // Set up viewport
     gl.viewport(0, 0, w, h);
 
@@ -404,9 +280,9 @@ function myReshape(w, h) {
 }
 
 
-function myKeyboard(evt) {
-  // Handled with jQuery
-  let ch = keyFromEvent(evt);
+function myKeyboard(evt)
+{
+    let ch = keyFromEvent(evt);
 
 
 }
