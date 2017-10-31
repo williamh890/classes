@@ -16,28 +16,19 @@
 <!-- ************************************************************** -->
 
 <head>
-<meta charset="utf-8">
-<title>Using Shaders</title>
+  <meta charset="utf-8">
+  <title>Using Shaders</title>
+
+  <!-- jQuery (for easy adding of event listeners) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 </head>
 <body onload="appMain('can1')"
   style="overflow: hidden; margin: 0; padding: 0;">
-<table style="position: absolute; left: 20px; top: 10px; spacing: 20pt;
-  color: #6666ff">
-<tr>
-<td style="padding: 5pt">1&ndash;5</td>
-<td style="padding: 5pt">Select object to draw</td>
-</tr>
-<tr>
-<td style="padding: 5pt">R</td>
-<td style="padding: 5pt">Toggle rotation</td>
-</tr>
-<tr>
-<td style="padding: 5pt">B</td>
-<td style="padding: 5pt">Toggle background color</td>
-</tr>
-</table>
+
 <canvas id="can1" width="500" height="400"
     style="display: block; margin: 0; padding: 0;"></canvas>
+<h1>Use wasd to move around.</h1>
 <script type="text/javascript" src="gl-matrix-min.js"></script>
 <script type="text/javascript" src="quoll.js"></script>
 
@@ -45,6 +36,7 @@
 <!-- * GLSL Shaders                                               * -->
 <!-- ************************************************************** -->
 
+<!-- Shaders are taken from class repo -->
 <script id="vshader1" type="x-shader/x-vertex">
 // Vertex Shader #1
 
@@ -132,14 +124,14 @@ vec4 bpLight(
     return clamp(ambientcolor + diffusecolor + specularcolor,
                  0., 1.);
 }
-void main()
-{
+
+void main() {
     // Surface normal
     vec3 surfnorm = normalize(surfnorm_var);
 
     // Light-source color & position/direction
     vec4 lightcolor = vec4(1., 1., 1., 1.);  // White
-    vec4 lightpos4 =  vec4(-1., 2., 2., 1.);
+    vec4 lightpos4 =  vec4(.0, 0., -2.5, 1.);
 
     // Apply Blinn-Phong Illumination Model
     vec4 litcolor = bpLight(
@@ -169,34 +161,151 @@ var gl;                 // WebGL rendering context
 // Shaders
 var shaderprog1;        // Shader program object
 
-// Object
-var numscenes = 5;
-var whichscene;         // Which scene to draw: 0 .. numscenes-1
-var rotangle;           // Rotation angle for object (rad)
-var rotspeed;           // Rotation speed (rad/sec)
-var rotflag;            // Boolean: rotating?
-var blackbackgnd;       // Boolean: black background?
+var farClipping;
+
+// Ground
+var ground;             // Stores the ground
+
+// Player   
+var player;
+
+// Colors
+var BLACK = [0., 0., 0.];
+var WHITE = [.9, 1., .8];
+
+// Classes Definitions
+class Ground { 
+  constructor() {
+    this.colors = [BLACK, WHITE];
+    
+    this.numTiles = 60;
+    this.tileSize = 0.5;
+  }
+
+  show() {
+    pushMvMatrix(gl);
+    
+    let gap = this.tileSize; 
+
+    for (let r = 0; r < this.numTiles; ++r) {
+      // Draw a row of the checkerboard  
+      pushMvMatrix(gl);
+      for (let c = 0; c < this.numTiles; ++c) {
+        let color = this.colors[(c+r) % 2];
+
+        mat4.translate(gl.mvMatrix, gl.mvMatrix,
+           [gap, 0.0 , 0.]);
+        drawSquare(gl, this.tileSize, color[0], color[1], color[2], 1.);
+        
+      }
+      popMvMatrix(gl);
+      
+      // Move to next column
+      mat4.translate(gl.mvMatrix, gl.mvMatrix,
+         [0., gap , 0.]);
+    }
+    popMvMatrix(gl);
+
+
+  }
+}
+
+class Player {
+  constructor(height) {
+    this.view = [0., -height, 0.];
+    this.speed = 2;
+    this.moveDirection = [0., 0.];
+
+    this.viewAngle = 0.;
+    this.rotationDirection = 0.;
+    this.rotationSpeed = 1.;
+  }
+
+  move(time) {
+    // Position
+    this.view[0] += this.moveDirection[0] * this.speed * time;
+    this.view[2] += this.moveDirection[1] * this.speed * time;
+    
+    // Rotation 
+    this.viewAngle += this.rotationDirection * this.rotationSpeed * time;
+  }
+
+  getPosition() {
+    return this.view;
+  }
+
+  getViewDirection() {
+    return this.viewAngle;
+  }
+
+  // Movement functions
+  startMovement(key) {
+    // Camera Rotation
+    // Rotation doesn't work
+    if ( key === "'" ) {
+      //this.rotationDirection = 1.;
+    }
+
+    if ( key === "%" ) {
+      //this.rotationDirection = -1.;
+    }
+
+    // Z-Movement
+    if ( key === "w" ) {
+      this.moveDirection[1] = 1.;
+    }
+    if ( key === "s" ) {
+      this.moveDirection[1] = -1.;
+    }
+    
+    // X-Movement
+    if ( key === "d") {
+      this.moveDirection[0] = -1.;
+    }
+    if ( key === "a") {
+      this.moveDirection[0] = 1.;
+    }
+  }
+
+  stopMovement(key) {
+    // Camera Rotation
+    if ( key === "'" ) {
+      this.rotationDirection = 0.;
+    }
+    if ( key === "%" ) {
+      this.rotationDirection = 0.;
+    }
+
+    // Z-Movement
+    if ( key === "w" ) {
+      this.moveDirection[1] = 0.;
+    }
+    if ( key === "s" ) {
+      this.moveDirection[1] = 0.;
+    }
+
+    // X-Movement
+    if ( key === "d") {
+      this.moveDirection[0] = 0.;
+    }
+    if ( key === "a") {
+      this.moveDirection[0] = 0.;
+    }
+  }
+}
 
 
 // appMain
 // Our Main program.
 // Given ID of canvas.
-function appMain(canvasid)
-{
-    // Check that function drawCubeArray exists
-    if (typeof(drawCubeArray) != 'function')
-    {
-        alert('It looks like you are not using the latest version of '
-          + 'quoll.js. Please download it!');
-        return;
-    }
-
+function appMain(canvasid) {
     // Initialize quoll.js & WebGL
     gl = quollInit(canvasid);
     if (!gl) return;  // Could not intialize; exit
 
     // Shaders
     shaderprog1 = makeProgramObjectFromIds(gl, 'vshader1', 'fshader1');
+    farClipping = 30.; 
 
     // Register callbacks with quoll.js
     registerDisplay(myDisplay);
@@ -204,98 +313,87 @@ function appMain(canvasid)
     registerReshape(myReshape);
     canvasFullWindow(true);  // Make canvas fill the window
 
-    // Set up other event handlers
-    document.addEventListener('keypress', myKeyboard, false);
-
-    // Object
-    whichscene = 0;
-    rotangle = 0.;
-    rotspeed = Math.PI/180. * 50.;
-    rotflag = true;
-    blackbackgnd = false;
-
-    // GL States
-    gl.enable(gl.DEPTH_TEST);
-}
-
-
-// drawObject
-// Our object drawing function.
-function drawObject(r, g, b)
-{
-    switch (whichscene)
-    {
-    case 0:
-        drawSquare(gl, 2.0,
-                   r, g, b, 1.0);
-        break;
-    case 1:
-        drawTorus(gl, 0.3, 1.0, 20, 50,
-                  r, g, b, 1.0);
-        break;
-    case 2:
-        drawSphere(gl, 1.0, 50, 20,
-                   r, g, b, 1.0);
-        break;
-    case 3:
-        drawCylinder(gl, 20,
-                     r, g, b, 1.0);
-        break;
-    case 4:
-        drawCubeArray(r, g, b, 1.0);
-        break;
-    }
+      // Set up other event handlers
+      document.addEventListener('keypress', myKeyboard, false);
+      
+      ground = new Ground();
+      player = new Player(1.);
+      // GL States
+      gl.enable(gl.DEPTH_TEST);
 }
 
 
 // myDisplay
 // The display function.
-function myDisplay()
-{
-    gl.useProgram(shaderprog1);
+function myDisplay() {
+  gl.useProgram(shaderprog1);
 
-    if (blackbackgnd)
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    else
-        gl.clearColor(0.8, 0.8, 0.8, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  // Camera transformation
+  mat4.identity(gl.mvMatrix);
 
-    // Camera transformation
-    mat4.identity(gl.mvMatrix);
-    mat4.translate(gl.mvMatrix, gl.mvMatrix,
-        [0., 0., -4.]);
+  mat4.translate(gl.mvMatrix, gl.mvMatrix,
+      player.getPosition());
 
-    // Place and draw object
-    mat4.translate(gl.mvMatrix, gl.mvMatrix,
-        [0., 0., 0.]);
-    mat4.rotate(gl.mvMatrix, gl.mvMatrix,
-        rotangle, [1.,2.,0.]);
 
-    drawObject(0.8, 0.4, 0.6);
+  mat4.rotate(gl.mvMatrix, gl.mvMatrix,
+      player.getViewDirection(), [1.,0.,0.]);
 
-    gl.flush();
+  mat4.rotate(gl.mvMatrix, gl.mvMatrix,
+      -Math.PI / 2, [1.,0.,0.]);
+
+  // Place and draw object
+  mat4.translate(gl.mvMatrix, gl.mvMatrix,
+      [-10, -10, -0]);
+
+  ground.show(); 
+
+  gl.flush();
 }
 
 
 // myIdle
 // The idle function.
-function myIdle()
-{
-    var elapsedtime = getElapsedTime(0.1);
+function myIdle() {
+    let elapsedtime = getElapsedTime(0.1);
+    player.move(elapsedtime);
 
-    // Move object
-    if (rotflag)
-    {
-        rotangle += rotspeed * elapsedtime;
-        postRedisplay();
-    }
+    postRedisplay();
 }
 
+// Event listeners for controling player movement
+// keyup and keydown used to allow diagonal movement
+$(document).on('keydown', function(e) {
+  let keypressed = String.fromCharCode(e.which).toLowerCase();
+
+  if(!validMovementKey(keypressed)) {
+    return;
+  }
+
+  player.startMovement(keypressed);
+  postRedisplay();
+});
+
+$(document).on('keyup', function(e) {
+  let keypressed = String.fromCharCode(e.which).toLowerCase();
+  console.log(keypressed);
+
+  if(!validMovementKey(keypressed)) {
+    return;
+  }
+
+  player.stopMovement(keypressed);
+  postRedisplay();
+});
+
+
+function validMovementKey(key) {
+  return ( key === "w" || key === "a" || key === "s" || key === "d" ||
+           key === "'" || key === "%");
+}
 
 // myReshape
 // The reshape callback function. Called by quoll.js.
-function myReshape(w, h)
-{
+function myReshape(w, h) {
     // Set up viewport
     gl.viewport(0, 0, w, h);
 
@@ -303,50 +401,15 @@ function myReshape(w, h)
     mat4.perspective(gl.pMatrix,
                      Math.PI/180. * 60.,  // y field-of-view angle
                      w/h,                 // Viewport aspect ratio
-                     0.1, 30.);           // Near & far distances
+                     0.1, farClipping);           // Near & far distances
 }
 
 
-function myKeyboard(evt)
-{
-    var ch = keyFromEvent(evt);
+function myKeyboard(evt) {
+  // Handled with jQuery
+  let ch = keyFromEvent(evt);
 
-    // Note: Keys like [Esc] may be handled inconsistently between
-    // browsers. Alas! So we only deal with printable ASCII here.
 
-    switch (ch)
-    {
-    // Digits: select scene
-    case '1':
-        whichscene = 0;
-        postRedisplay();
-        break;
-    case '2':
-        whichscene = 1;
-        postRedisplay();
-        break;
-    case '3':
-        whichscene = 2;
-        postRedisplay();
-        break;
-    case '4':
-        whichscene = 3;
-        postRedisplay();
-        break;
-    case '5':
-        whichscene = 4;
-        postRedisplay();
-        break;
-    case 'r':  // R: Toggle rotation
-    case 'R':
-        rotflag = !rotflag;
-        break;
-    case 'b':  // B: Toggle background color
-    case 'B':
-        blackbackgnd = !blackbackgnd;
-        postRedisplay();
-        break;
-    }
 }
 </script>
 </body>
