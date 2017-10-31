@@ -1,0 +1,58 @@
+Class: Data Mining 
+Name: William Horn
+Date: Oct 24, 2017
+
+Evaluating Classification Performance:
+    Confusion Matrix:
+        - nothing to do with cost
+        - about what can be learned from looking @ matrix
+
+    Method:
+        - Given confusion mtx, from a data mining classifier.
+        - compare real matrix, to one from a random classifier.
+        - comparing actual predictor to hypothetical (random) predictor.
+    
+    - they contain counts of false positives/ false negatives
+
+Kappa Statistics:
+    - 0 means no better than random
+    - 1 means perfect prediction
+
+Counting Vs. Cost:
+    - count successes vs. errors and compare w/ hypothetical case.
+    - 0 cost for success.
+    - can have different costs for errors in different classification.
+    - weight counts for different errors and successes.
+
+    Cost:
+        - can also take into account other factors besides performance.
+        - also factor processing time to cost and such factors.
+
+        - essentially not just evaluating cost based on prediction performance.
+
+        When:
+            - initially derive rules by counting.
+            - then take total cost into account.
+
+        Cost Sensitive Learning:
+            - cost guides the learning process.
+            - take cost into account when deriving the rules.
+
+        Loss Function:
+            - measure of inability to separate instances into pure classification
+              w/o error.
+
+        Cost and Loss:
+            Cost:
+                - external to classification scheme
+
+            Loss:
+                - internal to classification scheme
+                - how greatly predicted probs, compare to actual probs.
+
+            - cost is affected by loss 
+            - higher loss, higher cost.
+
+        Bias:
+            - come up with scheme to favor mistakes that have low cost.
+            - over predictions vs under predictions.

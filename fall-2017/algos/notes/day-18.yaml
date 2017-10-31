@@ -1,0 +1,60 @@
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Oct 27, 2017
+
+Assignment 5:
+    Data Members:
+        - size
+        - capcaity
+        - pointer to array
+
+        Note:
+            - When you resize, over allocate.
+    
+        Amortized Constant-Time:
+            - over many operations, op avg constant time.
+
+            Example:
+                - vector increase capacity by either 2, or 1.5 every time it
+                  runs out of space.
+
+Node Based Structures:
+    - nodes contain ref's to other nodes.
+
+    Note: 
+        - logical === how we think about it.
+
+    Storing:
+        - can either store in separate memory chucks
+        - or can have an array of memory that store your nodes.
+    
+    Structure:
+        - each node has a usually has a pointer to another node.
+
+        Smart Pointer in <memory>:
+            unique_ptr<T>:
+                - no copy, can move
+                - default ctor, is empty -> 
+                Example: 
+                    unique_ptr<Foo> unp; // This is an 'empty' smart pointer
+
+            shared_ptr<T>:
+                - copiable
+                - includes ref count, deletes when 0.
+
+            Creating:
+                BAD: 
+                    Foo * p = new Foo(5, "abc", 3.2):
+                    unique_ptr<Foo> unp{p};
+
+                GOOD:
+                    auto unp = make_unique<Foo>(5, "abc", 3.2);
+    
+Linked Lists:
+    Issues:
+        - more mem than arrays
+        - slower, harder to cache
+
+    Pros, Cons:
+        Arrays: good for fast loopups
+        LL's: good for inserts/deletes
