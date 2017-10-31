@@ -1,6 +1,6 @@
 CMP=g++ -std=c++14 -Wall
-NAME=ttssarray
-OFILES=main.o suites.o $(NAME).o
+NAME=tssarray
+OFILES=main.o suites.o 
 
 all: $(NAME).out
 
@@ -12,9 +12,6 @@ suites.o: $(NAME)_test_suites.cpp $(NAME).h
 
 main.o: $(NAME)_test_main.cpp catch.hpp
 	$(CMP) -o main.o -c $(NAME)_test_main.cpp
-
-$(NAME).o: $(NAME).cpp $(NAME).h
-	$(CMP) -o $(NAME).o -c $(NAME).cpp
 
 clean:
 	rm $(OFILES) ksarray
