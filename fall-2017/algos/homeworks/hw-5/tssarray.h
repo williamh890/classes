@@ -19,8 +19,7 @@
 // For std::rotate
 #include <iterator>
 // For std::distance
-#include <iostream>
-// For std::cout, std::endl
+#include <iostream> // For std::cout, std::endl
 
 #define DEFAULT_CAP 10
 
@@ -177,6 +176,7 @@ private:
 
 }; // End class TSSArray
 
+
 // Copy ctor
 template<typename T>
 TSSArray<T>::TSSArray(const TSSArray<T> & other)
@@ -201,20 +201,45 @@ TSSArray<T>::TSSArray(TSSArray<T> && other) noexcept
 
 // Copy assignment
 template<typename T>
-TSSArray<T> & TSSArray<T>::operator=(const TSSArray<T> & rhs) {
-    // TODO: WRITE THIS!!!
-    return *this; // DUMMY
+TSSArray<T> & TSSArray<T>::operator=(const TSSArray<T> & other) {
+    //
+    // Self assignment
+    if (this != &other) {
+        // Reallocate if different sizes
+        if (other._capacity != _capacity) {
+            delete[] _data;
+            _size = 0;
+            _data = nullptr;
+
+            _data = new value_type[other._capacity];
+            _size = other._size;
+            _capacity = other._capacity;
+        }
+
+        std::copy(other._data, other._data + other._size, _data);
+    }
+
+    return *this;
 }
 
 
 // Move assignment
 template<typename T>
-TSSArray<T> & TSSArray<T>::operator=(TSSArray<T> && rhs) noexcept {
-    // TODO: WRITE THIS!!!
+TSSArray<T> & TSSArray<T>::operator=(TSSArray<T> && other) noexcept {
+    using std::swap;
+
+    if (this != &other) {
+
+        swap(_data , other._data);
+        swap(_capacity , other._capacity);
+        swap(_size , other._size);
+    }
+
     return *this; // DUMMY
 }
 
 
+// capacityResize
 template<typename T>
 void TSSArray<T>::capacityResize(size_type newCap) {
     if (newCap > _capacity) {
@@ -236,6 +261,7 @@ void TSSArray<T>::resize(size_type newSize) {
     if (newSize > _capacity) {
         capacityResize(newSize * getOverAllocAmount());
     }
+
     _size = newSize;
 }
 
@@ -252,8 +278,8 @@ TSSArray<T>::insert(TSSArray<T>::iterator pos,
         pos = begin() + posIndex;
     }
 
-    for (int i = _size - 1; i > posIndex; --i) {
-       _data[i + 1] = _data[i];
+    for (auto iter = end() - 1; iter != (pos - 1); --iter) {
+        *(iter + 1) = *iter;
     }
 
     _data[posIndex] = item;
@@ -268,18 +294,32 @@ template<typename T>
 typename TSSArray<T>::iterator
 TSSArray<T>::erase(TSSArray<T>::iterator pos)
 {
-    auto delIndex = std::distance(begin(), pos);
 
-    return begin();  // DUMMY
+    for (auto iter = pos; iter != end(); ++iter) {
+        *iter = *(iter + 1);
+    }
+
+    --_size;
+
+    return pos;  // DUMMY
 }
 
 
 // swap
 template<typename T>
 void TSSArray<T>::swap(TSSArray<T> & other) noexcept {
-    // TODO: WRITE THIS!!!
-}
+    auto tmpData = other._data;
+    auto tmpCap = other._capacity;
+    auto tmpSize = other._size;
 
+    other._size = _size;
+    other._capacity = _capacity;
+    other._data = _data;
+
+    _size = tmpSize;
+    _capacity = tmpCap;
+    _data = tmpData;
+}
 
 
 #endif //#ifndef FILE_SSARRAY_H_INCLUDED
