@@ -145,11 +145,11 @@ public:
                     const value_type & item);
 
     // erase
-    iterator erase(iterator pos);
+    iterator erase(iterator pos) noexcept;
 
     // push_back
     // InsertEnd operation.
-    // ??? Guarantee
+    // Strong Guarantee
     void push_back(const value_type & item) {
         insert(end(), item);
     }
@@ -158,8 +158,8 @@ public:
     // RemoveEnd operation.
     // Pre:
     //     _size > 0.
-    // ??? Guarantee
-    void pop_back() {
+    // No-Throw Guarantee
+    void pop_back() noexcept {
         erase(end()-1);
     }
 
@@ -178,6 +178,7 @@ private:
 
 
 // Copy ctor
+// Strong Guarentee
 template<typename T>
 TSSArray<T>::TSSArray(const TSSArray<T> & other)
     :_capacity(other._capacity),
@@ -197,6 +198,7 @@ TSSArray<T>::TSSArray(const TSSArray<T> & other)
 
 
 // Move ctor
+// No-Throw Guarentee
 template<typename T>
 TSSArray<T>::TSSArray(TSSArray<T> && other) noexcept
     :_capacity(other._capacity),
@@ -209,9 +211,9 @@ TSSArray<T>::TSSArray(TSSArray<T> && other) noexcept
 
 
 // Copy assignment
+// Strong Guarentee
 template<typename T>
 TSSArray<T> & TSSArray<T>::operator=(const TSSArray<T> & other) {
-    //
     // Self assignment
     if (this != &other) {
         // Reallocate if different sizes
@@ -233,6 +235,7 @@ TSSArray<T> & TSSArray<T>::operator=(const TSSArray<T> & other) {
 
 
 // Move assignment
+// No-Throw Guarentee
 template<typename T>
 TSSArray<T> & TSSArray<T>::operator=(TSSArray<T> && other) noexcept {
 
@@ -245,6 +248,7 @@ TSSArray<T> & TSSArray<T>::operator=(TSSArray<T> && other) noexcept {
 
 
 // capacityResize
+// Strong Guarantee
 template<typename T>
 void TSSArray<T>::capacityResize(size_type newCap) {
     if (newCap > _capacity) {
@@ -268,6 +272,7 @@ void TSSArray<T>::capacityResize(size_type newCap) {
 
 
 // resize
+// Strong Guarantee
 template<typename T>
 void TSSArray<T>::resize(size_type newSize) {
     if (newSize > _capacity) {
@@ -279,13 +284,13 @@ void TSSArray<T>::resize(size_type newSize) {
 
 
 // insert
+// Strong Guartentee
 template<typename T>
 typename TSSArray<T>::iterator
 TSSArray<T>::insert(TSSArray<T>::iterator pos,
                     const value_type & item) {
-
     // Check if need to resize array
-    if (++_size > _capacity) {
+    if (_size + 1 > _capacity) {
         auto posIndex = std::distance(begin(), pos);
         capacityResize(_capacity + 1);
         pos = begin() + posIndex;
@@ -293,24 +298,25 @@ TSSArray<T>::insert(TSSArray<T>::iterator pos,
 
     // Move the data
     for (auto iter = end() - 1; iter != (pos - 1); --iter) {
-        *(iter + 1) = *iter;
+        std::swap(*(iter + 1), *iter);
     }
 
-    // Insert the item
+    // Add the item
     *pos = item;
+    ++_size;
 
     return pos;
 }
 
 
 // erase
+// No-Throw Guarentee
 template<typename T>
 typename TSSArray<T>::iterator
-TSSArray<T>::erase(TSSArray<T>::iterator pos)
-{
-
+TSSArray<T>::erase(TSSArray<T>::iterator pos) noexcept {
+    // Move the data down
     for (auto iter = pos; iter != end(); ++iter) {
-        *iter = *(iter + 1);
+        std::swap(*iter, *(iter + 1));
     }
 
     --_size;
@@ -320,6 +326,7 @@ TSSArray<T>::erase(TSSArray<T>::iterator pos)
 
 
 // swap
+// No-Throw Guarentee
 template<typename T>
 void TSSArray<T>::swap(TSSArray<T> & other) noexcept {
     using std::swap;
