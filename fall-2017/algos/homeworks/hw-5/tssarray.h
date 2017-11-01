@@ -4,7 +4,7 @@
 //
 // For CS 311 Fall 2017
 // Header for class TSSArray
-// Stunningly Smart Template Array
+// Templated Stunningly Smart Array
 // Assignment 5
 
 #ifndef FILE_SSARRAY_H_INCLUDED
@@ -52,19 +52,26 @@ public:
     using iterator = value_type *;
     using const_iterator = const value_type *;
 
-// ***** TSSArray: internal-use constants *****
+// ***** TSSArray: internal-use functions *****
 private:
 
-    size_type getOverAllocAmount() {
+    // getOverAllocAmount
+    // Exception Neutral
+    // No-Throw Guarantee
+    size_type getOverAllocAmount() noexcept {
         return (size_type) 2;
     }
 
+    // capacityResize
+    // Exception Neutral
+    // Strong Guarantee
     void capacityResize(size_type newCap);
 
 // ***** TSSArray: ctors, op=, dctor
 public:
 
     // Default ctor & ctor from size
+    // Exception Neutral
     // Strong Guarantee
     explicit TSSArray(size_type size=size_type(0))
         :_capacity(std::max(size * getOverAllocAmount(), (size_type)DEFAULT_CAP)),
@@ -72,23 +79,29 @@ public:
          _data(new value_type[_capacity]) {}
 
     // Copy ctor
+    // Exception Neutral
     // Strong Guarantee
     TSSArray(const TSSArray & other);
 
     // Move ctor
+    // Exception Neutral
     // No-Throw Guarantee
     TSSArray(TSSArray && other) noexcept;
 
     // Dctor
+    // Exception Neutral
     // No-Throw Guarantee
-    ~TSSArray() {
+    ~TSSArray() noexcept {
         delete[] _data;
     }
 
     // Copy assignment
+    // Exception Neutral
+    // Strong Guarantee
     TSSArray & operator=(const TSSArray & rhs);
 
     // Move assignment
+    // Exception Neutral
     // No-Throw Guarantee
     TSSArray & operator=(TSSArray && rhs) noexcept;
 
@@ -96,11 +109,12 @@ public:
 public:
 
     // Operator[] - non-const & const
+    // Exception Neutral
     // No-Throw Guarantee
-    value_type & operator[](size_type index) {
+    value_type & operator[](size_type index) noexcept {
         return _data[index];
     }
-    const value_type & operator[](size_type index) const {
+    const value_type & operator[](size_type index) const noexcept {
         return _data[index];
     }
 
@@ -108,47 +122,58 @@ public:
 public:
 
     // size
+    // Exception Neutral
     // No-Throw Guarantee
-    size_type size() const {
+    size_type size() const noexcept {
         return _size;
     }
 
     // empty
+    // Exception Neutral
     // No-Throw Guarantee
-    bool empty() const {
+    bool empty() const noexcept {
         return size() == size_type(0);
     }
 
     // begin - non-const & const
+    // Exception Neutral
     // No-Throw Guarantee
-    iterator begin() {
+    iterator begin() noexcept {
         return _data;
     }
-    const_iterator begin() const {
+    const_iterator begin() const noexcept {
         return _data;
     }
 
     // end - non-const & const
+    // Exception Neutral
     // No-Throw Guarantee
-    iterator end() {
+    iterator end() noexcept {
         return begin() + size();
     }
-    const_iterator end() const {
+    const_iterator end() const noexcept {
         return begin() + size();
     }
 
     // resize
+    // Exception Neutral
+    // Strong Guarantee
     void resize(size_type newsize);
 
     // insert
+    // Exception Neutral
+    // Strong Guarantee
     iterator insert(iterator pos,
                     const value_type & item);
 
     // erase
+    // Exception Neutral
+    // No-Throw Guarantee
     iterator erase(iterator pos) noexcept;
 
     // push_back
     // InsertEnd operation.
+    // Exception Neutral
     // Strong Guarantee
     void push_back(const value_type & item) {
         insert(end(), item);
@@ -158,12 +183,14 @@ public:
     // RemoveEnd operation.
     // Pre:
     //     _size > 0.
+    // Exception Neutral
     // No-Throw Guarantee
     void pop_back() noexcept {
         erase(end()-1);
     }
 
     // swap
+    // Exception Neutral
     // No-Throw Guarantee
     void swap(TSSArray & other) noexcept;
 
@@ -178,7 +205,6 @@ private:
 
 
 // Copy ctor
-// Strong Guarentee
 template<typename T>
 TSSArray<T>::TSSArray(const TSSArray<T> & other)
     :_capacity(other._capacity),
@@ -198,12 +224,12 @@ TSSArray<T>::TSSArray(const TSSArray<T> & other)
 
 
 // Move ctor
-// No-Throw Guarentee
 template<typename T>
 TSSArray<T>::TSSArray(TSSArray<T> && other) noexcept
     :_capacity(other._capacity),
      _size(other._size),
      _data(other._data) {
+    // 'Destroy' other
     other._capacity = 0;
     other._size = 0;
     other._data = nullptr;
@@ -211,7 +237,6 @@ TSSArray<T>::TSSArray(TSSArray<T> && other) noexcept
 
 
 // Copy assignment
-// Strong Guarentee
 template<typename T>
 TSSArray<T> & TSSArray<T>::operator=(const TSSArray<T> & other) {
     // Self assignment
@@ -235,7 +260,6 @@ TSSArray<T> & TSSArray<T>::operator=(const TSSArray<T> & other) {
 
 
 // Move assignment
-// No-Throw Guarentee
 template<typename T>
 TSSArray<T> & TSSArray<T>::operator=(TSSArray<T> && other) noexcept {
 
@@ -243,36 +267,39 @@ TSSArray<T> & TSSArray<T>::operator=(TSSArray<T> && other) noexcept {
         this->swap(other);
     }
 
-    return *this; // DUMMY
+    return *this;
 }
 
 
 // capacityResize
-// Strong Guarantee
 template<typename T>
 void TSSArray<T>::capacityResize(size_type newCap) {
-    if (newCap > _capacity) {
-        newCap *=  getOverAllocAmount();
-        auto newLoc = new value_type[newCap];
-
-        try {
-            std::copy(begin(), end(), newLoc);
-        }
-        catch(...) {
-            delete [] newLoc;
-            throw;
-        }
-
-        delete[] _data;
-
-        _data = newLoc;
-        _capacity = newCap;
+    // Check if a resize is needed
+    if (newCap <= _capacity) {
+        return;
     }
+
+    // Do the resize
+    newCap *= getOverAllocAmount();
+    auto newLoc = new value_type[newCap];
+
+    try {
+        std::copy(begin(), end(), newLoc);
+    }
+    catch(...) {
+        delete [] newLoc;
+        throw;
+    }
+
+    // Copy was successful
+    delete[] _data;
+
+    _data = newLoc;
+    _capacity = newCap;
 }
 
 
 // resize
-// Strong Guarantee
 template<typename T>
 void TSSArray<T>::resize(size_type newSize) {
     if (newSize > _capacity) {
@@ -284,7 +311,6 @@ void TSSArray<T>::resize(size_type newSize) {
 
 
 // insert
-// Strong Guartentee
 template<typename T>
 typename TSSArray<T>::iterator
 TSSArray<T>::insert(TSSArray<T>::iterator pos,
@@ -310,7 +336,6 @@ TSSArray<T>::insert(TSSArray<T>::iterator pos,
 
 
 // erase
-// No-Throw Guarentee
 template<typename T>
 typename TSSArray<T>::iterator
 TSSArray<T>::erase(TSSArray<T>::iterator pos) noexcept {
@@ -326,7 +351,6 @@ TSSArray<T>::erase(TSSArray<T>::iterator pos) noexcept {
 
 
 // swap
-// No-Throw Guarentee
 template<typename T>
 void TSSArray<T>::swap(TSSArray<T> & other) noexcept {
     using std::swap;
