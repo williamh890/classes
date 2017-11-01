@@ -259,7 +259,6 @@ void TSSArray<T>::capacityResize(size_type newCap) {
             throw;
         }
 
-
         delete[] _data;
 
         _data = newLoc;
@@ -284,21 +283,23 @@ template<typename T>
 typename TSSArray<T>::iterator
 TSSArray<T>::insert(TSSArray<T>::iterator pos,
                     const value_type & item) {
-    auto posIndex = std::distance(begin(), pos);
+
     // Check if need to resize array
-    if (_size + 1 > _capacity) {
+    if (++_size > _capacity) {
+        auto posIndex = std::distance(begin(), pos);
         capacityResize(_capacity + 1);
         pos = begin() + posIndex;
     }
 
+    // Move the data
     for (auto iter = end() - 1; iter != (pos - 1); --iter) {
         *(iter + 1) = *iter;
     }
 
-    _data[posIndex] = item;
-    ++_size;
+    // Insert the item
+    *pos = item;
 
-    return pos;  // DUMMY
+    return pos;
 }
 
 
