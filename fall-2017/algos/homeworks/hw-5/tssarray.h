@@ -183,7 +183,16 @@ TSSArray<T>::TSSArray(const TSSArray<T> & other)
     :_capacity(other._capacity),
      _size(other._size),
      _data(new value_type[_capacity]) {
-    std::copy(other.begin(), other.end(), begin());
+
+
+    try {
+        std::copy(other.begin(), other.end(), begin());
+     }
+    catch(...) {
+        delete [] _data;
+        throw;
+    }
+
 }
 
 
@@ -226,13 +235,9 @@ TSSArray<T> & TSSArray<T>::operator=(const TSSArray<T> & other) {
 // Move assignment
 template<typename T>
 TSSArray<T> & TSSArray<T>::operator=(TSSArray<T> && other) noexcept {
-    using std::swap;
 
     if (this != &other) {
-
-        swap(_data , other._data);
-        swap(_capacity , other._capacity);
-        swap(_size , other._size);
+        this->swap(other);
     }
 
     return *this; // DUMMY
@@ -246,7 +251,14 @@ void TSSArray<T>::capacityResize(size_type newCap) {
         newCap *=  getOverAllocAmount();
         auto newLoc = new value_type[newCap];
 
-        std::copy(begin(), end(), newLoc);
+        try {
+            std::copy(begin(), end(), newLoc);
+        }
+        catch(...) {
+            delete [] newLoc;
+            throw;
+        }
+
 
         delete[] _data;
 
@@ -254,6 +266,7 @@ void TSSArray<T>::capacityResize(size_type newCap) {
         _capacity = newCap;
     }
 }
+
 
 // resize
 template<typename T>
@@ -308,17 +321,11 @@ TSSArray<T>::erase(TSSArray<T>::iterator pos)
 // swap
 template<typename T>
 void TSSArray<T>::swap(TSSArray<T> & other) noexcept {
-    auto tmpData = other._data;
-    auto tmpCap = other._capacity;
-    auto tmpSize = other._size;
+    using std::swap;
 
-    other._size = _size;
-    other._capacity = _capacity;
-    other._data = _data;
-
-    _size = tmpSize;
-    _capacity = tmpCap;
-    _data = tmpData;
+    swap(_data , other._data);
+    swap(_capacity , other._capacity);
+    swap(_size , other._size);
 }
 
 
