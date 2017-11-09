@@ -10,68 +10,148 @@
 #include <utility>
 // For std::pair
 // For std::swap
+#include <iostream>
+// For testing
 
 template<typename ValType>
 void reverseList(std::shared_ptr<LLNode2<ValType> > & head) {
-    auto newHead = std::shared_ptr<LLNode2<ValType> >(new LLNode2<ValType>(ValType()));
 
-    while(head != nullptr) {
-        auto oldHead = head;
-        head = head->_next;
-        newHead = oldHead;
-        oldHead->_next = newHead->_next;
+    if (isEmpty(head))  {
+        return;
     }
 
-    head = newHead;
+    // Reverse the list
+    std::shared_ptr<LLNode2<ValType> > reversed = nullptr;
+    std::shared_ptr<LLNode2<ValType> > pivot = nullptr;
+
+    while(head != nullptr) {
+        pivot = head;
+        head = head->_next;
+        pivot->_next = reversed;
+        reversed = pivot;
+    }
+
+    head = reversed;
 }
 
 template<typename KeyType, typename ValType>
 class LLMap {
-    public:
+public:
+    // Class types
+    using KVType = std::pair<KeyType, ValType>;
+    using NodeType = LLNode2<KVType>;
+    using NodePtrType = std::shared_ptr<NodeType>;
 
-        // ************* Class Types ****************
+    using size_type = std::size_t;
 
-        using KVType = std::pair<KeyType, ValType>;
-        using NodeType = std::shared_ptr<LLNode2<KVType>>;
+private:
+    std::shared_ptr<LLNode2<KVType> > head;
 
-        using size_type = std::size_t;
+public:
+    // Ctor
+    LLMap() {};
 
-        // **************** Ctor ********************
-        // Ctor
-        LLMap(): head(NodeType()){};
+    // Deleted Functions
+    LLMap(const LLMap & other) = delete;
+    LLMap(const LLMap && other) = delete;
 
-        LLMap(const LLMap & other) = delete;
-        LLMap(const LLMap && other) = delete;
+    size_type size() const {
+        NodePtrType curr = head;
+        size_t n = 0;
 
-        // *********** Member Functions *************
-        size_type size() const {
-            return 0; // DUMMY
+        while (curr) {
+            curr = curr->_next;
+            ++n;
         }
 
-        bool empty() const {
-            return true; // DUMMY
+        return n;
+    }
+
+    bool empty() const {
+        return !head;
+    }
+
+
+    const ValType * find(KeyType key) const {
+        NodePtrType  curr = head;
+
+        while (curr) {
+            if (curr->_data.first == key) {
+                return &(curr->_data.second);
+            }
+
+            curr = curr->_next;
         }
 
-        ValType * find(KeyType key) const {
-            return nullptr;
+        return nullptr;
+    }
+
+    ValType * find(KeyType key) {
+        NodePtrType curr = head;
+
+        while (curr) {
+            if (curr->_data.first == key) {
+                return &curr->_data.second;
+            }
+
+            curr = curr->_next;
         }
 
-        void insert(KeyType key, ValType val) {
+        return nullptr;
+    }
 
+    void insert(KeyType key, ValType val) {
+        if (empty()) {
+            head = std::make_shared<NodeType>(std::make_pair(key, val));
+            return;
         }
 
-        void erase(KeyType key) {
+        NodePtrType curr = head;
 
+        while (curr->_next) {
+            if (curr->_data.first == key) {
+                curr->_data.second = val;
+                return;
+            }
+
+            curr = curr->_next;
         }
 
-        template <typename FuncType>
-        void traverse(FuncType func) {
+        curr->_next = std::make_shared<NodeType>(std::make_pair(key, val));
+    }
 
+    void erase(KeyType key) {
+        if (empty()) {
+            return;
         }
 
+        NodePtrType curr = head;
+        NodePtrType prev = nullptr;
 
-    private:
-        std::shared_ptr<LLNode2<KVType> > head;
+        while (curr && curr->_data.first != key) {
+            prev = curr;
+            curr = curr->_next;
+        }
+
+        // If first Node
+        if (!prev && curr->_data.first == key) {
+            head = head->_next;
+        }
+        else {
+            prev->_next = curr->_next;;
+        }
+    }
+
+    template <typename FuncType>
+    void traverse(FuncType func) {
+        NodePtrType curr = head;
+
+        while (curr) {
+            func(curr->_data.first, curr->_data.second);
+            curr = curr->_next;
+        }
+    }
+
 };
 
 
