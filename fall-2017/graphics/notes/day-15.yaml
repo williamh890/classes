@@ -1,0 +1,58 @@
+Class: Computer Graphics 
+Name: William Horn
+Date: Nov 08, 2017
+
+Online Quiz:
+    - on blackboard
+    - due by 5pm Sunday
+    - posted Thursday evening
+
+Overview:
+    - Texture Examples 
+
+    Texture related effects:
+        - reflection mapping 
+        - refraction mapping
+        - Drawing fuzzy blobs
+        - Perlin Noise (procedural textures)
+        - Billboarding
+        
+
+Reference:
+    - All the steps to make a texture in webgl.
+    - "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Using_textures_in_WebGL"
+
+Drawing Fuzzy Blobs:
+    Things to do:
+        - generate texture image
+        - use the texture in rendering, [application, shader (mostly fragment shader)]
+    
+    Drawing: 
+        - looks same from every direction  
+        - to draw, make a picture           |
+          picture always faces camera       |->  Billboarding
+
+
+Billboarding:
+    - always face texture/polygon towards camera
+    - every animation frame
+
+    Types:
+        Cylindrical Billboarding: 
+            can rotate around 1 axis.
+        Spherical Billboarding:
+            rotate any direction, don't care which way is up.
+        Oriented Spherical:
+            same as spherical, but care about up direction.
+
+    Spherical Billboarding:
+        - have polygon w/ normal vector (n) and target (c)
+        - angle to rotate is arccos of the dot of 2 vectors (if n and c are unit vecs)
+        - line to rotate is cross product of normal and target ( n X c )
+        Note: 
+            - working in object coordinates
+            - rotation happens around obj origin
+
+        Problem: 
+            - how to find vec pointing to camera in object coords
+            - whereAmI in quoll.js
