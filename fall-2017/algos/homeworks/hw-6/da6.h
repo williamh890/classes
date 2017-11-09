@@ -1,3 +1,7 @@
+// da6.h
+// William Horn
+// Nov 8, 2017
+// Code for cs311 assigment 6
 
 #ifndef DA6_H
 #define DA6_H
