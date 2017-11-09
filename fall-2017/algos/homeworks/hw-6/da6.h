@@ -6,13 +6,23 @@
 // For LLNode2
 #include <memory>
 // For std::shared_ptr
+// For std::make_shared
 #include <utility>
 // For std::pair
-
+// For std::swap
 
 template<typename ValType>
 void reverseList(std::shared_ptr<LLNode2<ValType> > & head) {
+    auto newHead = std::shared_ptr<LLNode2<ValType> >(new LLNode2<ValType>(ValType()));
 
+    while(head != nullptr) {
+        auto oldHead = head;
+        head = head->_next;
+        newHead = oldHead;
+        oldHead->_next = newHead->_next;
+    }
+
+    head = newHead;
 }
 
 template<typename KeyType, typename ValType>
