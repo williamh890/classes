@@ -17,6 +17,12 @@
 #include <iostream>
 // For testing
 
+// reverseList
+// Reverse a linked list in place
+// Post:
+//  head's nodes will be reversed
+// No-throw Guarantee
+// Exception Neutral
 template<typename ValType>
 void reverseList(std::shared_ptr<LLNode2<ValType> > & head) {
 
@@ -38,6 +44,8 @@ void reverseList(std::shared_ptr<LLNode2<ValType> > & head) {
     head = reversed;
 }
 
+// LLMap
+// Key value structure using with a linked list
 template<typename KeyType, typename ValType>
 class LLMap {
 public:
@@ -49,17 +57,25 @@ public:
     using size_type = std::size_t;
 
 private:
-    std::shared_ptr<LLNode2<KVType> > head;
+    NodePtrType head; // Head of the LL
 
 public:
     // Ctor
-    LLMap() {};
+    // Post: Head is nullptr of NodePtrType
+    // No-Throw Guarantee
+    // Exception Neutral
+    LLMap() noexcept {};
 
     // Deleted Functions
     LLMap(const LLMap & other) = delete;
     LLMap(const LLMap && other) = delete;
+    LLMap& operator=(const LLMap & other) = delete;
+    LLMap& operator=(const LLMap && other) = delete;
 
-    size_type size() const {
+    // size
+    // No-Throw Guarantee
+    // Exception Neutral
+    size_type size() const noexcept {
         NodePtrType curr = head;
         size_t n = 0;
 
@@ -71,12 +87,23 @@ public:
         return n;
     }
 
-    bool empty() const {
+    // empty
+    // Checks if the map is empty
+    // No-Throw Guarantee
+    // Exception Neutral
+    bool empty() const noexcept {
         return !head;
     }
 
 
-    const ValType * find(KeyType key) const {
+    // find (const)
+    // Find a value in the map
+    // Post:
+    //      pointer to data if found,
+    //      else nullptr if not
+    // No-Throw Guarantee
+    // Exception Neutral
+    const ValType * find(KeyType key) const noexcept {
         NodePtrType  curr = head;
 
         while (curr) {
@@ -90,12 +117,13 @@ public:
         return nullptr;
     }
 
-    ValType * find(KeyType key) {
+    // find (non const)
+    ValType * find(KeyType key) noexcept {
         NodePtrType curr = head;
 
         while (curr) {
             if (curr->_data.first == key) {
-                return &curr->_data.second;
+                return &(curr->_data.second);
             }
 
             curr = curr->_next;
@@ -104,7 +132,14 @@ public:
         return nullptr;
     }
 
+    // insert
+    // post:
+    //   if key exists data will be replaced
+    //   else no data will be erased
+    // Strong Guarantee
+    // Exception Neutral
     void insert(KeyType key, ValType val) {
+        // Make first node if empty
         if (empty()) {
             head = std::make_shared<NodeType>(std::make_pair(key, val));
             return;
@@ -113,6 +148,7 @@ public:
         NodePtrType curr = head;
 
         while (curr->_next) {
+            // Replace if key exists
             if (curr->_data.first == key) {
                 curr->_data.second = val;
                 return;
@@ -121,10 +157,15 @@ public:
             curr = curr->_next;
         }
 
+        // Make a new node at the end
         curr->_next = std::make_shared<NodeType>(std::make_pair(key, val));
     }
 
-    void erase(KeyType key) {
+    // erase
+    // erase key if it exists
+    // No-Throw Guarantee
+    // Exception Neutral
+    void erase(KeyType key) noexcept {
         if (empty()) {
             return;
         }
@@ -146,6 +187,10 @@ public:
         }
     }
 
+    // traverse
+    // call a function on every key/val pair in list
+    // Strong Guarantee
+    // Exception Neutral
     template <typename FuncType>
     void traverse(FuncType func) {
         NodePtrType curr = head;
