@@ -1,5 +1,5 @@
-// treesort.h  INCOMPLETE
-// Glenn G. Chappell
+// treesort.h
+// William Horn
 // 15 Nov 2017
 //
 // For CS 311 Fall 2017
@@ -23,108 +23,68 @@
 // For std::shared_ptr
 // For std::make_shared
 
+// Keep helpers local to file
+namespace {
+    // Node
+    // helper struct for treesort function
+    template<typename ValType>
+    struct Node {
+        ValType _data;
+        std::shared_ptr<Node> _lChild;
+        std::shared_ptr<Node> _rChild;
+    };
 
-template <typename ValType>
-class TreeNode {
-    private:
-        using value_type = ValType;
-        using NodePtrType = std::shared_ptr<TreeNode>;
 
-    public:
-        // ctor
-        TreeNode(value_type data): data_(data) {}
-
-        // op<
-        bool operator<(const TreeNode & other) {
-            return data_ < other.data_;
+    // insert
+    // Inserts value into sub-tree pointed to by curr
+    // post: curr will have toInserted added to it.
+    template <typename ValType>
+    std::shared_ptr<Node<ValType>>
+    insert(ValType toInsert, std::shared_ptr<Node<ValType>> & curr) {
+        // base case
+        if (!curr) {
+            curr = std::make_shared<Node<ValType>>();
+            curr->_data = toInsert;
+            return curr;
         }
 
-        // make
-        // pre: FDIter value type == value_type
-        template<typename FDIter>
-        void make(FDIter first, FDIter last) {
-            for(auto curr = first; curr != last; ++curr)  {
-                insert(*curr);
-            }
+        if (toInsert < curr->_data) {
+            curr->_lChild = insert(toInsert, curr->_lChild);
+        } else {
+            curr->_rChild = insert(toInsert, curr->_rChild);
         }
 
-        void insert(value_type toInsert) {
+        return curr;
+    }
 
-            if (toInsert < data_) {
-                std::cout << " Inserting left: " << toInsert << std::endl;
-                if (!lChild_) {
-                    lChild_ = std::make_shared<TreeNode>(toInsert);
-                    return;
-                }
 
-                insert(lChild_, toInsert);
-            }
-
-            else {
-                if (!rChild_) {
-                    std::cout << " Inserting right: " << toInsert << std::endl;
-                    rChild_ = std::make_shared<TreeNode>(toInsert);
-                    return;
-                }
-
-                insert(rChild_, toInsert);
-            }
+    // traverse
+    // pre: number of nodes in the tree == iter range
+    // post: it will point to a sorted range length == number of nodes in tree
+    template <typename ValType, typename FDIter>
+    void traverse(std::shared_ptr<Node<ValType>> curr, FDIter & it) {
+        if (curr->_lChild) {
+            traverse(curr->_lChild, it);
         }
 
-        void traverse() {
-            std::cout << "l: " << lChild_->data_ << ", r: " << rChild_->data_ << std::endl;
+        *it = curr->_data;
+        ++it;
+
+        if (curr->_rChild) {
+            traverse(curr->_rChild, it);
         }
-    private:
-
-        void insert(NodePtrType & curr, value_type & toInsert) {
-
-            if (toInsert < curr->data_) {
-                // Inserting in left node
-                std::cout << " Inserting left: " << toInsert << std::endl;
-                if (!curr->lChild_) {
-                    curr->lChild_ = std::make_shared<TreeNode>(toInsert);
-                    return;
-                }
-
-                insert(curr->lChild_, toInsert);
-            }
-            else {
-                std::cout << " Inserting right: " << toInsert << std::endl;
-                // Inserting in right child
-                if (!curr->rChild_) {
-                    curr->rChild_ = std::make_shared<TreeNode>(toInsert);
-                    return;
-                }
-
-                // right child exists
-                insert(curr->rChild_, toInsert);
-            }
-        }
-
-    private:
-        NodePtrType lChild_;
-        NodePtrType rChild_;
-        value_type data_;
-};
-
-template <typename ValType>
-void insert(TreeNode<ValType> & root) {
-
+    }
 }
 
-template <typename ValType>
-void traverse(TreeNode<ValType> & root) {
-
-}
 
 // treesort
 // Sort a given range using Treesort.
 // Pre:
-//     ???
+//     FDIters point to a valid range
 // Requirements on Types:
-//     ???
+//     iter value type must have a < operator, copy ctor and assignment op
 // Exception safety guarantee:
-//     ???
+//     Exception Neutral
 template<typename FDIter>
 void treesort(FDIter first, FDIter last) {
     size_t size = std::distance(first, last);
@@ -134,12 +94,16 @@ void treesort(FDIter first, FDIter last) {
     }
 
     using ValType = typename std::remove_reference<decltype(*first)>::type;
+    using NodeType = Node<ValType>;
 
-    TreeNode<ValType> root(*first);
+    std::shared_ptr<NodeType> root = nullptr;
 
-    root.make(++first , last);
+    for (auto it = first; it != last; ++it) {
+       insert(*it, root);
+    }
+
+    traverse(root, first);
 }
-
 
 #endif //#ifndef FILE_TREESORT_H_INCLUDED
 
