@@ -1,0 +1,54 @@
+Class: Computer Graphics 
+Name: William Horn
+Date: Nov 20, 2017
+
+Reflection Mapping:
+    Methods:
+        Too simple:
+            - line-plane intersection behind camera.
+            - take where the reflection of camera vector on the surface 
+              intersection with this plane
+        Sphere Map:
+            - have sphere of all possible reflection angles
+            - add <0,0,1> too the reflection vector
+
+            note: Values around the edge of sphere, 
+                  where direction change rapidly can create artifacts.
+
+        Issues:
+            - rendering to a texture.
+            - make and user a cube map 
+              (six 2d textures arranged logically to form a cube).
+              we are inside the cube.
+
+Rendering to 2D texture (RTT):
+    termonology:
+        framebuffer:
+            - where the data goes...
+
+            Render Buffers:
+                Depth Buffer:
+                    - part of the frame buffer
+                ColorBuffer:
+                    - where all the color goes
+
+                Other:
+                    Accumulation Buffer:
+                        - repeated blending of whole images (motion blur)
+                    Stencil Buffer:
+                        - do stencil test
+                        - tests between stencil buffer and depth buffer and conditionally discard fragment.
+                
+        Mehod:
+            - create our own frame buffer off screen.
+            - attach render buffers to it. (depth, color)
+            - the color buffer is a texture.
+
+
+        Graph:
+                    | FBO |     Frame buffer object
+                   /       \
+              | RBO |    | Text |  Render buffer,  Texture object
+                 |           |
+  (FBO's depth buffer)    (color buffer)
+

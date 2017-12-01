@@ -1,0 +1,29 @@
+Class: Computer Graphics 
+Name: William Horn
+Date: Nov 13, 2017
+
+
+Fuzzy Blob (example):
+    Techniques:
+        Billboarding - Face polygon towards the camera (spherical, cylindrical, oriented spherical).
+            Steps (spherical):
+                - find camera position
+                - find vector from normal to camera
+            Steps (cylindrical):
+                - set y component to 0
+                - do cylindrical billboarding
+
+    Steps:
+        Generate fuzzy blob texture:
+            - user bunch of math to generate textures
+            - see final code
+
+Blending: 
+    - enable and set up how it workds
+    call:
+        gl.enable(gl.BLEND)
+        gl.blendFunc(sfactor, dfactor):
+            sfactor: source color.
+            dfactor: color that is in the frame buffer.
+
+            note: ^ both these take gl constants

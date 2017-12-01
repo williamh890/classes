@@ -1,0 +1,16 @@
+Class: Computer Graphics 
+Name: William Horn
+Date: Nov 22, 2017
+
+Reflection Mapping:
+    note: 
+        - ray tracing is easy to write, looks good, but has poor performance
+
+WebGL: 
+    Kinds of Commands:
+        - Set State
+        - Render
+        - Get State
+
+    Get viewport dimensions:
+           
