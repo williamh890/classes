@@ -11,3 +11,5 @@ class-repo/*
 
 *_main.cpp
 *_suites.cpp
+
+fps-snow/*

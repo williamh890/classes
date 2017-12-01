@@ -17,7 +17,7 @@ def load_size_col(file_path):
 
             sizes.append(row[size_row_index])
 
-        return sizes, original_data
+    return sizes, original_data
 
 
 def unit_converter(sizes):
