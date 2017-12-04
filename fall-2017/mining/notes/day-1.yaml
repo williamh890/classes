@@ -9,7 +9,7 @@ Syllubus:
     Software: Weka
     Website:
         http://www.math.uaa.alaska.edu/~afkas
-    
+
     Project and Papers:
         Use some data from asf to get an original data set to analyz
 
@@ -21,22 +21,22 @@ Syllubus:
             There are youtube videos going over thing more in depth from the book
     Test:
         Dates are fixed for projects and tests.
-    
+
 Data Mining and Machine learning:
     Data Mining:
-        Goal: 
+        Goal:
             Discover patterns in data
         Patterns:
             Meaningful, that they lead to some advantage.
-            what category? relation to other instances? 
+            what category? relation to other instances?
         Note:
             Good pattern allow us to make predictions on new data.
     Machine Learning (Pattern Discovery):
-        Goal: 
+        Goal:
             Mimic human inteligence.
-        Algorithms designed to look through data for patterns     
+        Algorithms designed to look through data for patterns
 
-        Note:   
+        Note:
             Machine learning is a loaded term
 
     Expressoins of Patterns:
@@ -49,10 +49,10 @@ Data Mining and Machine learning:
                 Genetic Algo
 
         Transparent Box:
-          
-            Method that shows the structure of the data and along with giving 
+
+            Method that shows the structure of the data and along with giving
             results along with increases the human understanding of the data.
-           
+
             Note:
                 Algo needs to explain stituation.
 
@@ -60,12 +60,12 @@ Data Mining and Machine learning:
             Example (unrealastic):
                 Lookup Table
 
-            In the real world, there are too many variables/options to model data 
+            In the real world, there are too many variables/options to model data
             w/ simple lookup table.
 
             Example:
                 Set of rules.
-            
+
             Example:
                 Graphically with a descition tree.
 
@@ -76,30 +76,30 @@ Data Mining and Machine learning:
 Simple Examples:
     Weather and other Problems:
         The weather problem
-        
+
         variables:
             (outlook, temp, humidity, windy) -> play
 
-            Note: The outlook depends on the other colomns. 
-        
+            Note: The outlook depends on the other colomns.
+
         Descition List:
             Organized if/then rule serially to represent the structure of the data.
 
             Note:
                 Exaulity: Boil down to yes/no questions.
-                Inequality: If numeric values are presnet 
-        
+                Inequality: If numeric values are presnet
+
         Assosiation Rules:
             How independtend variables affect the outcome
 
     Representing Structure:
-        exahstive listing of all cases contains all of the "knowledge" in the problem, 
+        exahstive listing of all cases contains all of the "knowledge" in the problem,
         but it doesn't need to be organized.
 
     Descition Tree:
-        Vertex: is a comparision. 
+        Vertex: is a comparision.
         Conclusions: are leafs
 
     Visualizations: Charts, Rules, Trees
 
-        
+

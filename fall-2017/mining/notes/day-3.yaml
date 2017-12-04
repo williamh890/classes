@@ -8,37 +8,37 @@ Concept Description:
         - operation -> can be applied to actual examples
     Discovery Types:
         Concepts:
-            Classification -> (groups already known) prediction 
+            Classification -> (groups already known) prediction
             Clustering -> (finding categories for the data) outliers
             Association -> finding dependencies among values
-        
+
         Examples:
             Classification problems: weather, contact lenses, iris, labor contracts
                 note: Generally though to be mutually exclusive, but more complicated data
                       may be classified multiple ways
 
 Supervised Learning:
-    Classification learning is supervised with a training set 
-    
+    Classification learning is supervised with a training set
+
     Train:
         structure is derived examining example set where classification is known.
 
-    Test: 
+    Test:
         Apply to another data set  with known classification and check results.
-    
+
 Association Rules:
     Number of rules may approach n(n-1)/2 for n attributes
 
-    Note: best algorithms allow quick eliminating as many of these as quickly possible. 
+    Note: best algorithms allow quick eliminating as many of these as quickly possible.
 
     Support for association rules:
         assoc rule X = (x1, x2,...xi) -> y be a data set with m instances
         if left hand side known, right hand side can be predicted.
 
-        Def: 
+        Def:
             X -> Y is the count of the number of instances where the combination of x values, X, occurs in the data set, divided by m.
 
-        Summary: 
+        Summary:
             Note the association rule interesting if it occurs frequently enough
 
     Confidence:
@@ -53,7 +53,7 @@ Association Rules:
         Note: Accuracy is used to define this in the book.
 
     Clustering:
-        Problems: 
+        Problems:
             Is it possible to determine the cluster from a mass of data?
             Is it possible to classify future instances?
 
@@ -75,10 +75,10 @@ Examples:
 
     Should be tabular:
         Data form: Instances with attributes.
-       
+
         Note: don't always follow db rules when putting into tabular form
 
-    Problem: 
+    Problem:
         not all data is naturally tabular...
 
         Question: How to convert such data to tabular form?
@@ -87,7 +87,7 @@ Examples:
         Relational databases must be merged into one table for data mining algorithm to work.
 
     Note:
-        Not just about trying to find info about the yes cases. Its also going to know 
+        Not just about trying to find info about the yes cases. Its also going to know
         something about the 'no' cases, which is just as important.
 
     Recursive Relationships:
@@ -98,7 +98,7 @@ Examples:
         One-to-many Relationships:
             Result in parent-key -> foreign key relationship
 
-        Example: 
+        Example:
             The time-series-granules table. Straight list of granules, with each
             granule having its associated job_id.
 
@@ -122,17 +122,17 @@ Attribute:
 
         Data Types:
             numeric vs. non-numeric
-            
+
             Spectrum:
                 Nominal = unordered, unmeasurable named categories
                 Example:
                     sunny, overcast, rainy
 
-            Ordinal: 
+            Ordinal:
                 ordered named categories.
                 Example:
                     hot -> mild -> cool
-            Interval: 
+            Interval:
                 supports subtraction between values.
                 Example: time expressed in years.
             Ratio:
@@ -140,9 +140,9 @@ Attribute:
                 Example: physical distance.
 
             Note:
-                Principle: 
+                Principle:
                     data mining has to handle all possible types of data,
-                practice: 
+                practice:
                     numeric or non-numeric
 
 Weka:
