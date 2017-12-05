@@ -14,4 +14,4 @@ main.o: $(NAME)_test_main.cpp catch.hpp
 	$(CMP) -o main.o -c $(NAME)_test_main.cpp
 
 clean:
-	rm $(OFILES) ksarray
+	rm $(OFILES) *.out
