@@ -1,3 +1,7 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+
 def s_xy(x, y):
     assert len(x) == len(y)
 
@@ -40,6 +44,11 @@ def q17():
     r = LeastSquares(x, y)
 
     print(f"y = {r.b0: 2.3f} + {r.b1: 2.3f}x")
+
+    print(np.poly1d(np.polyfit(x, y, 1)))
+    plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)))
+    plt.scatter(x, y, alpha=.3)
+    plt.savefig('17a.png')
 
 
 if __name__ == "__main__":
