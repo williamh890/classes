@@ -1,0 +1,708 @@
+Class:
+    Data Mining
+Name:
+    William Horn
+Date:
+    Aug 29, 2017
+
+Syllubus:
+    Software: Weka
+    Website:
+        http://www.math.uaa.alaska.edu/~afkas
+
+    Project and Papers:
+        Use some data from asf to get an original data set to analyz
+
+        Ruberics:
+            on the website.
+    Book:
+        The book is essentially a manual for free software
+        Note:
+            There are youtube videos going over thing more in depth from the book
+    Test:
+        Dates are fixed for projects and tests.
+
+Data Mining and Machine learning:
+    Data Mining:
+        Goal:
+            Discover patterns in data
+        Patterns:
+            Meaningful, that they lead to some advantage.
+            what category? relation to other instances?
+        Note:
+            Good pattern allow us to make predictions on new data.
+    Machine Learning (Pattern Discovery):
+        Goal:
+            Mimic human inteligence.
+        Algorithms designed to look through data for patterns
+
+        Note:
+            Machine learning is a loaded term
+
+    Expressoins of Patterns:
+        Terms:
+            black box, transparent box.
+
+        Black Box:
+            The method doesn't expain the results, even if it does give them
+            Example:
+                Genetic Algo
+
+        Transparent Box:
+
+            Method that shows the structure of the data and along with giving
+            results along with increases the human understanding of the data.
+
+            Note:
+                Algo needs to explain stituation.
+
+        Describing Structual Patterns:
+            Example (unrealastic):
+                Lookup Table
+
+            In the real world, there are too many variables/options to model data
+            w/ simple lookup table.
+
+            Example:
+                Set of rules.
+
+            Example:
+                Graphically with a descition tree.
+
+            Example:
+                first 5 col are dependent variables.
+                6th on is the dependent output.
+
+Simple Examples:
+    Weather and other Problems:
+        The weather problem
+
+        variables:
+            (outlook, temp, humidity, windy) -> play
+
+            Note: The outlook depends on the other colomns.
+
+        Descition List:
+            Organized if/then rule serially to represent the structure of the data.
+
+            Note:
+                Exaulity: Boil down to yes/no questions.
+                Inequality: If numeric values are presnet
+
+        Assosiation Rules:
+            How independtend variables affect the outcome
+
+    Representing Structure:
+        exahstive listing of all cases contains all of the "knowledge" in the problem,
+        but it doesn't need to be organized.
+
+    Descition Tree:
+        Vertex: is a comparision.
+        Conclusions: are leafs
+
+    Visualizations: Charts, Rules, Trees
+
+Class: Data Mining
+Name: William Horn
+Date: Aug 31, 2017
+Website: http://www.math.uaa.alaska.edu/~afkas
+
+Feilded Applications:
+    A survey of some practiacal systems that have been implimented.
+
+    Web Mining:
+        Companies: Google, Facebook
+
+        Concept:
+            Giantic mass of data constantly being analyzed.
+
+    Money Lending:
+        Surveying people to see if person is going to pay money back
+
+        Concept:
+            Analyze surveys that people have already taken, which the outcome
+            is already known. Predication based off that.
+
+    Screening Images:
+        Process an image to find oil slicks.
+
+        Trainable:
+            The system could be tweaked to identify different things,
+            not just slicks.
+        Note:
+            type 1 vs. type 2 error: false positive vs. false negative.
+            examples:
+                -oil was there, didn't find it.
+                -fould oil there, none actually there.
+                
+    Load Forcasting:
+        Predict the demand for electricity
+
+        Concept:
+            Only generate electricity when the system needs it.
+
+        Note:
+            Model was built to predict this.
+
+    Note:
+        System is developed until further accuracy is more costly then the benifits
+        the accuracy would give.
+
+Class: Data Mining
+Name: William Horn
+Date: Sep 5, 2017
+
+Concept Description:
+    Requirements:
+        - intelligible -> understood, discussed, disputed
+        - operation -> can be applied to actual examples
+    Discovery Types:
+        Concepts:
+            Classification -> (groups already known) prediction
+            Clustering -> (finding categories for the data) outliers
+            Association -> finding dependencies among values
+
+        Examples:
+            Classification problems: weather, contact lenses, iris, labor contracts
+                note: Generally though to be mutually exclusive, but more complicated data
+                      may be classified multiple ways
+
+Supervised Learning:
+    Classification learning is supervised with a training set
+
+    Train:
+        structure is derived examining example set where classification is known.
+
+    Test:
+        Apply to another data set  with known classification and check results.
+
+Association Rules:
+    Number of rules may approach n(n-1)/2 for n attributes
+
+    Note: best algorithms allow quick eliminating as many of these as quickly possible.
+
+    Support for association rules:
+        assoc rule X = (x1, x2,...xi) -> y be a data set with m instances
+        if left hand side known, right hand side can be predicted.
+
+        Def:
+            X -> Y is the count of the number of instances where the combination of x values, X, occurs in the data set, divided by m.
+
+        Summary:
+            Note the association rule interesting if it occurs frequently enough
+
+    Confidence:
+        Def:
+            The count of the number of occurrences in the data set where this relationship holds true divided
+            by the number of occurrences of the left hand set of values, X, overall
+
+        Summary:
+            How often the prediction is true.
+            or the association rule is more interesting if X does determine y
+
+        Note: Accuracy is used to define this in the book.
+
+    Clustering:
+        Problems:
+            Is it possible to determine the cluster from a mass of data?
+            Is it possible to classify future instances?
+
+            Note:
+                - Most algorithms take the number of groups that it needs to find.
+                - This is a parameter that can be tweaked by the user.
+
+                - For better or worse it will find that many groups.
+
+            Outliers:
+                instances that do not fit into a classification.
+
+Numerical Prediction:
+    Variation of classification:
+        given n attribute values, determining the (n+1)st attribute value.
+
+Examples:
+    What is the form that a dataset must be in to mine
+
+    Should be tabular:
+        Data form: Instances with attributes.
+
+        Note: don't always follow db rules when putting into tabular form
+
+    Problem:
+        not all data is naturally tabular...
+
+        Question: How to convert such data to tabular form?
+
+    Denormalization:
+        Relational databases must be merged into one table for data mining algorithm to work.
+
+    Note:
+        Not just about trying to find info about the yes cases. Its also going to know
+        something about the 'no' cases, which is just as important.
+
+    Recursive Relationships:
+        along with sibling relations, want to find full lineage. This can be done recursively.
+
+        Note: made to find pairs, instead of full chains.
+
+        One-to-many Relationships:
+            Result in parent-key -> foreign key relationship
+
+        Example:
+            The time-series-granules table. Straight list of granules, with each
+            granule having its associated job_id.
+
+        Concept: like mother child relationship
+
+        summary:
+            data sets have to sometimes be manipulated to run data mining algorithms on.
+
+Attribute:
+    Design and Normalization:
+        Example: ships and trucks
+        two kinds of the same thing, but may not share all attributes.
+        Example:
+            how many wheels does the ship have? (null)
+
+        Note: lots of attributes will be null
+
+        Dependent Fields:
+            married? T/F -> spouse's name
+            point: spouse's name doesn't make sense if married is false.
+
+        Data Types:
+            numeric vs. non-numeric
+
+            Spectrum:
+                Nominal = unordered, unmeasurable named categories
+                Example:
+                    sunny, overcast, rainy
+
+            Ordinal:
+                ordered named categories.
+                Example:
+                    hot -> mild -> cool
+            Interval:
+                supports subtraction between values.
+                Example: time expressed in years.
+            Ratio:
+                all operations make sense. with a natural 0 point.
+                Example: physical distance.
+
+            Note:
+                Principle:
+                    data mining has to handle all possible types of data,
+                practice:
+                    numeric or non-numeric
+
+Weka:
+    input format:
+        ARFF = attribute relation file format.
+
+Class: Data Mining 
+Name: William Horn
+Date: Sep 12, 2017 
+
+Oblique Splits:
+    - Split that is not parallel with an axis
+
+    note: any split in a plane that a slop
+
+Option Notes:
+    something
+
+Regression Trees:
+    Regression: y = ax1 + bx2 + cx3 + ...
+        - set of x values -> y
+        - in the tree, each branching vertex is an xi
+
+    note: Really a replacement for regression
+
+    output: getting numerical prediction out
+
+Model Tree:
+    - Each node is a reduced sized regression
+    - The tree is used to narrow down the number
+      of values in the regression
+   
+    output: returns miniture linear regressions
+        - nodes are -> peicewise linear
+        - each blob in space has its own split
+
+Rule Sets For Trees:
+    - each for in the tree is a rule in the rule set
+    - rule sets can be more compact than trees
+
+    Example:
+        Boolean Values: a,b,c,d -> x
+        Rules: 
+            if a and b are true -> x
+            if b and c are true - x
+
+        - In a complete tree, both the true and false values need to be represented
+
+Replicated Subtrees:
+    - Trees can be messier because the same logic 
+      can be repeated in the tree
+    - Cannot imply the disjuction that rules can
+
+Closed World Assumption:
+    - A simplifying assumption that conflicts with reality
+    - reality is more complexe than T/F for everything 
+    
+    Association Rules:
+        Finding dependencies between attributes
+
+        note:
+            - classical stats assumes that variables are independent
+            - This is where data mining is better
+
+Weak Rules:
+    - A rule that is a total subset of another rule (a strong rule)
+    - some rules can be weaker/stronger than others
+
+Exception:
+    - Another tool for writing rule sets
+
+Attribute-to-Attribute Comparisions:
+    Example:
+        - finding out whether a geometric object is standing or not
+        - the comparision is height to width comparision
+
+Instance Based Representation:
+    - Running the algorithm as instances come in.
+
+Class: Data Mining 
+Name: William Horn
+Date: Sep 14, 2017 
+
+Inferring Rudimentary Rules:
+    One Rule Approach (1R):
+        - Make one level decision based on tree based one attribute
+        - given a training set
+        - good way of handling missing values
+
+        Note:
+            - This is done for each attribute
+            - the attribute with the least amount of errors
+              is the one that is picked.
+            - gives a pretty good results 
+
+        - Even if results are bad, can still give insight
+        - possibly notice a two level would be benifical
+
+        Notes:
+            - Do the simple stuff first (1R) befor moving
+              onto more complex/costly methods
+
+Numeric Attributes:
+    - How to decide on how to branch on nominal values
+
+    Approach:
+        - Sort numbers
+        - create break point in the number every time the classification changes
+        - this partitions the domain
+
+Overfitting:
+    - too many partitions/breakpoints
+    - too many breakpoints is counter productive
+
+    Def: 
+        - instead of categorizing things, fragmenting them.
+        - instances are being overfit to existing classification in the 
+          dataset
+
+    Note:
+        - can prevent predictions
+        - each bucket is too small to gourp other data
+          into it.
+        - derived model is too specific to the training set
+          to make predictions with new data
+
+    Solving Overfitting:
+        - specifiy that a larger, minimum number of instances from
+          the training sets that have to be in each partition
+
+        - if the majority from two ranges has the same majority
+          the two partition should be merged.
+
+
+Statistical Modeling:
+    Bayes' Theorem Application: 
+        - telling something conditional probability
+        
+    Niave Bays: 
+        - Assumptions that attributes are indepenent
+        - even if they are known to not be    
+        
+        Simplifying Assumptions:
+            known falcities that are used to make calculations simpler.
+
+            Given that it was sunny, what is the prob that I played the game 
+                        <=> Gets transformed using bay's <=>
+            Given that I played, what was the chance that I played.
+
+        Bays': P(H|E) the prob of the hypo is true given some information
+            Theorem: 
+                P(H|E) = (P(E|H) * P(H)) / P(E)
+
+            Application:
+                H = (play = yes)
+                E = (outlook = sunny)
+
+                P(play = yes | outlook = sunny) = (P(outlook = sunny | play = yes) * P(play = yes)) / P(outlook = sunny)
+
+        Note: 
+            - composite expression can be done using bays for disjoint events
+            - Just the product product rule
+
+Class: Data Mining 
+Name: William Horn
+Date: Oct 05, 2017
+
+note: not on midterm
+
+
+Chapter 5:
+    - comparing different algorithms
+
+Params for Comparison:
+    - predicting classification
+    - or prob that an istance is a particular class
+    - numeric prediction
+
+    Detecting Failer in Machine learning:
+        - false positives/negatives
+        
+        note: these will have different costs in practice.
+            - in stats type 1/2
+
+    Cross Validation:
+        - comparing data mining performance
+
+Training and Testing:
+    - how to estimate error rate? (num of incorrect predictions)
+
+    - derived predictions structes may be imperfect.
+    - these structs are derived from training set.
+    - training set may not be optimized.
+
+    Resubstittion Error:
+        - run algo on data set it was trained on.
+        - this has some value, but not the "true" error rate.
+
+    Overfitting:
+        - fiting model too closely to the training set.
+        - optimized for training set not overal population.
+        - tightly linked.
+
+        note: on bigger training sets, less of a deal
+
+    Error Rate: 
+        - error rate is derived from the test set.
+        - training and test set need to be independent
+        - both test and training should be representive of the 
+          whole population.
+
+    Validation Set:
+        - select one of many dm algos
+        - also an set independent
+        - optimized the selected algo
+
+
+    Process:
+        - train algo on training set
+        - optimized algo on the test set
+        - compare algos on the validation set
+
+        note: all these sets need to be independent
+
+Performance Perdiction:
+    - determing success rates...        
+
+Cross Validation:
+    Random Sampling Problems:
+        - if all/most of one class going into test set
+        - then training set won't know any information about
+          classifying this situation.
+        - this is a problem with fully random samples
+
+        solution:
+            Stratification:
+                - random samples are done on a class by class.
+                - 2/3 of each class goes into training set
+                  1/3 into test set
+
+        Repeated Holdout:
+            - improving estimate on error rate.
+            - n times, randomly hold out 1/3 of instances for training.
+            - maybe w/ stratification
+
+        idea: 
+            - sometimes flip whether the training or test gets which portion of the data
+            - this leads to being able to get error rates on all the data.
+            - all these rates are averaged
+
+        Folding:
+            - partition data into n "folds"(divid)
+            - train on (n-1), test on n
+            - do this n times to train on all the data.
+            - partitions cannont overlap
+
+            10-Fold Cross Validation:
+                - 10 is a good rule of thumb 
+                - 10 times 10-fold stratifications.
+                - want to make sure all classifications are represented in proportion.
+                - aross partitions, class stratified in proportion
+    Alternative Methods:
+        Leave-Out-One:
+            - train on all data points, test on one. 
+            - more computationally intensive.
+
+            note:
+                - could diminish error rate predicition quality
+                - could help
+        
+        Bootstrap:
+            - finding error rates on small data sets
+              (cannot stratify samples with size of folds)
+            - select training (larger of two sets) usign sampling
+              with replacement
+            - error rates will be on the high side because training and test
+              have different classification distributions
+            
+            - to fight this we use resubstittion to battle this
+            - resub is on the lowside 
+
+        note:
+            - the resub/test set have constansts that weight each error rate prediction
+            - these are apparently magical.
+
+    Costs:
+        total cost:
+        - cost of doing mining and
+        - benifit from the mining in the real world
+
+        question: 
+            - does benifit outway the const of the mining?
+
+Which algo is best for problem domain:
+    paired t-test:
+        this is in the book, and its up to us to do this on the final project
+
+Class: Data Mining 
+Name: William Horn
+Date: Oct 24, 2017
+
+Evaluating Classification Performance:
+    Confusion Matrix:
+        - nothing to do with cost
+        - about what can be learned from looking @ matrix
+
+    Method:
+        - Given confusion mtx, from a data mining classifier.
+        - compare real matrix, to one from a random classifier.
+        - comparing actual predictor to hypothetical (random) predictor.
+    
+    - they contain counts of false positives/ false negatives
+
+Kappa Statistics:
+    - 0 means no better than random
+    - 1 means perfect prediction
+
+Counting Vs. Cost:
+    - count successes vs. errors and compare w/ hypothetical case.
+    - 0 cost for success.
+    - can have different costs for errors in different classification.
+    - weight counts for different errors and successes.
+
+    Cost:
+        - can also take into account other factors besides performance.
+        - also factor processing time to cost and such factors.
+
+        - essentially not just evaluating cost based on prediction performance.
+
+        When:
+            - initially derive rules by counting.
+            - then take total cost into account.
+
+        Cost Sensitive Learning:
+            - cost guides the learning process.
+            - take cost into account when deriving the rules.
+
+        Loss Function:
+            - measure of inability to separate instances into pure classification
+              w/o error.
+
+        Cost and Loss:
+            Cost:
+                - external to classification scheme
+
+            Loss:
+                - internal to classification scheme
+                - how greatly predicted probs, compare to actual probs.
+
+            - cost is affected by loss 
+            - higher loss, higher cost.
+
+        Bias:
+            - come up with scheme to favor mistakes that have low cost.
+            - over predictions vs under predictions.
+
+Class: Data Mining 
+Name: William Horn
+Date: Oct 31, 2017
+
+Combine A and B:
+    note: 1/n and 1- (1/n) sum to 1
+
+    - Combine A and B for monte carlo simulation
+    
+    Combine Data Mining Algos:
+        - gives ROC value (FP, FN ration) that lies 1/nth 
+          tangent point away.
+
+Recall and Presision:
+    - information reterival
+
+    Recall:
+        - num of relecent docs retrived /
+          total num of relevant docs
+    Presision:
+        - num of relevant docs retrieved / 
+          total num of docs retrived
+        
+    note: 
+        - increaes relevant docs retreived by increasing number of docs.
+        - but proportion of relevent docs also falls.
+
+    The F-Measure:
+        - (2*recall*precision) / (recall+precision) => (2*TP) / (2*TP + FP + FN)
+        - big is good.
+
+    Success Rate:
+        - (TP + TN) / (TP + TN + FN + FP)
+        - good outcomes over everything
+
+Cost Curves:
+    - How to factor cost into roc curve.
+
+    Goal: Compare cost in comparing data mining algos
+
+    Error Curve (5.5a):
+        - really compliacted graph in book.
+        - says intervales when to use stupid predictor,
+          your algo, or just always say yes
+    
+    Cost Curve (5.5b):
+        note: 
+            - x-axis is a function of cost
+            - y-axis is another function ontop of the function of cost
+
+        Pc[+] -> X-axis cost curve:
+            - prob(yes) * cost(FN) / 
+              prob(yes) * cost(FN) + prob(no) * cost(FP) =>
+
+            -                     cost if all y's falesy classified as no /
+              cost if all y's falesy classified as no + cost if all no's were falesy classified as yeses
+

@@ -1,0 +1,1179 @@
+Class:
+   Data structures and Algorithms 
+Name:
+    William Horn
+Date:
+    Aug 28, 2017
+
+Course Goals:
+    -writing/documenting high quality code.
+    -Proper error handling (rebust reliable applications)
+    -Algorithmic efficency (big-O notation)
+  
+Structure of a Package:
+    package: docs, cod, makefiles and data 
+        Class Requirment:
+            API documentation as comments in code.
+    
+    module:
+        smaller grouping of code.
+
+        Note:
+            a package may consist of many modules.
+    
+        Module Flow:
+            client -> interface -> implimentation
+
+C++ Review:
+    Type:
+        value something can take.
+
+        Examples: 
+            3 -> int, 3. -> double, 3.f -> float
+
+        Conversions:
+            Implicite:
+                value converted behind the scenes
+
+                example:
+                    int n = 7; double d = n;
+
+            Explicit:
+                example: (double)n
+                         static_cast<double>(n)
+
+        Making Types:
+            Class or Struct:
+                class Foo; struct Foo;
+            typedef:
+                typedef Foo FooArrTen[10]
+            enum:
+                Gender {male=1, female}
+            using:
+                using FooArrTen = Foo[10]
+            enum class:
+                enum class Gender {male, female}
+
+    Identifiers:
+
+        Name of something
+        
+        Declaration: prototypes
+        Definition: implimentation (or whats in the {})
+
+    File Conventions:
+        source file: .cpp
+        header file: .h or .hpp
+
+Class: 
+    Data Structures and Algorithms
+Name: 
+    William Horn
+Date:   
+    Aug 30, 2017
+Website:
+    https://www.cs.uaf.edu/~chappell/class/2017_fall/cs311
+
+Abstraction:
+    Separate the purpose of a module from its implementation
+
+    Functional abstraction:
+        Hiding implementation of function
+
+    Data abstraction:
+        abstract data type:
+            collection of data with operations of data bundled together.i
+
+    Example:
+        Describe function
+
+        Implimentation:
+            gory details of function.
+        Abstraction:
+            only describe what it does.
+
+Parameter Passing:
+    Ways to pass:
+        value, reference, reference to const, r-value reference
+
+    Terminology:
+        Lvalue:
+            Something that can be assigned a place in memory (can get an address from)
+        Rvalue:
+            not and Lvalue
+
+        Examples:
+            const int n = 6; # n: Lvalue     6: Rvalue
+        
+        Note:
+            Rvalue can be assumed to go away (they can be wreaked).
+
+    By Value:
+        void p1(Foo x); Foo y; p1(y) 
+
+        Note:
+            x is a copy of y, y stays the same.
+        Issuse:
+            copy can be slow. Type information is lost.
+
+    By Reference:
+        void p2(Foo & x); Foo y; p2(y);
+
+        Note:
+            x becomes an alias for y
+
+        Bad!:
+            int& square(int n){ int s = n*n; return s;}
+            
+            note: s is local so its ref is going away
+
+    By Ref to const:
+        same as ref, but the alias made cannot be changed
+
+    R-value Refernce:
+        only r-values can be passed.
+
+        Rules:
+            no copy is made
+            can be used to overload functions
+
+            Example:
+                void g(const F & p);
+                void g(F && p);       <- r-values go to this one.
+
+        Note: 
+            not used very often... only if operation is quicker if can wreak argument.
+
+    Rule:
+        pass by value if small, by ref is big(unless copy is needed).
+
+    Copy vs Move:
+        copy dublicates all the data, move can just move the pointer. (for a vertor)
+
+Operator Overloading:
+    Same name, two different things.
+
+    Note: can't make new operators, change asccociativity, or change presidence.
+          also arity (number of operands)
+
+    Example:
+        Num operator-(const Num & a, const Num & b); <- This way implicit type conversion can be done on.
+
+    Because Reasons:
+        f & operator++();  // ++a
+        f operator++(int); // a++
+    
+    Notes on overloading:
+        Member is generally perfered.
+
+Invisible Functions:
+    Classes have 6 auto generated functions:
+        default ctor, dtor, copy ctor, copy assignment, move ctor*, move assignment*
+
+Class: Data Structure and Algorithms
+Name: William Horn
+Date: Aug 31, 2017
+
+
+Software Engineering Concepts:
+    Invariants:
+        A condition that is always true at a particular point in an 
+        algorithm. 
+
+        Note:
+            Typically the condition is something about the value of the
+            variable
+        Example:
+            item = vec[ix]
+            if (ix < 0) {return;}
+            // invariant ix >= 0
+
+        Usage:
+            Ensure an operation can be performed.
+
+        Preconditions:
+            invariant at the begining of a function
+
+            Note:
+                this is the callers responsibility
+
+        Postcondition:
+            invariant at the end of a function.
+           
+        Operation contracts:
+            if Preconditions true then the postconditions will be true.
+            
+            Errors:
+                if this false then the function should throw an error.
+
+        Note:
+            pre/post conditions will be used as documentation in class.
+
+            Example:
+                // avgSpeed
+                // Pre  - time != 0
+                // Post - return == dist / time, where dist, time are each
+                // converted to doulbe before the division.
+
+
+        Class Invariants:
+            for a class, an invariant taht holds whenever an object of the class exits,
+            and execution is not inside a member.
+ 
+            ctor ------> member func -------> member func --------> dtor
+                   ^                    ^                     ^
+                   |                    |                     | 
+                   |------------ class invariants ------------|
+                
+            Note:        
+                Ctors job is to make class invariant true!
+
+Invisible Functions:
+    Functions that the compiler will write for you.
+
+    Default Ctor's:
+        Dog mutt;   <-- Default ctor call
+        Dog mutt(); <-- Function definition that returns a Dog
+   
+    Destructior:
+        Called when object goes out of scope.
+
+        Example:
+            void func() { Dog x; } // Dog dtor is called here...
+        
+    Copy Ctor:
+        Dog(const Dog & other);
+        
+        Note: Written for you when none of the big 5 are declared.
+
+        Example:
+            myFunc(Dog(mutt)); // copy
+
+    Move Ctor:
+        Dog(Dog && other);
+
+    Copy Assignment:
+        Foo a(b); // ctor
+        a = b;    // assignment
+
+        Example:
+            Dog & operator=9const Dog & other); // copy assignment
+            
+    Special Operations:
+        Default:
+            Dog(Dog && other) = default; // Use the automatic version
+        Delete:
+              **************  = delete;  // Removes auto writen version if there, cant be written.
+
+    Note:
+        Automatically written functions are good!
+
+    RULE:
+        If one of the big 5 is written, then either define or delete all of them.
+
+    std::move:
+        turns things into rvalues
+
+        Note: might be faster
+            v.push_back(move(x));
+
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Sep 6, 2017 
+
+invariant: condition thats always true at a point in an algo
+    types: precondition, postcondition, class invariant
+
+Software Engineering Concepts:
+    Testing:
+        To know the worth of code, need to be able to test.
+    
+    PRIORITY:
+        - get the code to compile! 
+        - continually get code to compile.
+        - get it finished after that.
+
+    Test-Driven Development:
+        - First write a test to see if it works,
+        - make sure that test fails,
+        - then make the test pass.
+
+        Note: Unit testing done with "catch.hpp".
+
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Sep 8, 2017 
+
+Software Engineering Concepts:
+    Don't Repeat Yourself (DRY):
+        Every piece of knowledge must have a single location.
+
+    Coupling:
+        Loose: little dependence. Can modify one module wihtout breaking others
+        Tight: Oposite of loose (called a brittle system).
+
+    Single Responsibility Principle (SPR):
+        Every class should have one, well definied, responsibility.
+
+        Cohesive:
+            everything in a class hangs together.
+
+    Failure:
+        - happens even in good software. 
+        - tightly coupled code will fail multiple times.
+        - Want failure to be caught early.
+
+C++ Types:
+    Builtin Integer Types:
+        long, long long, unsigned int, unsigned short
+        
+        Suggestion: Only use int (from google)
+
+    Better Types:
+        - std::size_t
+        - std::ptrdiff_t
+        
+        - std::int64_t
+        - std::uint64_t
+        - std::uint_fast64_f
+
+        Note: 
+            - These types can be changed from system. 
+            - Also they hold symantic information.
+
+        Container Member Types:
+            size_type, value_type
+
+    Floating Point Types:
+        float, double, long double
+
+        ALERT: Always use doubles!! (or long double)
+
+Pointers and Stuff:
+    int * p = &someInt;
+    int valInSomeInt = *p;
+
+Class: Data Structure and Algorithms
+Name: William Horn
+Date: Sep 11, 2017
+
+Managing Resources in a Class:
+    Handling errors:
+        - throwing an exception
+        - some higher up code catches it.
+        
+        Note: Destructors are still called.
+
+    ...RAII Boiler plate jiberish...
+
+    Assignment 2:
+        Kindly located in the git repo, courtesy of Dr. Chappell.
+
+    Circular Ownership:
+        Weak refereence:
+            - a non-owning reference to a resource.
+            - this is used to break circular reference cycle.
+
+        Garbage Collector:
+            - This is java's sollution.
+
+Class: Data Structures and Algorithms
+Name: William Horn
+Date: Sep 12, 2017 
+
+Invisible Functions II:
+    Resources:
+        - acquire a resources
+        - the responsible for releasing it (in not reasource leak)
+
+        Own: responsible for releasing
+        RAII: destructor releases object (an object owns)
+
+Templates:
+    - generic programming.
+
+    Type Requirements:
+        - done with comments befor the template function/class
+
+Containers and Iterator:
+    Containers:
+        - data structure that holds multiple items
+        - usually all of the same type
+
+        Generic: container that can hold any type
+
+        Access:
+            - types of interfaces to containers
+
+            Random: data can be dealt with in any order
+            Sequential: data can only be dealt with efficently in order
+                - two way: forward or backward
+                - one way: only jump forward
+
+        Problems with array:
+            - not first class
+            - types that have no member functions at all (not first class)
+            - cannot be passed around to functions/copied
+            - poor middle insertion performance
+
+    Iterators:
+        Loops:
+            - counter
+            - condition
+            - iterator-controlled (for-each)
+
+        Def: references an item in a container but does not own.
+        Ranges: 1st iterator points a beginning, 2nd points just past the end.
+
+        Directional:
+            - forward (linked list)
+            - bidirectional (doubly linked list)
+            - random access (vector)
+
+STL Algos to Know:
+    - copy
+    - equal
+    - sort
+
+Class: Data Structure and Algorithms
+Name: William Horn
+Date: Sep 14, 2017 
+
+Invisible Functions II:
+    The Rule of Five:
+        - If you define one of the big five, you should define them all
+        - this is a pain...
+
+    The Rule of Zero:
+        - Where possible, use already written RAII classes.
+
+    noexcept: a promise that a function will not throw an exception.
+
+Error Handling:
+    - error condition is a condition while a prog is running that 
+      cannot be handled by the normal flow of execution
+    - not a bug, or indication that the user did something wrong.
+
+    Dealing with Errors:
+        - prevent errors
+        - handle them when the occur
+        - signal client code
+        Types of signals:
+            - error codes
+            - setting flags
+            - best of all... throw exception
+
+    Guarantees:
+        - errors conditions will not wreck the prog ( basic guarantee )
+        - operation either completes entierly or nothing happends ( strong guarentee )
+        - never inform client code of errors at all ( no-throw guarentee )
+
+Class: Data Structures and Algorithms
+Name: William Horn
+Date: Sep 17, 2017 
+
+Using Exceptions:
+    - Exceptions are caught by the closest try block.
+    - always passed by reference.
+    
+    Throw: 
+        - exactly like return, used for raising errors
+        - be reluctant to write throws
+    
+        What may throw:
+            - throw, new, functions written by others
+        no-throw:
+            - built in operations on built-in types
+            - delete (itself)
+            - std::io libraries don't throw
+
+     Catches all exceptions:
+         - raii alternative
+
+         Syntax (catch-all): 
+              catch(...) {
+                  throw; // Returns the same exception that was caught
+              }
+
+    Exception Goals:
+        - primary concern is not how to signal or handle error conditions
+        - we want to write code that always works, in the conext where exceptions 
+          are  being used.
+
+    Destructors:
+        - dtors are called when obj goes out of scope, even if due to exception
+        - if dtor throws then program terminates
+        
+        Conclusion:
+            - dtors should not throw
+        
+        Note: Any finishing up operation should not throw
+
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Sep 20, 2017 
+
+Linked List:
+    Basics:
+        Inserting:
+            - ll = linear time
+            - array = constant time
+
+            note: in ll, its fast.
+
+        Dtors:
+            - destructor calls recusivly delete items in the ll.
+            - if ll too long then stack can fill up. 
+
+Recursion and Searching:
+    Recursive:
+        - algo that makes use of itself.
+        - must have a base case to exit.
+        - every thing else, recusive case.
+
+        Direct: calls itself.
+        Indirect: calls a function that calls the parent func.
+
+        Note:
+            - base case must always be reached.
+
+Class: Data Structures and Algorithms
+Name: William Horn
+Date: Sep 27, 2017 
+
+
+Recursion vs. Iteration:
+    Function-call Overhead:
+        - function calls are not free
+    
+    Inherent Inefficiency:
+        - Many recusive algos have some inifeciencies
+
+    Memory-management:
+        - running out of memory for the call stack.
+
+
+Tail Recursion:
+    example:
+        void foo(...) {           int bar(...) { 
+            ... code here ...         ... code here ... 
+
+            foo(...)                  return bar(...) 
+        }                         }
+
+    note: 
+        - This is good because its easy to get ride of.
+
+Recusive Backtracking:
+    - searching for a solution, find dead end.
+    - solution to deadend is backtracking.
+
+    Partial Solution:
+        - a way to increamentally get to solution.
+        
+Class: Data Structures and Algorthims 
+Name: William Horn
+Date: Sep 22, 2017 
+
+Binary Search:
+    - Used to find key in a sorted list.
+
+    Key: something to lookup a peice of data.
+    Sorted: in some sepcified order.
+
+    Procedure:
+        - pick middle item (the pivot)
+        - cmp pair with pivot.
+        - use this to search top or bottom half
+        - recurse
+
+    Recusive Questions:
+        Smaller Problem: Top or bottom half
+        Problem Size Reduction: Half
+        Will Base Case Always Reached: Yes
+
+    Parameters:
+        - iterators to front and back
+        - key to search for
+        - return a flag if the key was found or not
+
+Sequenctial Search:
+    - Search list from beginning to end check every value.
+
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Sep 29, 2017
+
+Algorithmic Efficiency and Sorting:
+    Efficiency:
+        - something that uses a few resources.
+
+        Resources:
+            - something that is limited. 
+            - in algos, usually this is time.
+            - can also be memory efficient
+    
+    Way to measure independent of hardware?:
+        Steps counted:
+            - basic operations
+            - the largest exponent in a formula
+
+        Input Size:
+            - how does this effect runtime?
+
+        Worst-Case Behavior:
+            - max ops for a given sized input.
+
+    Model of Computation:
+        operations:
+            - counting base c++ ops
+        basic operations: 
+            - built in type ops
+
+
+    Big-O Notation:
+        - Algorithm A is order f(n) [written O(f(n))]
+
+        - A performs no more than k*f(n) basic ops n >= n0.
+        this ignores small sized sets.
+
+        - analyzig worst case.
+        - also can analyze avg cases.
+
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Oct 02, 2017
+
+Algorithmic Efficiency (sorting):
+    Efficiency:
+        - use as few resources as possible.
+          example:
+              - executes fast.
+              - time efficient
+
+              - space efficient
+              - uses little memory
+
+        System Independent Method:
+            - count basic operations.
+            - how does input size effect efficientcy   
+
+        Big O notation:
+            notation:
+                - A is order f(n) -> O(f(n))
+                - A performs no more than k x f(n) basic ops
+                - when n > n0 ( only when n is small )
+
+            Example:
+                - O(4n + 6) -> O(n) -> linear time
+
+            note:
+                - loops cannot be counted as basic operations.
+                - most other things can.
+
+        Scalable:
+            - Something that still works with bigger problems
+            - big-O can tell us this.
+
+        fastest-slowest:
+            O(1):
+                - O(5) -> O(3.6) -> O(1)
+                - Constant Time
+
+            O(log_b(n)):
+                - O of log base n
+                - logrithmic time
+
+            O(n):
+                - very common
+                - linear time
+
+            O(nlog_b(n)):
+                - log-lnear time === linearithmic time
+                - slow as can be an still be scalable.
+                - also common
+
+            O(n^2):
+                - grow too fast.
+                - quadratic time.
+
+            O(c^n):
+                - exponential time
+                - way too slow.
+
+            note:
+                5 is O(n) but we only care that its acutally O(1)
+
+        Serious Loops:
+            - executed n times
+            - executed by some number that eventual gets to n
+
+        Loop with fixed number of operations:
+            - these can be counted as one operation.
+
+Sorting:
+    - rearrange things in order.
+
+    key: 
+        - thing that is used to sort.
+
+    A sort:
+        - comparision sort
+        - needs some comparision func
+        - general purpose comparision sort.
+            - no restraints on list size and data type.
+
+        stability:
+            - don't needlessly rearange data
+
+        in-place:
+            - no large additional storage space required.
+
+    Bubble Sort:
+        - really be in all cases.
+
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Oct 04, 2017
+
+Big O Notation:
+    constant: O(1)
+    logarithmic: log(n)
+
+    linear: O(n)
+    quadratic: O(n^2)
+    log-linear: O(nlog(n))
+
+        * HUGE TIME GAP HERE *
+
+    exponential: O(2^n)
+
+Assignment 4:
+    - write recursive backtracking algo
+    - look at slides for assignment 4 solution.
+
+Sorting:
+    Bubble:
+        - trash in every way.
+
+    Insertion:    
+        | sorted data | unsorted |
+                      ^
+                    item i
+
+        - move items from the unsorted section to the sorted section in the correct place 
+
+        Required Operations:
+            - find, remove, insert
+
+        note: 
+            - if looking at 2 functions, pick the one with the 
+              bigger big O value
+
+        Implementation:
+            Q1: what does i go befor?
+            Q2: put it there.
+        
+        Use cases:
+            - not suited for general use
+            - linear time for nearly sorted data
+            - fast for small lists
+
+            - optimized algos switch to insertion sort for small lists,
+              or when the list is nearly sorted.
+
+Class: Data Structures and Algorithm 
+Name: William Horn
+Date: Oct 06, 2017
+
+Asymptotic notation: 
+    Omega:
+        - f(n) is Omega(g(n)) iff g(n) is O(f(n))
+        - average best case.
+    Theta:
+        - similar to equal
+        - it's both O(f(n)) and Omega(f(n))
+
+        Example: 
+            - function would be Theta(n^2) if it always lies between
+              3n^2 and 5n^2
+
+    Summary:
+        O(f(n)) if g(n)     <= k(f(n)), k is constant
+        Omega(f(n)) if g(n) >= k(f(n)), k is constant
+        Theta(f(n)) if both O and theta
+
+Algorithm Strategy:
+    Decrease-and-Conquer:
+        - used by binary search
+    Divide-and-Conquer:
+        - divide up the problem into smaller chucks and 
+          then handle those chuncks.
+
+    Analyzing Recursive Algos:
+        Masters Theorem:
+            - (b) split input into nearly == sized parts
+            - (a) makes a number of recursive calls on splits
+            - (f(n)) does other work, with f(n) ops
+
+        Theorem:
+            T(n) = a * T(n/b) + f(n)
+
+        Example:
+            Binary Search:
+                b = 2  // number of splits of the inputs
+                a = 1  // number of recursive calls 
+                f(n) element of O(1) == O(n^0) soooo
+                d = 0
+
+            Comparing:
+                - 1 == 2^0 so T(n) is Theta(n^d log n)
+                - since d == 0 T(n) == log n
+
+    Merge Sort:
+        - application of divide and conquer
+        - fastest know generic known comparision sort
+
+Class: Data Structures and Algorithm 
+Name: William Horn
+Date: Oct 16, 2017
+
+Lamda Functions:
+    Closures:
+        - when a function carries (part of) its enviroment with it.
+
+Data Structures:
+    Containers:
+         - array, linked list, ...
+         - something that holds data.
+
+    Abstraction:
+        - separating module from implimentation.
+
+        Data Abstraction:
+            Abstract Data Type (ADT):
+                - conceptual form of data
+                - operation available on data
+            Interface:
+                - methods used to acess
+
+        Abstract Data Type:
+            - collection of data with a set of opreations on it.
+            - no related to a programing languages
+
+            note: used heavily, but not mentioned much
+
+            Data Structure:
+                - a like a ADT, but a programming implimentation of it
+                
+            Example:
+                triple:
+                    Complete Minimal Interface:
+                        - get, set, create w/ unspecified values, destroy
+            
+        Interface:
+            Should Be:
+                - complete
+                - minimal, convenient
+                - facilitate efficiency, generic
+
+            Note:
+                Often these properties pull against each other
+
+        Sequence:
+            - finite, all of the same type
+            - position orented
+
+        SortedSequence:
+            - some operations in sequence change from regular sequence
+            - value-oriented
+
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Oct 23, 2017
+
+Exception Safetly:
+    - if signal cilent with error
+        - are leakes avoided.
+        - is data in a usable state.
+    
+    Guarantee's:
+        Basic Guarantee:
+            - Data remains in usable state and no leaked resources
+              even if exception
+
+        Strong Guarentee:
+            - Either completes its job or makes no changes
+
+        No-Throw:
+            - will never throw an error
+
+    Writing Exception Safe Code:
+        - Look at every place exception could happen
+        - @ every place it could throw, make sure its caught and either
+          handled internally or signals client code and adhears to guarantee.
+
+        Modularity:
+            - Break up function into small components.
+            - makes checking for exception safe code easy.
+            
+            Single Responsibility Principle (SRP):
+                - Every module has exactly one responsibility
+            
+            Rule:
+                - None const member func should not return an object by value.
+        RAII:
+            - Using raii makes code cleanup easy.
+
+    noexcept:
+        - mark a function that will not throw
+        - code can check whether an expressionis declared as not throwing
+
+        What funcs should be noexcept:
+            - dtor
+            - move ctor and move assignment op
+            - any func that is called by a noexcept func that is outside a try block
+            - any func you are sure it will never throw. (perminante property of a function)
+
+        Can Also be used as an operator:
+            if (noexcept(bar())) {...} // do this if bar never throws
+        
+        Can use both combined:
+            void foo() noexcept( noexcept(bar()) ) { bar(); }
+
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Oct 27, 2017
+
+Assignment 5:
+    Data Members:
+        - size
+        - capcaity
+        - pointer to array
+
+        Note:
+            - When you resize, over allocate.
+    
+        Amortized Constant-Time:
+            - over many operations, op avg constant time.
+
+            Example:
+                - vector increase capacity by either 2, or 1.5 every time it
+                  runs out of space.
+
+Node Based Structures:
+    - nodes contain ref's to other nodes.
+
+    Note: 
+        - logical === how we think about it.
+
+    Storing:
+        - can either store in separate memory chucks
+        - or can have an array of memory that store your nodes.
+    
+    Structure:
+        - each node has a usually has a pointer to another node.
+
+        Smart Pointer in <memory>:
+            unique_ptr<T>:
+                - no copy, can move
+                - default ctor, is empty -> 
+                Example: 
+                    unique_ptr<Foo> unp; // This is an 'empty' smart pointer
+
+            shared_ptr<T>:
+                - copiable
+                - includes ref count, deletes when 0.
+
+            Creating:
+                BAD: 
+                    Foo * p = new Foo(5, "abc", 3.2):
+                    unique_ptr<Foo> unp{p};
+
+                GOOD:
+                    auto unp = make_unique<Foo>(5, "abc", 3.2);
+    
+Linked Lists:
+    Issues:
+        - more mem than arrays
+        - slower, harder to cache
+
+    Pros, Cons:
+        Arrays: good for fast loopups
+        LL's: good for inserts/deletes
+
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Oct 30, 2017
+
+Sequences in C++ STL:
+    Containers:
+        - vector, basic_string, array (array<int, 4>), forward_list, list, dequ (double ended queue)
+
+        Deque:
+            - items stored in middle of allocation
+            - array of pointers to arrays, to increase copy speed
+
+    Iterator Validity:
+        - iterator that no longer points to an array has been invalidated
+        
+        Rules:
+            - reference validity rules.
+
+            vector:
+                - reallocate/copy invalidates all iters
+                - insert befor the iterators position 
+
+            deque:
+                - insertion/erase in middle invalides all iters and refs
+                - inersion at end/begining invalidates all iters, but no references
+
+            list:
+                - iters and refs always remain valid.
+
+
+Stack:
+    LIFO: 
+        - last in first out
+
+    Top down design:
+        - large task, with subtasks
+        - push large task state when doing a subtask, the pop to get back.
+        - can do this for each subtask
+
+    Operations:
+        getTop: look at top item
+        push: add an item
+        pop: remove an item
+
+        isEmpty: check if the stack is empty
+
+    Note:
+        - just a wrapper around an existing sequence.
+
+Class: Computer Graphics 
+Name: William Horn
+Date: Nov 13, 2017
+
+
+Priority Queue:
+    - almost the same as queue.
+    - retrieved item is the value with the greatest key.
+    
+    note: 
+        - not a queue!
+        - this is a restricted access sequence.
+
+    - can only retrieve/delete greatest element.
+
+    uses:
+        - can be used to sort.
+        - find the 'best' next option.
+        - can partially sort/add data while sorting
+
+    Implementation:
+        - binary heap
+
+Binary Heap:
+    - complete binary tree ( all full, except last level;
+                             level gets filled up from left to right )
+    - allow duplicate keys.
+
+    Max Heap:
+        - the parent is larger than its children.
+    Min Heap:
+        - switch the relation
+
+    Note: 
+        - can be stored in an array
+        - only need arithmetic to find a way around the heap
+
+    Operations:
+        get top:
+            - first item in array
+            time: constant
+
+        insert:
+            - insert the value in the next position that makes it complete
+            sift-up:
+                method: 
+                    while value bigger than parent:
+                        - swap nodes
+                    else:
+                        - break
+            time: log -> if no realloc
+
+        Delete:
+            - get ride of last node
+            - swap item to delete and last node
+            sift-down:
+                while node is gt largest child:
+                    - swap
+                else:
+                    - done
+
+            time: log
+
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Nov 15, 2017
+
+Assignment 7:
+    - write tree sort
+    Inputs:
+        - takes 2 forward iterators
+    
+    Treesort:
+        - Isert all items into bin search tree
+        - traverse the tree copying items to original range
+        - destory tree
+    
+        nodes need:
+            - insert
+            - inorder traversal
+
+Heap:
+    - big things at top, 
+      little things below
+
+Class: Data Structurese and Algorithms 
+Name: William Horn
+Date: Nov 17, 2017
+
+
+More tree stuff:
+    bla bla bla...
+
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Nov 20, 2017
+
+2-3 Trees:
+    Delete:
+        Easy: just delete (leaf) |X| |
+        Semi:                                              | | 
+            - two siblings, one with 1, other with 2      // ^\ 
+            - delete the one with 1                     |X|  | | |
+            - rotate parent to deleted leaf down, 
+              and the left box with two up           
+
+        Hard:
+            - bring item down from parent and recursively 'delete' in parent
+
+    Efficiency:
+        binary: 
+            retrieve: constant
+            insert: log n
+            delete: log n
+        2-3 Tree:
+            retrieve: log n
+            insert: log n
+            delete: log n
+
+More Self-Balancing Search Tree's:
+    Overview:
+    2-3-4 Trees:
+    Red Black Trees:
+    AVL Trees:
+    Wrap Up:
+

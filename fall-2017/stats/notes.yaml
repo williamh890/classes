@@ -1,0 +1,396 @@
+Class: Stat 300
+Name: William Horn
+Date: Aug 28, 2017
+
+Statisctic:
+    Goal:
+        Make inferiences about a population based on a finite set
+        observations.
+
+    Inferences:
+        Def: Estimating parameters (describe characteristics) 
+        Examples: AVG, MAX, MIN
+
+        Testing Hypo: Drawing conclusions.
+
+    Uncertanty:
+        Goal: 
+            Messure the accuarcy of an iferences
+
+    Vocabulary/Definitions:
+        population:
+            All individuals, objects, or measurements that are of intrest.
+
+        Sample:
+            Any subset of the population.
+
+            Note: Sample must be representitive of the population.
+            Note: Sample Inferes about a population.
+    
+        Enumerative:
+            A numerative study is a concrete population.
+           
+            Example:
+                BMI of us 6th graders in 2017
+            Population:
+                US 6th graders
+            Sample:
+                Select 500 students.
+                Comparisions:
+                    boys vs. girls, east vs. west
+
+        Analytical:
+            time until onset of symptoms when someone is infected with malaria
+           
+            Population:
+                All people -> time until symptoms.
+            Sample:
+                Example:
+                    possible: When infections reported.
+                    type: observational
+                    note: Eithically good, but statitically bad.
+                Example:
+                    possible: infect people then watch
+                    type: experimental
+                    note: Ethically bad but statistically good.
+               
+        Variable:
+            Def:
+                Characteristic that is not constant among individuals in a population
+            
+            Types:
+                Discrete:
+                    Takes a finite or countably-inifinite number of values.
+
+                    Exapmles:
+                        finite: # of heads in 10 flips of a coin
+                        countable-inifite: # of flips until first heads     
+                    
+                    Catigorical(Discrete):
+                        non-numeric, discrete
+
+                        Examples:
+                            political affiliation: red, blue
+                            sex: male, female
+                Continuous:
+                    Possible values on an interval of real numbers
+
+                    Example: mesurments (dist, weight, time)i
+
+        Sampling:
+            Simple Random Sample (SRS):
+                (of size n)
+
+            Def:
+                Every group of n individuals in a population has the same
+                chance of being selected.
+
+            Stratified Sample:
+                Divide the population into groups and do SRS on all the groups
+                proportionally.
+
+IDescribing Distributions:
+    Population Distribution:
+        All possible values a variable can take in a population
+        and how ofthen (frequency) of the % of time (relative frequency)
+        that it takes each value.
+
+    Sample Distribution:
+        All values variable took in a sample + frequency of relative 
+        frequency.
+
+        Summarizing (quantitative data):
+            Table:
+                List possible values in discrete categories/intervales then 
+                calculate the frequency/relative frequency in each intervale.
+
+            Plots (graphical):
+                Histograms:
+                    graphical reprentation of data. x-axis intervale, y-axis frequency. 
+                    
+                    Note: 
+                        Histogram vary from sample to sample but they should share 
+                        the same general characteristics
+                    Note:
+                        The more samples taken, the better the histogram will reprentate
+                        the population
+                Example:
+                      BTU          Frequency      Relative Frequency
+                    40 -< 60           8           8 / 50 = 0.16
+                    60 -< 80           10         10 / 50 = 0.20   
+                    80 -< 100          16                   0.32
+                   100 -< 120          9                    0.18 
+                   120 -< 140          5                    0.10
+                   140 -< 160          2                    0.04     
+                
+                Stem and Leaf:
+                    Leaves: right most digit of each observation.
+                    Stem: remaining digits
+                    
+                    Example:
+                        4 | 5
+                        5 | 0, 1, 4, 5, 5, 5, 8
+                        6 | 0, 2, 4, 6, 6, 7, 9
+                        7 | 5, 7, 8
+                        8 | 0, 1, 3, 3, 6, 7
+                        9 | 0, 1, 3, 4, 6, 6, 7, 7, 7, 9
+                       10 | 0, 1, 2 ,4, 9
+                       11 | 1, 1, 3, 3
+                       12 | 5, 9
+
+Numerical Summaries (Center):
+    Notation:
+        Population:
+            x1, x2, x3,...,xN
+
+            N: Population size
+        Sample:
+            x1, x2, ...xn
+
+            n: Sample Size
+
+        Summation:
+            (just sigma notation)
+    
+    Measures of Center:
+        Mean:
+            Average value.
+
+            population mean: mu (looks like a u)
+            sample mean: xbar (x w/ bar in top)
+            
+            Note: xbar != mu
+
+        Median:
+            def: 50% are above 50% are below
+            
+            Population Median:
+                notaion: mu~ (u w/ a ~ on top)
+
+            Sample Median:
+                notation: x~ (x w/ a ~ on top)
+
+            Finding:
+                1: order from smallest to largest.
+                2: if n is odd -> x~ is ((n+1) / 2) ordered observation
+                   else       -> x~ is the mean of (n / 2) and ((n+2)/2)
+            Notes:
+                Symmetric Distribution:
+                    mu = mu~
+
+                Skewed Distribution:
+                    mu~ < mu
+                
+        Example:
+            Weekly salaries n=8 people
+
+            values: 350, 410 ,460, 525, 545, 720, 760, 800
+
+            mean:
+                xbar = 1/8(sum(values)) = 571.25
+
+            median:
+                x~ = (1/2)(525+545) = 535
+
+        Add observtion:
+            values.append(785.56)
+
+            new centers:
+                xbar = 785.56
+                x~ = 545
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                       13 | 0, 3, 9
+                       14 |
+                       15 | 1, 5 
+
+                    Note:
+                        Like a histogram on its side.
+
+Class: Statisctics 
+Name: William Horn  
+Date: Aug 31, 2017
+
+Measures of Variability:
+    different population can look the same, and have the same center
+    but they can be different.
+
+    Example:
+        Sample1: -2,-1,0,1,2
+        Sample2: -100,-50,0,50,100
+
+    Range:
+        max(sample) - min(sample)
+        
+        Sample1: 2 - (-2) = 4
+        Sample2: 200
+
+        Exception:
+            -100, -99, -98, -97, --> 100 <--
+            
+            Note: The range is 200, but this is not representative
+
+    Variance:
+        population variance:
+            omega^2 = (1/N) * SUM(xi - mu)^2
+
+        sample variance:
+            S^2 = (1/n-1) * SUM(xi - xbar)^2
+
+        Ave squared deviation
+
+    Define:
+        sxx = sum(xi - xbar)^2
+            = sum(xi^2) - (1/n) * (sum(xi))^2
+            
+        so S^2 = (1/(n-1))*sxx
+
+
+    Standard Deviation:
+        s = sqrt(s^2) --> average deviation from mean.
+
+        Example:
+            sample: 6, 1, 3, 5, 5
+
+            xi = sum(sample) = 20
+            xi^2 = sum([s^2 for s in sample])= 96
+
+            S^2 = 96 - (1/5) * 20^2 = 16
+            S = 4
+
+
+Measures of loaction and variability:
+    5-Number Summary:
+        min: smallest value
+        Q1: lower 4th - value in sample so that 25% of values are less then it.
+        Q2: Median    - 50% less then Q2
+        Q3: Upper 4th - 75% less then upper fourth
+        Max: largest value
+
+        Example:
+            Weekly incomes, n=9
+
+                    Min     Q1 |        Q2
+                    -----------------------
+            values: 350, 410, 460, 525, 545, 720, 760, 800, 2500
+                                        ------------------------
+                                                Q3 |         Max
+            5-Number summary:
+                min: 350
+                Q1: 460
+                Q2: 545
+                Q3: 760 
+                Max: 2500
+        
+        Fourth Spread:
+            Range of middle 50% of the values
+
+            Equation:
+                fs = Q3 - Q1
+
+
+            Example:
+                fs = 760 - 460 = 300
+
+        Box Plot:
+            graphical representation of the 5-Num summary (with a little extra)
+            
+            Note:
+                all box plots should include outliers!!
+
+            Outliers:
+                Any observation in a sample that falls more then (1.5*fs) below Q1 or (1.5*fs) above Q3
+
+            Example: fs = 300
+                below: 460 - 1.5*300 = 10 -> No outliers here!
+                above: 760 + 1.5*300 = 1210 -> 1200 is an outlier!
+
+            The plot:
+                box: definied by q1,q2,q3
+                whiskers: farthest none-outlier values in dataset.
+                outliers: denoted with *
+
+                Example:
+                    | 
+                    | 
+                    |              _____ ________ 
+                    |             |     |        | 
+                    |      |------|     |        |--|                      *  
+                    |             |_____|________| 
+                    |
+                    |
+                    |
+                    ----------------------------------------------------------
+                          350    460   545      760 800                   2500
+
