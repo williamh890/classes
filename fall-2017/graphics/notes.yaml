@@ -1,0 +1,983 @@
+Introduction:
+    Laguages:
+        Processing, Javascript, GLSL
+    Overview:
+        intro to processing
+        webGL
+        3-d scenes
+        shaders and lighting
+        textures
+        group project
+
+    Modeling and Rendering:
+        Scene:
+            Totality of everything to draw, visible or not.
+        Modeling:
+            precise description of a scene in graphics primitives
+
+            Graphics Primitives:
+                units that graphics system can draw
+
+        Rendering:
+            Produce image based on a model.
+
+            Framebuffer:
+               Where stuff goes while its rendering.
+            Viewport:
+                what we can actually see.
+
+            Methdods:
+                Pipeline:
+                    Draw objects one after another, each go through a pipline of operations
+
+                Ray Tracing:
+                    Drawing is done pixel by pixel, instead of objects. (very slow)
+
+                Notes:
+                    Game engines often have custom, optimized, rendering methods.
+
+            Standard Rendering Pipline:
+                (vertex processing, input img) -> (rasterization) -> (fragment processing) -> frame buffer
+
+                Vertex processing:
+                    Point in space
+
+                    Use:
+                        Represntation of a corner of a triangle.
+
+                    Vertices:
+                        Point in space
+                        Bunches used to represent primatives
+
+                    Transformations:
+                        rotation, turns, perspective
+                    Clipping:
+                        Cutting out things not in the viewport
+
+                Rasterization:
+                    vertices -> fragments
+
+                    Fragment:
+                       Piece of info that wants to be a pixel.
+
+                Fragment Processing:
+                    Fragments dont effect eachother (unlike vertices)
+
+                    Possible Operations:
+                        hidden-surface removal (HSR), color blending, fog.
+
+                    Questions:
+                        Should frag become pixel? If so what color?
+                    Notes:
+                        Fragment processing can be done in parallel.
+
+Shader! Never met her!
+
+            Fixed-Function Pipeline (ffp):
+                Fixed set of operations.
+
+            Programmable Pipline:
+                Shader:
+                    program executed by gpu as part of the pipline.
+
+Class: Computer Graphics
+Name: William Horn
+Date: AUG 30, 2017
+
+Website: https://www.cs.uaf.edu/users/chappell/public_html/class/2017_fall/cscea385/
+
+HTML Intro:
+    Hyper Text Markup Laguage
+
+    Elements and Tags:
+        element example: <title>My Web Page</title>
+        attributes: <title id="t" class="big"> ...
+
+        note: Elements are often nested.
+
+    Comments:
+        <!-- ... -->
+
+    Document Structure:
+        docement type declaration: <!DOCTYPE html>
+
+        Head:
+            Character encoding:
+                <meta charset="utf-8">
+            Title:
+                <title> </title>
+
+        Body:
+            Tones of stuff.
+
+            Types: block or inline
+
+        Entity Codes:
+            Example:
+                &ldquo;, &omega; &lt; &amp;
+
+            ASCII: Represntation of specail or meaningful characters.
+
+Processing:
+    Programing language to make graphics easy.
+
+    Steps: to make processing js work.
+        load and run Processing.js
+
+        href: "processing.min.js"
+
+    Simplified version of java
+
+    Colors:
+        rgb: (0,0,0)
+
+        Stroke Color:
+            Color of the outline of a primative
+        Fill Color:
+            The color on the inside of the primative.
+
+
+Rendering Context:
+    Where things about the rendering enviorment are stored.
+
+Class: Computer Graphics
+Name: William Horn
+Date: Sep 6, 2017
+
+Interactions in Processing:
+    Events:
+        An action by the user or the outside world.
+
+        Examples: Keypress, mouse down/up, mouse movement, focus, timer elapsed,
+                  redisplay needed
+
+        Note:
+            GUI's usually event-driven (stuck in an event loop)
+
+        Callbacks:
+            Event loop outside the program, functions only called when event
+            occures
+            Examples: Setup, callback
+
+            Rules:
+                - Never call callback functions
+                - Dont change global data in draw
+                - No other function draws (except when timing things)
+
+    KeyPress:
+        Just need to write a function with the proper name.
+
+        Function: keyPressed
+            - Takes no params and returns void
+            - varibale key holds the ascii value
+            - Write keypressed as switch statement
+
+        Example: void keyPressed() { switch (key) { case 'a': break; }}
+
+        - Only communication can be down through global variables.
+        - Dont draw in the event function.
+    Mouse:
+        Callbacks:
+            mousePressed, mouseReleased, mouseDragged, mouseMoved
+
+        global varibales: mouseX, mouseY (store mouse possition)
+
+Triangle Strips:
+    Different ways to connect and draw vertices.
+
+    Syntax: beginShape() ... endShape()
+
+Class: Computer Graphics
+Name: William Horn
+Date: Sep 11, 2017
+
+Transformations and Animations:
+    Transformations:
+        - The main step that occurs in vertex transformations
+        model/view: orient size/pos of object or the camera
+
+        Types:
+            resetMatrix, translate, rotate, scale
+
+            resetMatrix:
+                sets model view transformations to an empty one
+
+                note: transformations are stored in 4x4 matrices
+
+            translate:
+                - x and y are added to the x and y coord of vertices
+                - used to position objects
+
+            rotate:
+                - takes an angle in radians
+                - rotates all subsiquently drawn points about the origin
+
+            scale:
+                - multiply all objects draw by a scale factor
+                - used to change the size of objects
+
+            note: default order
+                - translate, rotate, scale
+
+    Animations:
+        - simulating motion by changing objects in an image
+        - each change is a frame
+
+        Handling Elapsed Time:
+            millis() -> return in giving number of milliseconds since the
+                        start of the program
+
+            note: Instead of animating by frame, animate by time elapsed.
+
+                pos += vel * elapsed_time
+
+            note: Initializing of previous tim should be done in setup
+            TODO: put upperbound on ellapsed time.
+
+        Acceleration:
+            - calculate the position with the old velocity by the average of the
+            - old velocity and the new velocity
+
+            Damping:
+                when something hits a wall, don't add acceleration.
+
+Class: Computer Graphics
+Name: William Horn
+Date: Sep 13, 2017
+
+Hierarchical Objects:
+    - object that has moving parts, that have moving parts, that have moving parts.
+
+    Matrix Stack:
+        - trasformations are keep as a stack of matrices
+
+        pushMatrix: add a matrix to the stack
+        popMatrix: remove the matix form the top of the stack
+
+WebGL API:
+    - javascript and GLSL (opengl shading language)
+
+JavaScript (JS):
+
+Class: Computer Graphics
+Name: William Horn
+Date: Sep 18, 2017
+
+WebGL:
+    History:
+        - Iris GL -> OpenGL
+        Problem: throughput bottleneck (sending data to graphics card slow)
+
+        -> OpenGL ES/OpenGL 3.0
+        New Technique:
+            - put all data in big buffer, and send
+            - more effiecnt, less readable/usable
+
+        WebGL (2010-2015):
+            - js port of OpenGL ES
+
+Class: Computer Graphics
+Name: William Horn
+Date: Sep 27, 2017
+
+WebGL Primitives:
+    Attributes:
+        - property of a vertex
+    Uniforms:
+        - property of a pimatives
+
+3D Intro:
+    Hidden Surface Removal (HSR):
+        When off:
+            - see objects in order in which they are drawn
+
+    Perspective:
+        - Closer objects appear bigger.
+
+    Lighting:
+        - Makes things actually look 3D
+
+
+Hidden Surface Removal:
+    - what is hidden behind obj is not drawn.
+
+    Translucency:
+        - looking -through something and seeing distorted view
+
+    Methods:
+        Geometry-based: In vertex processing
+            - front-to-back
+            - back to front
+        Pixel-based: In fragment processing
+
+        note:
+            bottle neck of the pipeline is the slowerst part in the pipe.
+
+    Geometry Based:
+        Painters Algorithms:
+            - regular
+            - reversed
+
+        Geometry Based Algos:
+            Simple Depth Sort:
+                - really just depth sort
+
+                barycenter of a triangle:
+                    - point whose point coord is the average coord of all vertices (x, y, z)
+                    - can be incorrect
+                    - intrusive, has to be built into code has to be in or befor vertex processing
+
+            Newell's Algorithm:
+                Plane of the polygon:
+                    - usually all polygons reside in a plane
+
+                x,y,z intervals:
+                    diff in min/max of all coords
+
+                6 questions (a yes quits):
+                    - are x,y,z intervals overlaping (in that order)
+                    - are all vertices of P behind the plane of polygon Q
+                    - are all vertices of Q in front of the plane of polygon P
+                    - do P and Q completely non-overlapping, if so, doesn't matter
+
+                    If all no, a split is needed in P or Q.
+
+                Note:
+                    - camera cannot be moved without doing it all over again
+                    - extremely intrusive
+                    - this can be solved using a bsp tree
+
+
+            Binary Space Partitioning Tree (BSP Tree):
+                - Cuts space along the planes of polygons
+                - procedure does not require knowledge of the camera
+
+                - Process:
+                    - stuff on front of polygon or back of polygon
+                    - left side of tree contains stuff on front
+                    - right contains thing son back
+    Pixel Based:
+        z(or depth)-buffer:
+            - array size of framebuffer (typically as part of it), holds depth info
+              at each pixel location (z-coord).
+
+            Procedure:
+                - Initially all pixels have infite value.
+                - Each time fragment, is pixel close than value in z buffer?
+                    - if yes store fragment
+                    - else discard the fragment
+
+            Downside:
+                - doesn't do translucency.
+                - memory intensive.
+            Upside:
+                - generally built into graphics hardware.
+
+        Buffers:
+            - color  (4 nums for every pixel)
+            - depths (1 num for every pixel)
+
+            Note:
+                - depth buffer needs to be checked for existence in webgl.
+
+
+            gl.clear:
+                - used to clear buffers in webgl
+                - can be sepcified what the buffer gets cleared to.
+
+            depth test:
+                choose if the fragment should be keep or discarded.
+
+                syntax:
+                    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+                    gl.enable(gl.DEPTH_TEST);
+
+                    note: this enables hsr in webgl ^
+
+
+    Math:
+        - transformation are stored in 4x4 matrix
+        - apply transformation is done with matrix-vector mult
+        - compose multiple transformation using matrix-matrix multiplcation.
+
+        Matrix Multiplication Rule:
+            associative:
+                (AB)C = A(BC)
+            not communitive:
+                AB != BA, usually
+
+        Coords:
+            - x is always right, y is always up, z is towards the user.
+
+
+        Transformations:
+            rotate:
+                - gets called with a line through the origin and a specified point.
+                - for 2D that point is given as (0, 0, 1)
+
+            perspective:
+                viewing frustum:
+                    - the viewport/camera/eye that the scene is being viewed
+                      through
+                    - looks light a chopped pyriamid pointing towards the camera.
+                    - this is called a frustum.
+
+                    - lines are drawn between object and camera
+                    - where ever this line intersects the viewport,
+                      is where the object is draw.
+
+                    - objects need to be translated into the viewing frustum
+                    - move the camera back from the scene (+z direction)
+
+                Example Call:
+                      mat4.perspective(
+                        projection matrix,
+                        y field of view angle,
+                        viewport aspect ratio (w/h),
+                        near clipping plane,
+                        far clipping plane
+                      )
+
+Class: Computer Graphics
+Name: William Horn
+Date: Oct 02, 2017
+
+
+Manipulating Objects:
+    object coordinates:
+        - origin is natural center of object.
+
+    world coordinates:
+        - coodinates that are shared between all objects in world.
+
+    note:
+        - translates, rotates, scales all end up in the same matrix
+        - this is done with matrix mult. (they are composed together)
+        - this can also be applied to a vector with one matrix operation.
+
+        +--------+--------+---------+---------------+
+        | matrix | matrix |  matrix | vector/matrix |
+        +--------+--------+---------+---------------+
+        |                                           |
+  World Coordinates                         Object coordinates
+
+    transform in world coords:
+        - save A.
+        - set matrix to B.
+        - multiply saved A on the right.
+
+    copy matrix:
+        - mat4.clone(m) // returns copy of matrix
+
+Class: Computer Graphics
+Name: William Horn
+Date: Oct 04, 2017
+
+Coordinates:
+    camera -> world -> object
+
+    model transformation:
+        world -> object
+
+    view transformation:
+        camera -> world
+
+Class: Computer Graphics
+Name: William Horn
+Date: Oct 11, 2017
+
+Shaders:
+    communications with shaders:
+        - uniform and attribute have 'location'
+
+        attribute:
+            - per vertex input to application
+
+        uniform:
+            - per-primative data
+            - sent from application to vertex/fragment shaders
+
+        varying:
+            - between vertex shader and fragment shader
+
+            Process:
+              - vertex shader sets variable
+              - fragment shader reads it
+    fog:
+        - as things get farther away, they get more grey
+
+Class: Computer Graphics
+Name: William Horn
+Date: Oct 25, 2017
+
+Assignment 4:
+    - make fog on on the field of cubes.
+      The farthest cude should be just about grey.
+    - also write another application using one of Chapells shaders
+
+Polygons:
+    - every polygon in view either front facing vs. back facing.
+
+    FF:
+        - Vertices appear in cc order
+    BF:
+        - Vertices apear clockwise.
+
+    Concept:
+        - easiest way to think about it is a triangle strip.
+        - the stip has a front side and a back side.
+
+Intro To Splines:
+    Spline:
+        - made up of segments, thought of as being smooth.
+        - derivatives at intersetion at each segment is the same.
+
+        Segment:
+            - each segment has its own formula (usually polynomials)
+            - allow for local control to overall spline.
+
+        Control Point:
+            - usually low per segment.
+            - allow splines to be saved with small amounts of data.
+
+Bezier Curve:
+    - not a spline, used as a segment.
+
+Bezier Spline:
+    - usually made up of segments.
+    - each segment is either a 3 or 4 point bezier curve.
+
+    Requirments:
+        - last point of 1st segment needs to meed up with 1st point of next segment
+
+    Good properties of these curves:
+        Convex hull property (YES):
+            - curve lies in the convext hull (shrink wrapped area)
+              of its conrol points.
+        Interpolateing (NO):
+            - curve interpolates through all control points.
+        Smooth (YES):
+            - means what you think (same derivate at segment intersections)
+
+        Affine Invariant (YES):
+            - affine transformation on control points generates same curve
+              as transform done on curve itself.
+
+            side note (Affine Transformation):
+                - a linear translation plus a translation
+
+                Examples:
+                    - move, scale, rotate
+                    - reflection
+                    - shear (slanting object)
+
+        Local Control:
+            - bezier curve (NO), B spline (YES)
+
+        Degree of Polynomial:
+            quadratic b curve:
+                3 control point
+            cubic b curve:
+                4 control points
+
+Bernstein Polynomial:
+    - essentially binomial.
+
+Bezier Surface:
+    Patches:
+        - this is what surfaces are made up of.
+
+    Method:
+        - Take points from row and generate curve for each
+          parameterized from t=0->1
+        - make a curve with control points from every row using
+          all values of t.
+
+        Note:
+            - good to conceptualized, bad for drawing.
+
+Hermite Forms:
+    - to specify curve, gives points and derivate at those points.
+
+    Example:
+        - 2 points, 2 derivates -> exactly 1 curve.
+
+Cardinal Spline:
+    - arbitrary number of points/segments.
+    - each point sepcified in hermit form (point/derivative).
+
+    Example:
+        - f(0) = P2, f`(0) = k(P3 - P1)
+        - f(1) = P3, f`(1) = k(P4 - P2)
+
+    Tension (k):
+        how sharp the segment intersections are.
+
+    Properties:
+        - doesn't have convex-hull property
+        - does goe through every point.
+
+Class: Data Mining
+Name: William Horn
+Date: Oct 26, 2017
+
+Lift Chart:
+    make:
+        - need lift factor for each possible sample size
+          (one instance at a time)
+        - for each, calc the response rate/lift factor so far.
+
+        Note:
+            - x-axis sample size.
+            - y-axis is lift factor.
+            - result is a lift chart.
+
+Cost Benifit Chart:
+    - these are things that weka can generate.
+    - shows whether more training is worth the increase in performace.
+
+Receiver Operating Characteristic Curve (ROC):
+    - signal to noise ratio in a communication channel.
+    - compares true positives to false positives.
+
+    note:
+        - multiple ROC curves can be used to cmpr dm algos.
+    Plots:
+        - FP(False Positive) rate on x-axis.
+        - TP(True Positive) rate on y-axis.
+
+Class: Computer Graphics
+Name: William Horn
+Date: Nov 01, 2017
+
+BlinPhong Model:
+    Ambient:
+        - normal vector ignored, just apply to fragment
+    Diffuse:
+        - Lambertion
+    Specular:
+        - Reflection of the light on the object
+
+    Method:
+        - normal vec
+        - light pointing at light source
+        - pointing at camera
+        - halfway between camera and
+
+Two Sided Polygons:
+    - front facing, back facing
+
+    Culling:
+        - throw out front/back facing polygons
+
+    gl_FrontFacing:
+        - in frag shader to determine if polygon is front facing
+        method:
+            - flip surface normal if not front facing for two sided lighting
+
+Fancy Lighting:
+    - spotlights and lighting attenuation
+
+    Spotlight:
+        - light that shines in a particular direction
+
+        To Make:
+            Spot Direction:
+                - the primary direction the light shines in.
+            Cutoff angle:
+                - how far off the light shines from the primary direction.
+            Regular Light Stuff:
+                - color, brightness, ...
+
+        Make light look good:
+            two cutoff angles:
+                - one for full illumination
+                - one for half illumination
+                - outside is unlit.
+
+                Note: inner and outer can be close together.
+
+            Spot Exponent:
+                - no cutoff angle.
+                - theta = angle between direction and light. Brightness = cos(theta)^exponent.
+
+            Note: Calculations are usually done in frag shader.
+
+    Attenuation:
+        - the farther from a light source you are, the dimmer it gets.
+
+        Quadratic Attenuation:
+            - disttolight = distance(surfpt, lightPos);
+            - color = paintClr / disttolight / disttolight
+
+            Issue:
+                - dynamic range is smaller than real world
+                - attenuated colors are often dim.
+
+        Linear Attenuation:
+            - just divide by distance once.
+
+            Note:
+                - physically incorrect.
+                - but it looks good, so its okay.
+
+Writing Spotlight Code:
+    Where:
+        inside lighting function or outside:
+            - inside, so as to still get ambient light outside of spotlight
+
+
+Textures:
+    - An image that can be painted onto a polygon
+
+    Image:
+        - 2D Array of colors
+
+    Texture:
+        - the image to be painted on the polygon
+        - polygon gets overlaid on the image (texture)
+        Texel: a pixel in a texture.
+
+        Heightmap:
+            - instead of colors, altitudes are used.
+            - can be used to make objects bumpy.
+
+            Note: to start, well just use images with colors
+
+        Map: the data set (texture map)
+        Mapping: Technique
+            Texture Mapping: technique of painting a texture on the polygon.
+
+        Texture Coordinates:
+            - coordinates on the image (texture)
+            - vertex attribute
+
+        Texture Transformation:
+            - transform texture coords into coords on the primitives.
+            - texture => object coords
+
+    Texture Channels:
+        - how you sent the texture to the graphics card.
+        - allows for resolution independent lookup.
+
+    Texture Parameters:
+        Mipmap: multiple resolutions for one texture.
+
+code:
+    activeTexture: sets texture channel
+    bindTexture: creates a alias for tex object
+    make dummy image
+    textImage2D: makes image into a texture
+
+Class: Computer Graphics
+Name: William Horn
+Date: Nov 06, 2017
+
+Textures:
+    - image that can be painted onto a polygon (or generalization)
+
+Coords:
+    polygon: (x, y)
+    texture: (s, t)
+    note: texture coords are attributes of each vertex.
+
+    Resolution Independent Lookup:
+        - values can still be gotten if lookup is between texels.
+        - i.e. use closest, linear interpolate, ...
+
+    note:
+        - texturing effects are applied in the fragment shader.
+    Steps:
+        - Create a texture image
+        - Application side
+        - Shader side
+
+    Parameters:
+        - control texture lookup (texture2D) when texel not hit exactly
+
+    MagFilter:
+        - texels are bigger than pixels
+        Options:
+            nearest: the nearest texel is picked
+            linear: linearInterp between texels
+
+    MinFilter:
+        - texels are smaller than pixels
+        Options:
+            - nearest/linear (same as MagFilter)
+            - nearest/mipmap-nearest
+            - nearest/minmap-linear
+            - linear/mipmap-nearest
+            - linear/mipmap-linear
+
+    WebGL object:
+        - wrapper around allocated space on/in graphics hardware memory.
+
+
+MipMap:
+    - collection of images with different levels
+
+Levels:
+    level 0: full rez
+    level 1: 1/2 rez
+    level 2: 1/4 rez
+
+Class: Computer Graphics
+Name: William Horn
+Date: Nov 08, 2017
+
+Online Quiz:
+    - on blackboard
+    - due by 5pm Sunday
+    - posted Thursday evening
+
+Overview:
+    - Texture Examples
+
+    Texture related effects:
+        - reflection mapping
+        - refraction mapping
+        - Drawing fuzzy blobs
+        - Perlin Noise (procedural textures)
+        - Billboarding
+
+
+Reference:
+    - All the steps to make a texture in webgl.
+    - "https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Using_textures_in_WebGL"
+
+Drawing Fuzzy Blobs:
+    Things to do:
+        - generate texture image
+        - use the texture in rendering, [application, shader (mostly fragment shader)]
+
+    Drawing:
+        - looks same from every direction
+        - to draw, make a picture           |
+          picture always faces camera       |->  Billboarding
+
+
+Billboarding:
+    - always face texture/polygon towards camera
+    - every animation frame
+
+    Types:
+        Cylindrical Billboarding:
+            can rotate around 1 axis.
+        Spherical Billboarding:
+            rotate any direction, don't care which way is up.
+        Oriented Spherical:
+            same as spherical, but care about up direction.
+
+    Spherical Billboarding:
+        - have polygon w/ normal vector (n) and target (c)
+        - angle to rotate is arccos of the dot of 2 vectors (if n and c are unit vecs)
+        - line to rotate is cross product of normal and target ( n X c )
+        Note:
+            - working in object coordinates
+            - rotation happens around obj origin
+
+        Problem:
+            - how to find vec pointing to camera in object coords
+            - whereAmI in quoll.js
+
+Class: Computer Graphics
+Name: William Horn
+Date: Nov 13, 2017
+
+
+Fuzzy Blob (example):
+    Techniques:
+        Billboarding - Face polygon towards the camera (spherical, cylindrical, oriented spherical).
+            Steps (spherical):
+                - find camera position
+                - find vector from normal to camera
+            Steps (cylindrical):
+                - set y component to 0
+                - do cylindrical billboarding
+
+    Steps:
+        Generate fuzzy blob texture:
+            - user bunch of math to generate textures
+            - see final code
+
+Blending:
+    - enable and set up how it workds
+    call:
+        gl.enable(gl.BLEND)
+        gl.blendFunc(sfactor, dfactor):
+            sfactor: source color.
+            dfactor: color that is in the frame buffer.
+
+            note: ^ both these take gl constants
+
+Class: Computer Graphics
+Name: William Horn
+Date: Nov 20, 2017
+
+Reflection Mapping:
+    Methods:
+        Too simple:
+            - line-plane intersection behind camera.
+            - take where the reflection of camera vector on the surface
+              intersection with this plane
+        Sphere Map:
+            - have sphere of all possible reflection angles
+            - add <0,0,1> too the reflection vector
+
+            note: Values around the edge of sphere,
+                  where direction change rapidly can create artifacts.
+
+        Issues:
+            - rendering to a texture.
+            - make and user a cube map
+              (six 2d textures arranged logically to form a cube).
+              we are inside the cube.
+
+Rendering to 2D texture (RTT):
+    termonology:
+        framebuffer:
+            - where the data goes...
+
+            Render Buffers:
+                Depth Buffer:
+                    - part of the frame buffer
+                ColorBuffer:
+                    - where all the color goes
+
+                Other:
+                    Accumulation Buffer:
+                        - repeated blending of whole images (motion blur)
+                    Stencil Buffer:
+                        - do stencil test
+                        - tests between stencil buffer and depth buffer and conditionally discard fragment.
+
+        Mehod:
+            - create our own frame buffer off screen.
+            - attach render buffers to it. (depth, color)
+            - the color buffer is a texture.
+
+
+        Graph:
+                    | FBO |     Frame buffer object
+                   /       \
+              | RBO |    | Text |  Render buffer,  Texture object
+                 |           |
+  (FBO's depth buffer)    (color buffer)
+
+Class: Computer Graphics
+Name: William Horn
+Date: Nov 22, 2017
+
+Reflection Mapping:
+    note:
+        - ray tracing is easy to write, looks good, but has poor performance
+
+WebGL:
+    Kinds of Commands:
+        - Set State
+        - Render
+        - Get State
+
+    Get viewport dimensions:
+
