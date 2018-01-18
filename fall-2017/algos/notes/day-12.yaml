@@ -1,0 +1,39 @@
+Class: Data Structures and Algorithms 
+Name: William Horn
+Date: Sep 25, 2017 
+
+Better Bin Search:
+    equality:
+        a == b
+    equivalence:
+        (a < b) && !(a < b)
+
+        note: equivalence is prefered because then 
+              only one operator is being used
+
+    Random-access iterators:
+        std::advance:
+            - iter += n <=> advance(iter, n)
+
+        std::distance:
+            - dist = iter2 - iter1 <=> distance(iter2, iter1)
+
+        note:
+            these are slower, but more reliable.
+
+Search Algorithms:
+    header algorithm:
+        std::binary_search -> returns a bool 
+        std::lower_bound -> returns the first one
+        std::upper_bound -> returns the last one
+
+        note:
+            these allow the ability to change the comparison.
+
+            example:
+                binary_search(d.begin(), d.end(), findme, std::greater<int>())
+
+        std::find -> returns an iterator to item if found or iterator to the end.
+
+        note:
+            uses equality (==)

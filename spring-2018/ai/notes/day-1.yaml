@@ -1,0 +1,25 @@
+Class: Intro to AI
+Name: William Horn
+Date: Jan 16, 2018
+
+Into:
+    Branch factor:
+        number of ways to change the state.
+
+    Tic-Tac-Toe:
+        bf: 9
+        note: can be reduced to 3 using rotational symmetry
+            - center
+            - corner
+            - middle edge
+
+    Checkers:
+        Basic:
+            - generate moves
+              - look through each checker for valid move and make a list
+            - choose random move
+
+    Games avg bf:
+        checkers: 8-10
+        chess: 20
+        go: 190

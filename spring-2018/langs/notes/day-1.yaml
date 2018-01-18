@@ -1,0 +1,55 @@
+Class: Programming Languages
+Name: William Horn
+Date: Jan 17, 2018
+
+Goals:
+    - Syntax and Semantics
+    - Basic lexical analysis, parsing, and interpretation
+    - Know the different kinds of programming Languages
+    - Know features from different languages and be able
+      to code in them.
+
+Topics:
+    - Syntax and Semantics
+    - Programming Language Features/Categories
+
+Real Topics:
+    Dynamic:
+        - Something that happens at runtime
+        example: 'new' keyword in c++
+
+    Static:
+        - Something that happens before runtime
+        example: globals in c++
+
+    Syntax:
+        - is the correct structure of code
+        example: c++ (good) a + b, (bad) a b
+
+    Semantics:
+        - the meaning of code
+        example: operator+ gets called
+
+    Conundrum:
+        - 3+string("abc") semantics or syntax problem?
+        - Static semantic problem
+
+Formal Languages and Grammars:
+    string: finite sequence of zero or more characters
+    formal language:
+        - a set of strings
+        note: not a programming language!
+
+    Alphabet:
+        - characters alowed to be used in the languages strings.
+
+        notation:
+            "abc" => abc
+            "" => epsolon (means the empty string)
+
+        Example Language:
+            - { abc, xyz, q }
+            - { epsolon, 01, 0101, 010101, ... }
+                Alphabet: language over the alphabet { 0, 1 }
+            - Set of all valid c++ identifiers
+
