@@ -1,0 +1,66 @@
+Class: Intro To AI
+Name: William Horn
+Date: Jan 18, 2018
+
+Problem Solving By Searching:
+    Define Problem:
+        Init state: S_0
+        Action/Successor Func: S_i -> S_(i+1)
+        Goal Test: Is S_i a goal state?
+        Path Cost: cost(i, a, j) = c
+
+    Note:
+        - this processes is applied at every move of the game.
+
+    Solution:
+        a path from S_0 to goal state.
+
+    Checkers:
+        - Current board
+        - all legal moves
+        - no opponent pieces or oppent cant move
+        - cost(Bi, a, Bj) = 1
+
+    Traveling Salesman:
+        - current city
+        - any unvisited city
+        - no unvisited cities
+        - cost(current, a, next) = weight
+
+    Repeated States:
+        impossible: tic-tac-toe, traveling, go
+        possible: checkers, chess, 8-puzzle
+            - this creates an infinite search depth.
+            - prevent this by limiting search depth.
+
+        Dealing With Them:
+            - limit each game to 100 moves otherwise draw.
+
+            Detect and Prune:
+                - store all previous states and check new state against it,
+                  this is down with a hash table.
+
+    Checkers:
+        rules:
+            - 8x8 board
+            - 2 players, each with 12 peices.
+            - red moves first.
+            - when a jump is available, it must be taken.
+            - loses, when the player has no available moves.
+
+        Storing the Checker Board:
+            - 8x8 char array -> B, b, _, r, R
+            - 8x8 int array -> -2, -1, 0, 1, 2
+            - 32 element array -> B, b, _, r, R !! This is the format that will be used to send over the network.
+
+        Move Generator:
+            - for each checker, check if diagonals are empty
+
+            - use a move table and a jump table
+            - use both red and black tables for kings.
+
+Goals:
+    - displaying the board, text or GUI.
+    - move/jump generator (pick random moves).
+          !!do jumps first!!
+    - human input.

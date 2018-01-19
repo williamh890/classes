@@ -1,0 +1,23 @@
+Class: System Architecture
+Name: William Horn
+Date: Jan 18, 2018
+
+Bare CPU:
+    ALU  -->  Operations
+     |            |
+     +--> REGS <--+
+
+Edge Trigger vs Level Triggered:
+    Level:
+        - high when clock is high.
+    Edge:
+        - only is high when clock has changed.
+        Implementation:
+            - have a slow clock
+            - when clock is low and slow clock is high then
+              the clock is triggered.
+
+        Note:
+            - edge trigger stops oscillation in the circuit.
+            - reading inputs while also changing them is bad.
+
