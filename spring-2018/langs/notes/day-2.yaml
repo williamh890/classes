@@ -1,0 +1,74 @@
+Class: Programming Languages
+Name: William Horn
+Date: Jan 19, 2018
+
+Review:
+    Dynamic: happens at run time.
+    Static: happens before run time.
+
+    Syntax: Correct structure of code.
+    Semantics: The meaning of code.
+        - Static and dynamic semantics
+
+Formal Languages and Grammars:
+    Formal Language: Set of strings
+        Alphabet: The set of characters that appear in the strings
+        Example:
+            - {e, 01, 0101, 010101, ...},
+            - the set of all lexemes in some category
+              (all legal c++ identifiers)
+
+        Describing:
+            Generator:
+                Something that can produce the strings in a formal language
+                note: easier to make (can be used to make recognizer)
+            Recognizer:
+                Determining whether a given string is in the language.
+                Note: actually useful
+
+    Phrase Structure Grammar (Grammar):
+        Need:
+            - terminal symbols
+            - non terminal symbols
+            - start symbols
+
+        Grammar:
+            - list of one or more Productions
+
+        Production:
+            - rule for substituting one sub string for another.
+              S -> xSy
+
+        Derivation:
+            - begin with start symbol
+            - apply production, replacing the left hand side with right hand side of production.
+            - repeat until no non terminals
+
+            Note:
+                - Parsers go through the steps of the derivations,
+                  but don't actually need the derivations.
+
+            Expand:
+                - 'expand a non-terminal by applying a production'
+
+    Chomsky Hierarchy:
+        Language Categories:
+            Regular:
+                Generator: another kind of regular expression
+                Recognizer: Deterministic Finite Automaton (program with tiny amount of memory)
+                note:
+                    describe lexemes categories,
+                    used to break up program into words.
+
+            Context Free:
+                - left side of production is a single non-terminal
+                Recognizer: finite automaton + stack
+                note:
+                    recognizing programs, used to write parsers.
+
+            Computably Enumerable: Grammar
+                Recognizer: Turing machine (computer program)
+                note:
+                    encompasses what computer programs can do.
+
+

@@ -1,0 +1,13 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Jan 19, 2018
+
+
+Paper:
+    - 2 journal articals, or 1 artical and 2 websites.
+Homework:
+    - make a starter webgl project.
+    - use lite-server for live reloading.
+
+    notes:
+        tsc -w // live compiling
