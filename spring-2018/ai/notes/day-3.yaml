@@ -1,0 +1,41 @@
+Class: Intro To AI
+Name: William Horn
+Date: Jan 23, 2018
+
+Solution Perfomance:
+    Completeness:
+        - solution guarenteed?
+        - guarenteed no solution?
+          if non exist (and doesn't hang)
+
+    Optimality:
+        - optimal wrt cost function
+    Time:
+        - can it be done in a reasonable amount of time
+    Space:
+        - will it run out of memory
+
+BFS:
+    - Hand board state to move generator.
+    - get moves and process get the child nodes for each move in a queue.
+    Notes: Gets big really quick (exponential).
+
+DFS:
+    - process moves with a stack.
+    - number of nodes increases linearly with depth.
+    Notes: Much better for memory usage.
+
+Note: Can use the call stack as a stack for the moves.
+
+Hybrid:
+    Iterative Deepening Search (IDS):
+        depth = 0
+        while no solution
+            depth++
+            DFS(S_0, depth)
+
+        - Keep searching with a deeper limit on DFS
+        - If time runs out, return best answer
+        Note: A lot of work is wasted with this technique.
+
+

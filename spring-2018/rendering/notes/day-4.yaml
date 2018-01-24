@@ -1,0 +1,95 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Jan 24, 2018
+                                    Clip Coords
+xw           x0     xe          xw    xc        xe
+yw           y0     ye          yw    yc        ye
+zw = M_world z0  => ze = M_view zw => zc M_proj ze
+ww           w0     we          ww    wc        we
+
+Vertex Shader:
+    uniform mat4 projMat;
+    uniform mat4 viewMat;
+    uniform mat4 worldMat;
+    attribute vec4 aPosition;
+
+    void main() {
+        gl_Position = projMat * viewMat * worldMat * aPosition
+    }
+    notes:
+        applies : (world -> view -> proj) to aPosition
+
+What OpenGL Does:
+    - takes gl_Position, needs to get pixel coords.
+    Px: Screen Width
+    Ox: Origin
+                    Window Coords
+      xd   xc / wc    xw   Px/2*xd + Ox
+      yd = yc / wc => yw = Py/2*yd + Oy
+      zd   yc / wc    zw   (f-n)/2*zd + n+f / 2
+
+    glViewPort:
+        - usually is just canvase size.
+        - only rendering is happening in viewport
+    glDepthRangle:
+        - does something.
+
+Orth Matrix
+M =  2/x   0  0 -1
+      0  -2/y 0  1
+      0    0 -2  0
+      0    0  0  1
+
+device cords
+      2/x xe - 1
+Vd = -2/y ye + 1
+         -2ze
+
+Look at Matrix:
+          Transpose of some matrix
+                ux  uy  uz  0 |  1 0 0 -eyex
+    M_lookat =  vx  vy  vz  0 |  0 1 0 -eyey
+                wx  wy  wz  0 |  0 0 1 -eyez
+                 0   0   0  1 |  0 0 0  1
+                             inverse camera matrix of camera location
+                         (moves from worldspace to camspace)
+    Center:
+    Eye:
+    Up: FPS this is usually the y-axis
+
+    f = center - eye       // Scene to camera
+    g = up
+
+    u = f_norm x g_norm
+    v = u_norm x f_norm
+    w = -f_norm             // Camera to scene center
+
+    Note: This is also useful for light sorces.
+
+Orbital Cmaera:
+    Td = d = distance in world units (0, 0, d)
+    Rp = p = pitch
+    Ro = o = yaw (y-axis rotation)
+
+    Order:
+        translate then yaw then pitch
+        - RpRoTd
+
+Scene Graph:
+    Idea:
+        A way to organized objects in your scene hierarchically
+    - Directed Acyclic Graph (DAG)
+
+            Root (Origin)
+           /    \
+          /      \
+       Group
+      /  |  \
+     S   T   C
+Local Matrix (LM)
+World Matrix (WM)
+
+    Update Function:
+        - Set own WM to LM
+        - Multiply Parent WM By LM
+

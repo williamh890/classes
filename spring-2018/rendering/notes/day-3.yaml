@@ -1,0 +1,60 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Jan 22, 2018
+
+Vector Class:
+    Addition/Subtraction:
+        - element wise
+    Negation:
+        - Make negative copy
+    Scaling:
+        - mult all terms by scaler
+    Dot Product:
+    Cross Product:
+    Length:
+        - Euclidean Distance
+    Normalize:
+        - return unit vector
+
+Finding Orthogonal:
+    A X B = | ay*bz - az*by | (x)
+            | az*bx - ax*bz | (y)
+            | ax*by - ay*bx | (z)
+
+Matrix:
+    Multiplacation:
+        - A*B = (AB)_ij = sum([A_ik*B_kj for k in range(m)])
+
+    Transpose:
+        - Flip rows and columns
+        note:
+            - this is true for th rotation matrix,
+                A_-1 = A_T if det == 1
+
+            Scaling makes det != 1
+
+    Matrix Class:
+        Possible:
+            - Addition/Subtraction
+            - Negation
+            - Scaling
+        Definite:
+            - Multiplacation
+            Matrces:
+                - Translation Matrix
+                - Scaling Matrix
+                - Rotation Matrix // Give axis and angle
+                - Orthogonal Projection (ortho) // No perspective at all (2d).
+                - Perspective Matrix //
+
+            Note:
+                - column vectors represent what direction each axis is pointing in.
+                  | 1 0 0 0 |
+                  | 0 1 0 0 |
+                  | 0 0 1 0 |
+                  | 0 0 0 1 |
+                    x y z w-axis
+
+            Rotation:
+                Big ugle deriation.
+

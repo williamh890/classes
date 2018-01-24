@@ -1,0 +1,19 @@
+Class: Systems Architecture
+Name: William Horn
+Date: Jan 23, 2018
+
+Branching:
+    - Mutliplexor to pick branch target, or the next
+      instruction from the program counter.
+
+Instruction Set:
+                 Read    Write
+    +----------+-------+-------+---------------------+
+    |  4 (OP)  | 2 (R) | 2 (W) |      8 (const)      |
+    +----------+-------+-------+---------------------+
+   Output Register               Arithmetic Constant
+
+
+Parallel Circuits:
+    - load instruction on rising edge
+    - execute on trailing edge.

@@ -1,0 +1,55 @@
+Class: Programming Languages
+Name: William Horn
+Date: Jan 22, 2018
+
+Regular Languages:
+    - Regular Grammers and Langs
+    - Finite Automata
+    - Regular Expressions
+    - Regular Expressions in Practice
+
+Regular Languge Intro:
+    - used in text search and replace.
+
+    Grammar With:
+        Left Hand Side:
+            is exactly one nonterminal
+        Right Hand Side:
+            - e (empty string)
+            - single terminal,
+            - a single terminal followed by a single nonterminal,
+              may be the same as the left hand side.
+
+        Note: This makes a regular language
+
+    Regular Langule:
+        - there exists a regular grammar that makes this language.
+
+Finite Automata:
+    Deterministic Finite Automaton (DFA):
+        - Kind of recognizer for regular languages.
+        - A finite collection of states
+
+        Whate it is:
+            - One start state.
+            - Some states might be excepting states
+                                   a                      b
+            Start -> (start state) -> (accepting state) -+
+                                                |        |
+                                                +--------+
+
+            example strings: a, ab, abbb, abbb, /ab(0 or more)/
+
+        What to do:
+            - sit in state.
+            - read charecters from string.
+            - follow arrow labeled by char.
+
+        Facts: DFA's can only recognize regular languages.
+
+    DFA -> Grammar:
+        - it can be done.
+        - also the other way around.
+
+Regular Expressions:
+    - a type of generator for a regular language.
