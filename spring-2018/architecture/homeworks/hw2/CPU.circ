@@ -327,9 +327,6 @@
     <comp lib="6" loc="(663,600)" name="Text">
       <a name="text" val="r2"/>
     </comp>
-    <comp lib="6" loc="(348,246)" name="Text">
-      <a name="text" val="Const"/>
-    </comp>
     <comp lib="4" loc="(680,470)" name="Register"/>
     <comp lib="0" loc="(260,280)" name="Constant">
       <a name="width" val="2"/>
@@ -340,6 +337,9 @@
     </comp>
     <comp lib="0" loc="(900,380)" name="Probe">
       <a name="facing" val="west"/>
+    </comp>
+    <comp lib="6" loc="(1069,350)" name="Text">
+      <a name="text" val="Operation"/>
     </comp>
     <comp lib="6" loc="(531,596)" name="Text">
       <a name="text" val="Output Select"/>
@@ -369,21 +369,21 @@
     <comp lib="6" loc="(513,164)" name="Text">
       <a name="text" val="Program Counter"/>
     </comp>
-    <comp lib="6" loc="(729,148)" name="Text">
-      <a name="text" val="Stored Program"/>
-    </comp>
     <comp lib="4" loc="(680,550)" name="Register"/>
     <comp lib="0" loc="(590,120)" name="Constant">
       <a name="width" val="8"/>
     </comp>
+    <comp lib="6" loc="(289,216)" name="Text">
+      <a name="text" val="Const"/>
+    </comp>
     <comp lib="6" loc="(938,404)" name="Text">
       <a name="text" val="Constant"/>
     </comp>
-    <comp lib="6" loc="(921,274)" name="Text">
-      <a name="text" val="Operation"/>
-    </comp>
     <comp lib="6" loc="(342,442)" name="Text">
       <a name="text" val="RESET"/>
+    </comp>
+    <comp lib="6" loc="(823,165)" name="Text">
+      <a name="text" val="Stored Program"/>
     </comp>
     <comp lib="0" loc="(810,510)" name="Probe">
       <a name="facing" val="north"/>
