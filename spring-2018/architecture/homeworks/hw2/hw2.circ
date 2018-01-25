@@ -69,7 +69,6 @@
     <a name="clabelup" val="east"/>
     <a name="clabelfont" val="SansSerif plain 12"/>
     <wire from="(1000,440)" to="(1050,440)"/>
-    <wire from="(370,220)" to="(880,220)"/>
     <wire from="(810,360)" to="(810,430)"/>
     <wire from="(1000,510)" to="(1060,510)"/>
     <wire from="(610,620)" to="(650,620)"/>
@@ -80,7 +79,6 @@
     <wire from="(860,380)" to="(860,400)"/>
     <wire from="(420,310)" to="(420,530)"/>
     <wire from="(260,300)" to="(260,330)"/>
-    <wire from="(880,220)" to="(880,370)"/>
     <wire from="(570,290)" to="(570,310)"/>
     <wire from="(780,430)" to="(780,640)"/>
     <wire from="(1060,460)" to="(1060,510)"/>
