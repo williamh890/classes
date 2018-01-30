@@ -4,36 +4,40 @@
 -- Hello World!
 print("Hello\n")
 
-nicePrint = function(header, f)
+local nicePrint = function(header, f)
     print(header)
     f()
     print('')
 end
 
 -- Regular Arithmatic
-arithmatic = function()
-    x = 2 + 2
+local arithmatic = function()
+    local x = 2 + 2
     x = x * 9
     x = x^7
     x = 42E19
     print(x)
 end
 
+local function a()
+    print("hello")
+end
+
 concat = function()
-    first = "William "
-    last = "Horn"
+    local first = "William "
+    local last = "Horn"
     print( first .. last )
 end
 
 bools = function()
-    t, f = true, f
+    local t, f = true, false
     print(not t)
     print(t and f)
     print(t or f)
 
     -- jank terinary
-    h, b = 'hello', 'bye'
-    v = t and b or h
+    local h, b = 'hello', 'bye'
+    local v = t and b or h
 end
 
 -- Equality and Inequality

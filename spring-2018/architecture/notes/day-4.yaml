@@ -1,0 +1,31 @@
+Class: Systems Architecture
+Name: William Horn
+Date: Jan 25, 2018
+
+Pipelining:
+    - slow to start and end
+    - branching incures this cost.
+
+    Branch Prediction:
+        - is very poor.
+
+    Superscalar Execution:
+        Idea:
+            more than one instruction per clock cycle.
+        - multiple alu's, branches.
+        - cpu tries to figure out how to make your code
+          make use of all these alu's in parallel.
+
+    Two Forms of Parallelism:
+        - pipelining
+        - superscalar
+
+    Loop Dependenices:
+        - acculmulatng value on registe (register dependenice).
+        - pushing and poping values (stack carried dependenices).
+
+    Summary:
+        - register renaming
+        - superscalar (multiple)
+        - branch prediction
+

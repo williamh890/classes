@@ -1,0 +1,61 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+%!TEX spellcheck
+%!TEX options = -shell-escape
+% Change the following line to whatever your file is
+%!TEX root = ./project0.tex
+% -*- program: xelatex -*-
+% chktex-file 1
+% Comments start with a percent sign
+
+% To use ACM Article Format
+% \documentclass{acmart}
+% \setcopyright{none}
+
+% To use IEEE Transactions format
+% \documentclass{IEEEtran}
+
+% To use default article style
+\documentclass{article}
+
+\begin{document}
+
+\title{Generating Realistic Looking Snow Drifts}
+\author{William Horn\\University of Alaska Fairbanks\\wbhorn@alaska.edu}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+Last semester in graphics I focused on making a semi realist fragment shader for
+generating a dynamic snow texture with perlin noise \cite{wiki:perlin}. This looked good but it
+was just being rendered on a completely flat plan. To improve this project I
+plan on adding some volume to the snow drifts.
+
+\section{Previous Research}
+
+To initially make realistic snow I used a glsl implementation of perlin \cite{noiseglsl} to generate random
+normal vectors. These were used to calculate the specular highlight in the blinn phong illumination
+\cite{blinn1977models}. Model to create a sparkle when the user moved around the screen.
+To make the snow have some texture I used perlin noise to generate a 1/fnoise pattern to use
+as the base texture that the sparkle would go on.
+
+\section{Background Problem}
+
+\section{Proposed Solution}
+
+Talk about what you are going to do/did
+
+\section{Results and Analysis}
+
+Talk about your results here and why they are important.
+
+\section{Conclusion}
+
+Talk about your conclusion
+
+% myresearch is the file myresearch.bib where you copy/paste all your BiBTeX references
+\bibliographystyle{alpha}
+\bibliography{project0}
+
+\end{document}

@@ -1,0 +1,8 @@
+assets/*
+assets
+
+*.bbl
+*.aux
+*.pdf
+*.log
+*.blg

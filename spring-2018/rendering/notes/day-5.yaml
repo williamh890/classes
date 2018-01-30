@@ -1,0 +1,21 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Jan 26, 2018
+
+What Goes Into A Scene:
+    - texture maps
+    - wireframe -> geometry
+    - sprites, fonts
+    - BVH/collision trees
+    - Sound files
+    - Screpts
+    - Scenegraph
+    - Shaders
+
+Fragment Shader:
+
+    Uniforms:   HARD PART
+        Loading ------> Hard Coding -> Uniform Attrbute
+         Data        Uniforms
+    Attributes:
+        next week

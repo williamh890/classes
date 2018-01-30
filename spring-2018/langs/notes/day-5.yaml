@@ -1,0 +1,76 @@
+Class: Programming Languages
+Name: William Horn
+Date: Jan 26, 2018
+
+In Class Context Free Grammar:
+    - regular in class format not good enough for real programming languages.
+    - deal with terminals involving arbitrary character sets.
+    - does not require unusual characters.
+
+Backus-Naur Form (BNF):
+    - a notation for writing context free grammars.
+
+    Notation:
+        - Non-Terminals is enclosed in angle brachets <for-loop>
+        - arrow in products is ::=
+        - Terminals are in quotes "".
+        - white space is ignored.
+
+Extended Backus-Naur Form (EBNF):
+    - no angule brachets
+    - ::= is = or :
+    - productions end with ;
+    - brackes {} optional and repeatable
+    - brackets []
+
+Lexical Structure:
+    - how a program is broken into lexemes,
+      identifiers, operators, keywords, ...
+
+Programming Language Features:
+    Expression:
+        - something that has a value.
+
+    Entity:
+        - some THING in a programming language.
+
+    Execution 1:
+        Runtime:
+            - specified computations actually occur.
+            Runtime System:
+                - code that assists in, or somethines performs, execution of a program.
+
+            Parts of Runtime Systems:
+                C++: new keyword
+                Java,  Python, Lua: Garbage Collection
+
+            Note: Executable files have runtime system.
+
+        Compilation:
+            - takes code in one programming language and turns it into another.
+            Object Code:
+                - Code output by the compiler.
+                - Don't have to be human readable.
+
+            In Practice:
+                - this term is only used in practice when the object code
+                  is a lower language,
+                - compiles to native code.
+
+            Transpiler:
+                complier that stays at the same level.
+
+            Intermediet Representation:
+                - IR is responsible for different systems.
+                - language compilers only have to get to the IR.
+
+            Interperter:
+                - doesn't spit out code.
+                Misconceptions:
+                    - Interpertation is not inherent to PL.
+                    - usually interperters compile, then interpret,
+                      Interp and Comp's are not that different.
+
+            JIT Compilation (Dynamic Compilation):
+                - Optimizations that only can happen at runtime (Profile Based Optimizations).
+

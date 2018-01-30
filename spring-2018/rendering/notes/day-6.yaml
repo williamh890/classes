@@ -1,0 +1,33 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Jan 29, 2018
+
+getAttributeLocation:
+    Attributes get thrown out if note used in shader program.
+
+Vertex Buffer:
+    const vertexData: float32Array
+    gl.createBuffer(gl.ARRAY_BUFFER);
+       position   normals   color  text coords
+    //[ vx vy vz  nx ny nz  r g b  s t q ]
+    // 48 bytes per vertex
+
+    const elementData: Uint32Array;
+    gl.createBuffer(gl.ELEMENT_ARRAY_BUFFER_BUFFER)
+
+    const vLoc = gl.getAttribLocation(program, "aPosition")
+    const nLoc = gl.getAttribLocation(program, "aNormal")
+
+    gl.vertexAttribPointer(vloc, 3, gl.FLOAT, false, 48, 0);
+    gl.enableVertexArray(vloc);
+
+           offset |
+    //[ vx vy vz  nx ny nz  r g b  s t q ]
+    gl.vertexAttribPointer(vloc, 3, gl.FLOAT, /*noralize*/ false, /*stride*/ 48, /*Offset*/ 12);
+    gl.enableVertexArray(vloc);
+
+    gl.drawElements  of  gl.drawArrays
+
+    if (vloc > 0) {
+        gl.disableVertexAttribeArray(vloc);
+    }

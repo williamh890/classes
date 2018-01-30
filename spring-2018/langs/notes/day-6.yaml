@@ -1,0 +1,34 @@
+Class: Programming Languages
+Name: William Horn
+Date: Jan 29, 2018
+
+Review:
+    - Backus-Naur Form            <-+ (ways to write grammars)
+    - Extended Backus-Naur Form   <-+
+    - Lexical Structure (legal operators, separate from syntax)
+    - Runtime, Runtime System, PL Execution
+
+Dynamic Programming Languages:
+    History:
+        Automate Computer Tasks:
+            scripts, scripting languages.
+        Shell Scripts:
+            running consecutive commands in shell.
+        Perl:
+            one of the first scripting languages, initially used as backend langs.
+
+    Characterisitics:
+        - dynamic type checking. Type errors get thrown at runtime.
+        - sysinct syntax.
+        - everything is mutable.
+        - high level.
+        - batteries included.
+        - basically imperative.
+        - usually OO.
+
+Lua:
+    - simple syntax, small feature set.
+
+    Duck Typing:
+        - looks like a duck, swims like a duck, then it is a duck.
+        - only needs the defined interfaces.
