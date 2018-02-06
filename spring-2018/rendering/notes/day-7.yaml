@@ -1,0 +1,82 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Feb 05, 2018
+
+buildbuffers:
+    bindBuffer(gl.ARRAY_BUFFER, buffer)
+    bufferData()
+    bindBuffer(null)
+
+render:
+    bindBuffer(arary, vbo)
+    bindBuffer(element, ibo)
+
+    for (const s of this.surfaces) {
+        // optional sg.UseMatireal();
+        drawElements(s.mode, s.count, gl.UNSIGNED_INT, s.offset);
+    }
+
+loadign:
+    - SceneGraph.ts::loadOBJ( tokens,  )
+      for (const tokens of lines) {
+          mesh.BeginSurface(gl.TRIANGLES);
+
+          if (token[0] == "mtllib")  {
+            this.Load(path + tokens[1])l
+            mesh.setmtllib(textparser.parseId(tokens))
+            BeginSurface
+          }
+      }
+
+
+setting uniforms:
+    user {
+        gl.getUniformLocation
+        gl.useProgram(...)
+
+        if(gl.depthtest) { // WebGLRenderingContext.LESS, depthMask == true
+            gl.depthFunc
+            gl.depthMask(this.depthMask)
+
+        }
+    }
+
+    setuniform {
+        loc = getUniformLocation(prog, uniName);
+
+        if (loc) {
+            gl.uniform[...](loc, stuff);
+        }
+    }
+    gl.getUniformLocation
+    const rc = useRenderConfig
+    setmatrix4f
+
+matrices:
+    proj pserspective
+    camera  translatiion
+    world rotation // or some other values
+
+    note:
+        this has to be done after program is init'd
+
+    m = makeRotation
+    m.Rotate(anglue, x, y ,z)
+
+Textures:
+    texture cubes:
+        - break up textuers into texture cubes (up to 32).
+
+    Loading Textures:
+
+    Using tetxturese ing frag:
+        declaration:
+            uniform samplerCube EnviroCube // How to use the raw data. (how to interplate the data)
+                - mipmaps, filterts (nearest, linear interp)
+            uniform sampler2D map_normal   // The raw texture data
+
+        types of texture mapping:
+            - linear
+            - bilinear filtering // able to tell where mipmap swithces
+            - trilinear // interpolation on interpolation
+            - anisotropic filtering // using all mipmap levels to figure out what the pixel should be

@@ -1,0 +1,12 @@
+Class: Systems Architecture
+Name: William Horn
+Date: Jan 30, 2018
+
+Dependency Graphs:
+          R  |  W  |
+    ---+-----+-----+ RAR -> No Dependency
+     R | RAR | RAW | RAW -> True Dependency
+    ---+-----+-----+ WAW -> Output Dependency (Register renaming fixs this)
+     W | WAR | WAW | WAR
+    ---+-----+-----+
+

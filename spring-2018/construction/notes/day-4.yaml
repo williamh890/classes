@@ -1,0 +1,17 @@
+Class: Software Construction
+Name: William Horn
+Date: Feb 05, 2018
+
+SOLID:
+    S: Single Responsibility Principle (SRP)
+    O: Open/Closed Principle (open for extension/closed for modification)
+    L: Liskov Substitution Principle
+        - Any derived class object should work in code
+        - square is not a rectangle (in cs terms)
+    I: Interface Segregation Principle:
+        - in clinet should be forced to depend on methods it doesn't use.
+    D: Dependency Inversion Principle:
+        - abstractions should not depend on details,
+          details should depend on abstractions
+        - everything should be an interface.
+

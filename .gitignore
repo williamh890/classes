@@ -9,6 +9,10 @@ catch.hpp
 class-repo/*
 *.o
 
+*.aux
+*.log
+*.pdf
+
 *_main.cpp
 *_suites.cpp
 
