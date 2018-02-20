@@ -127,68 +127,50 @@ function lexit.lex(program)
 
     -- ***** Character-Related Utility Functions *****
 
-    -- currChar
-    -- Return the current character, at index pos in program. Return
-    -- value is a single-character string, or the empty string if pos is
-    -- past the end.
     local function currChar()
         return program:sub(pos, pos)
     end
 
-    -- nextChar
-    -- Return the next character, at index pos+1 in program. Return
-    -- value is a single-character string, or the empty string if pos+1
-    -- is past the end.
     local function nextChar()
         return program:sub(pos+1, pos+1)
     end
 
-    -- drop1
-    -- Move pos to the next character.
     local function drop1()
         pos = pos+1
     end
 
-    -- add1
-    -- Add the current character to the lexeme, moving pos to the next
-    -- character.
     local function add1()
         lexstr = lexstr .. currChar()
         drop1()
     end
 
-    -- skipWhitespace
-    -- Skip whitespace and comments, moving pos to the beginning of
-    -- the next lexeme, or to program:len()+1.
+    local function removeComment()
+        while true do
+            if currChar() == "\n" then
+                drop1()
+                break
+            elseif currChar() == "" then
+                return
+            end
+            drop1()
+        end
+    end
+
     local function skipWhitespace()
         while true do
             while isWhitespace(currChar()) do
                 drop1()
             end
-
-            if currChar() ~= "/" or nextChar() ~= "*" then  -- Comment?
-                break
-            end
-            drop1()
-            drop1()
-
-            while true do
-                if currChar() == "*" and nextChar() == "/" then
-                    drop1()
-                    drop1()
-                    break
-                elseif currChar() == "" then  -- End of input?
-                   return
-                end
+            if currChar() == "#" then
                 drop1()
+                removeComment()
+            else
+                break
             end
         end
     end
 
     -- ***** State-Handler Functions *****
-
-    -- A function with a name like handle_XYZ is the handler function
-    -- for state XYZ
 
     local function handle_DONE()
         io.write("ERROR: 'DONE' state should not be handled\n")
@@ -338,7 +320,7 @@ function lexit.lex(program)
         [PLUS]=handle_PLUS,
         [MINUS]=handle_MINUS,
         [STAR]=handle_STAR,
-        [DOT]=handle_DOT,
+        [DOT]=handle_DOT
     }
 
     -- ***** Iterator Function *****
