@@ -122,7 +122,7 @@ function lexit.lex(program)
     local DIGIT = 3
     local PLUS = 4
     local MINUS = 5
-    local STAR = 6
+    local OP = 6
     local EXPONENT = 7
     local STRLIT = 8
 
@@ -205,6 +205,51 @@ function lexit.lex(program)
         assert(0)
     end
 
+    -- ops: = && || ! == != < <= > >= + - * / % [ ] ;
+    local function isStartOfOp(char)
+        return
+            char == "*" or
+            char == "/" or
+            char == "=" or
+            char == "&" or
+            char == "|" or
+            char == "!" or
+            char == "<" or
+            char == ">" or
+            char == "%" or
+            char == "[" or
+            char == "]" or
+            char == ";"
+    end
+
+    -- ops: = && || ! == != < <= > >= + - * / % [ ] ;
+    local function isDoubleOp(testOp)
+        return
+            testOp == "&&" or
+            testOp == "||" or
+            testOp == "!=" or
+            testOp == "==" or
+            testOp == "<=" or
+            testOp == ">="
+    end
+
+    -- ops: = ! < > + - * / % [ ] ;
+    local function isOp(testOp)
+        return
+            testOp == "=" or
+            testOp == "!" or
+            testOp == ">" or
+            testOp == "<" or
+            testOp == "+" or
+            testOp == "-" or
+            testOp == "/" or
+            testOp == "*" or
+            testOp == "%" or
+            testOp == "[" or
+            testOp == "]" or
+            testOp == ";"
+    end
+
     local function handle_START()
         add1()
 
@@ -219,8 +264,8 @@ function lexit.lex(program)
             state = PLUS
         elseif ch == "-" then
             state = MINUS
-        elseif ch == "*" or ch == "/" or ch == "=" then
-            state = STAR
+        elseif isStartOfOp(ch) then
+            state = OP
         elseif ch == '"' or ch == "'" then
             stringQuoteType = ch
             state = STRLIT
@@ -269,10 +314,6 @@ function lexit.lex(program)
         if isDigit(ch) then
             add1()
             state = DIGIT
-        elseif ch == "+" or ch == "=" then
-            add1()
-            state = DONE
-            category = lexit.OP
         else
             state = DONE
             category = lexit.OP
@@ -292,14 +333,18 @@ function lexit.lex(program)
         end
     end
 
-    local function handle_STAR()  -- Handle * or / or =
-        if ch == "=" then
+    --  = && || ! == != < <= > >= + - * / % [ ] ;
+    local function handle_OP()
+        if isDoubleOp(lexstr .. ch) then
             add1()
+            state = DONE
+            category = lexit.OP
+        elseif isOp(lexstr) then
             state = DONE
             category = lexit.OP
         else
             state = DONE
-            category = lexit.OP
+            category = lexit.PUNCT
         end
     end
 
@@ -324,7 +369,7 @@ function lexit.lex(program)
         [DIGIT]=handle_DIGIT,
         [PLUS]=handle_PLUS,
         [MINUS]=handle_MINUS,
-        [STAR]=handle_STAR,
+        [OP]=handle_OP,
         [EXPONENT]=handle_EXPONENT,
         [STRLIT]=handle_STRLIT
     }
