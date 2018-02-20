@@ -1,0 +1,31 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Feb 16, 2018
+
+More On Shadow Mapping:
+    View Sample and Shadow map don't always line up.
+    Check:
+        - is shadow sample closer than the view sample to the light source.
+        - if yes, then its in shadow.
+
+    Bias:
+        - add bias to view sample to compensate for artifacts from discritization.
+        Gotcha (Light Leakage):
+            - adding the bias to the view at a sharp vertex(corner).
+            - this can cause points around corner to not be in shadow when they should be.
+            - the bias pushes the view sample around the corner.
+
+        Gotcha:
+            - light can jump through surface if large bias and thin surface.
+
+        Solution:
+            - render normal maps with either front or back faces.
+
+    Rendering:
+        - Pcenter + dVsundir
+        - shadows are rendered in an orthographic projection
+        - lookat(eye, center, up)
+          (eye == vector pointing from sun)
+
+    Filtering:
+        - used to soften shadow edges.

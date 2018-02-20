@@ -1,0 +1,67 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Feb 07, 2018
+                                                                                incoming light
+                                                                              incomping_dir => x            omega_g dot omega_i
+cos(theta) = Le + integrate[from omega, ] (f(incomping_dir, outcoming_dir) * L_incoming(x) * Visibity_input(x) cos(theta_i) ) d incomping_dir
+                                                                                               shadows/oclusion
+
+brdf = fr rules:
+    - helmholtz reciprocity
+        fr(omega_i, omega_o) = fr(omega_o, omega_i) // switch outgoing and incoming angles will not change function output
+    - positivity
+        for all angles fr >= 0 // there is always some reflectance
+    - conservation of energy
+        integrate(fr d omega_i) <= 1 // can't be more reflectance then light coming in.
+        Lo <= Li
+Hemispere of all lights coming into x.
+      v  n  L
+       \ | /
+        \|/
+-------------------
+         x
+
+N = opega_g // geometric normal
+L = omega_i // incoming light direction
+E/V = omega_o // outgoing ligh direction // view vector
+omega_m // microfacet normal
+
+H = halfangle vector = ||Light + View vector|| = || L + V || // this is where the largest highlight should bounce off.
+  = omega_h -> Distribution of normals
+
+omega_d = difference angle -> Frensnel
+
+incident angle:
+    close to what the normal is.
+
+glancing angle:
+    - large angule between being perpendicular to the surface
+    - sitting off to the side of a TV
+
+reflection angle:
+    I = Incidence angle
+    R = angle of reflection = omega_r = 2 * I
+    reflectance = 2 * (I dot N) * N
+    R = I - reflectance
+
+refraction:
+    n = index of refaction
+
+
+      v  n  L
+       \ | /
+        \|/      air   n = 1.000001
+~~~~~~~~~~~~~~~~~~~
+         |\      water n = 1.3333
+           \
+         |  \
+     refraction angle
+
+micro facet:
+    omega_m = microfacet normal
+
+    - normals that point in arbirtary directions that mimci roughness of the surface.
+    - average normal could point in different direction.
+
+quote:
+    "I say that to day this..."

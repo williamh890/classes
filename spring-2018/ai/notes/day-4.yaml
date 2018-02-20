@@ -1,0 +1,27 @@
+Class: Intro To AI
+Name: William Horn
+Date: Feb 13, 2018
+
+Evaluating Search Tree:
+    - Search nodes based on which nodes are the best.
+
+Network Topology:
+    Topologies To Time:
+        32-40-10-1:
+            piece count: include input nodes in output.
+
+        32-40-10-1:     weight
+            sum(pieces) ------> output node
+
+Training:
+    - train at 4 ply
+    - play at 6/8 ply
+
+      apha-beta pruning
+
+Move:
+    - minimax function
+    - generate nodes
+    - leaf -> bef
+
+Another technique: Iterative Deapening Search

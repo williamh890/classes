@@ -1,0 +1,64 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Feb 14, 2018
+
+Light and Shadows:
+    What is a shadow?:
+        - area w/o light
+
+    Parts of a Shadow:
+        Umbra:
+            - completely dark part of shadow.
+        Penumbra:
+            - transition of shadow to no-shadow,
+              this is caused by light being cast by area's of light
+              and not points of light.
+
+    Properties:
+        Hard:
+            - no/little Penumbra, had edge to shadow
+        Soft:
+            - soft transition between
+
+    Background:
+        Shadow Mapping:      Williams 1978
+        Ray Tracing:         Whitted 1980, Appel 1968
+        Shadow Volumes:      Crow 1977
+        Projection Shadows:  Blinn 1988
+            - flatten object onto ground and draw it as a shadow.
+            - Simple/Computationally Cheap
+        Radiocity:           Greenberg 1986
+            - Aka Spherical harmonics, ... Other names
+
+# See lecture notes for diagrams
+Ray Casting/Tracing:
+    - Trace a ray from light source to the point that's being shaded
+
+    Note:
+        - This makes sharp shadows.
+        - numerical accuracy
+
+Radiosity:
+    - form factors
+    - hemi-cubes
+    - scene geometry subdivision
+    - Several iterations to converge on equilibrium.
+
+Shadow Mapping:
+    note: great for real time rendering
+
+    Process:
+        - Render scene from point of view of light source.
+        - Render scene using light depth map.
+
+        Details:
+            - limited precision in depth buffer (pixels).
+        Issue: z-fighting
+            solution:
+                - adjust-range to be as close as possible to object.
+                - Adjust resolution of depth buffer (width/height) # more accuracy on edges of shadows.
+
+            Alternatives:
+                - midpoint algorithm
+
+

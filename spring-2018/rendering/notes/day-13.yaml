@@ -1,0 +1,31 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Feb 19, 2018
+
+Shadow Mapping:
+    FBO:
+        Frame Buffer, Texuture Object
+
+    make():
+        allocat texture:
+            texImage2D: researves empty texture with enough space
+
+        attach texture:
+            framebufferTexture2D
+
+        Projection:
+            Orthogonal: Use this for sun lights
+            Perspective: Use this for spotlights, and lights that are up close to shadow casting object
+
+    In shadow map frag shader:
+        SunShadowBiasMatrix = maps values from 0 -> 1 to -1 -> 1
+
+        Shadow Text Coords: 0 -> 1
+        Screen Coords: -1 -> 1
+
+        - Allows screen coords to be looked up in the texture coordinate
+
+    Percentage Closer Filtering (PCF):
+        - gives the effect of softer shadows by doing convolutions on the shadow sample
+
+

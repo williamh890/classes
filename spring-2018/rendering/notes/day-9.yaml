@@ -1,0 +1,50 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Feb 09, 2018
+
+HW 2:
+    due next week on saterday.
+
+MicroFacets:
+    Specular Surface:
+        - perfectly smooth reflector
+        - all then energy coming in is reflected in one direction.
+
+        example: mirror
+
+    Diffuse Surface:
+        - when light reflects, it bounces off in ecery direction.
+
+        example: a wall (the same color whatever direction you look at it)
+
+        Lo = 1/pi * Li * cos(theta) // 1/pi == Light being reflected out in all directions
+        ro = absorbtion factoro
+
+        Diffuse Illumination Formula:
+            Lo = ro/pi * Li * cos(theta) // this takes into account absorbtion of the wall.
+
+            note: this may look dark w/ no ambient light.
+
+    Specular Reflection:
+        BRDF:
+
+            Fr = D(theta_halfangle)F(theta_difference)G2(theta_in, theta_out) / 4cos(theta_in)cos(theta_out)
+
+            note: this goes to infinity when glancing angle and out angle both approch 0
+
+            D:  distribution of microfacets away from maximum reflectance.
+                - can be smooth gausian (wide/skinny) this affects roughness.
+                - affects the specular highlight of the surface.
+            F: Fernel reflectance
+                -   What part of fracted/ what part is reflected.
+                formula:
+                    - r_perpendicular = n_t * cos(theta_t) - n_i * cos(iheta_i) /
+                                        n_t * cos(theta_t) + n_i cos(theta_i)
+
+                    - r_parallel = n_i * cos(theta_i) - n_t * cos(theta_t) /
+                                   n_i * cos(theta_i) + n_t cos(theta_t)
+
+                    F = .5 * (r_parallel ^2 + r_perpendicular ^ 2)
+
+                Schlick's Approximation:
+                    F(theta_d) = F0 + (1 - Fo)(1 - cos(theta_d))^5

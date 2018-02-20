@@ -1,0 +1,67 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Feb 12, 2018
+
+Bline-Phong BRDF:
+    Fernel Equations:
+        fr = F(omega_d)D(omega_h)G_2(omega_o, omega_i, omega_h) /
+                    4 * cos(theta_i) * cos(theta_o)
+
+    Snells Law:
+        n_1, n_2: index of refactions.
+        n_i * sin(theta_i) = n_2 * sin (theta_t)
+
+        theta_t = arcsin(n_1 / n_2 * sin(theta_i))
+
+        Baseline Fernel:
+            F_o = (n1 - n2 /) ^ 2
+                   (n1 + n2)
+
+    Laws Of Reflection:
+
+        Distribution of Visible Normals:
+            D(omega_h)
+            desctirption:
+                omega_m = microface normals
+                integrate [hemisphere] (omega_m dot omega_g) * D(omega_m) d omega_m = 1
+
+                Note: Projected light area should match the area on the surface.
+
+
+        Masking-Shadowing Function (G or G_2):
+            G_2(omega_o, omega_i, omega_h)
+
+            G1 and G2 difference:
+                - G1 only takes into account outgoing illumination.
+                  this is not realistic, some light is lost on incoming light.
+                - G2 handles incoming and outgoing light.
+
+Diffuse BRDF:
+    lambertion illumiation model:
+        fe = how much incoming light is going to be leaving.
+           = outgoing light / incoming light # (Lo, Li) <= 1
+        Lo = fe * Li
+        Kd = diffuse color
+
+        fr = fe / pi
+
+        Perfectly Rough Surface:
+            Lo = fe / pi * cos(theta_i)
+
+            note: doesn't take into account any kinds of reflection.
+
+    Oren-Nayer:
+        - numerical model, v cavities # vvvvvvvvvv <- surface
+        - individual v cavities are perfectly rough reflectors.
+
+        Equation:
+            fr = ro / pi (A + (B dot max[0, cos(pi_i, pi_o)] * sin(alpha) tan(beta))
+
+            A = 1 - .5 (x^2 / (x^2 + 0.57))
+            B = 0.45 * (x^2 / (x^2 + 0.09))
+            alpha = max(theta_i, theta_o)
+            beta = min(theta_i, theta_o)
+
+    Disney BRDF (new):
+
+Papers: Understanding the masking-shadowing functions.

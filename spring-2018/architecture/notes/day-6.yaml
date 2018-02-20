@@ -1,0 +1,7 @@
+Class: Systems Architecture
+Name: William Horn
+Date: Feb 06, 2018
+
+NN:
+    - Use avx to speed up ai.
+    - use floats as weights.
