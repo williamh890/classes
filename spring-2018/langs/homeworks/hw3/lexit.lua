@@ -119,11 +119,10 @@ function lexit.lex(program)
     local START = 1
     local LETTER = 2
     local DIGIT = 3
-    local DIGDOT = 4
-    local PLUS = 5
-    local MINUS = 6
-    local STAR = 7
-    local DOT = 8
+    local PLUS = 4
+    local MINUS = 5
+    local STAR = 6
+    local EXPONENT = 7
 
     -- ***** Character-Related Utility Functions *****
 
@@ -133,6 +132,10 @@ function lexit.lex(program)
 
     local function nextChar()
         return program:sub(pos+1, pos+1)
+    end
+
+    local function nextnextChar()
+        return program:sub(pos+2, pos+2)
     end
 
     local function drop1()
@@ -188,6 +191,11 @@ function lexit.lex(program)
             str == "while"
     end
 
+    local function isStartOfExponent()
+        return (ch == "e" or ch == "E") and
+               (isDigit(nextChar()) or nextChar() == "+" and isDigit(nextnextChar()))
+    end
+
     -- ***** State-Handler Functions *****
 
     local function handle_DONE()
@@ -238,11 +246,25 @@ function lexit.lex(program)
     local function handle_DIGIT()
         if isDigit(ch) then
             add1()
+        elseif isStartOfExponent() then
+            add1()
+            state = EXPONENT
         else
             state = DONE
             category = lexit.NUMLIT
         end
     end
+
+    local function handle_EXPONENT()
+        if isDigit(ch) or ch == "+" then
+            add1()
+        else
+            state = DONE
+            category = lexit.NUMLIT
+        end
+
+    end
+
 
     local function handle_PLUS()
         if isDigit(ch) then
@@ -282,6 +304,7 @@ function lexit.lex(program)
         end
     end
 
+
     -- ***** Table of State-Handler Functions *****
 
     handlers = {
@@ -289,10 +312,10 @@ function lexit.lex(program)
         [START]=handle_START,
         [LETTER]=handle_LETTER,
         [DIGIT]=handle_DIGIT,
-        [DIGDOT]=handle_DIGDOT,
         [PLUS]=handle_PLUS,
         [MINUS]=handle_MINUS,
         [STAR]=handle_STAR,
+        [EXPONENT]=handle_EXPONENT
     }
 
     -- ***** Iterator Function *****
