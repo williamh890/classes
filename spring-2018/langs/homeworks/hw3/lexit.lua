@@ -103,15 +103,16 @@ end
 function lexit.lex(program)
     -- ***** Variables (like class data members) *****
 
-    local pos       -- Index of next character in program
-                    -- INVARIANT: when getLexeme is called, pos is
-                    --  EITHER the index of the first character of the
-                    --  next lexeme OR program:len()+1
-    local state     -- Current state for our state machine
-    local ch        -- Current character
-    local lexstr    -- The lexeme, so far
-    local category  -- Category of lexeme, set when state set to DONE
-    local handlers  -- Dispatch table; value created later
+    local pos               -- Index of next character in program
+                            -- INVARIANT: when getLexeme is called, pos is
+                            --  EITHER the index of the first character of the
+                            --  next lexeme OR program:len()+1
+    local state             -- Current state for our state machine
+    local ch                -- Current character
+    local lexstr            -- The lexeme, so far
+    local category          -- Category of lexeme, set when state set to DONE
+    local handlers          -- Dispatch table; value created later
+    local stringQuoteType   -- Current type of quotes being used in string literal
 
     -- ***** States *****
 
@@ -123,6 +124,7 @@ function lexit.lex(program)
     local MINUS = 5
     local STAR = 6
     local EXPONENT = 7
+    local STRLIT = 8
 
     -- ***** Character-Related Utility Functions *****
 
@@ -204,27 +206,25 @@ function lexit.lex(program)
     end
 
     local function handle_START()
+        add1()
+
         if isIllegal(ch) then
-            add1()
             state = DONE
             category = lexit.MAL
         elseif isLetter(ch) or ch == "_" then
-            add1()
             state = LETTER
         elseif isDigit(ch) then
-            add1()
             state = DIGIT
         elseif ch == "+" then
-            add1()
             state = PLUS
         elseif ch == "-" then
-            add1()
             state = MINUS
         elseif ch == "*" or ch == "/" or ch == "=" then
-            add1()
             state = STAR
+        elseif ch == '"' or ch == "'" then
+            stringQuoteType = ch
+            state = STRLIT
         else
-            add1()
             state = DONE
             category = lexit.PUNCT
         end
@@ -265,7 +265,6 @@ function lexit.lex(program)
 
     end
 
-
     local function handle_PLUS()
         if isDigit(ch) then
             add1()
@@ -304,6 +303,17 @@ function lexit.lex(program)
         end
     end
 
+    local function handle_STRLIT()
+        add1()
+
+        if ch == '\n' or ch == "" then
+            state = DONE
+            category = lexit.MAL
+        elseif ch == stringQuoteType then
+            state = DONE
+            category = lexit.STRLIT
+        end
+    end
 
     -- ***** Table of State-Handler Functions *****
 
@@ -315,7 +325,8 @@ function lexit.lex(program)
         [PLUS]=handle_PLUS,
         [MINUS]=handle_MINUS,
         [STAR]=handle_STAR,
-        [EXPONENT]=handle_EXPONENT
+        [EXPONENT]=handle_EXPONENT,
+        [STRLIT]=handle_STRLIT
     }
 
     -- ***** Iterator Function *****
