@@ -215,9 +215,6 @@ function lexit.lex(program)
         elseif ch == "*" or ch == "/" or ch == "=" then
             add1()
             state = STAR
-        elseif ch == "." then
-            add1()
-            state = DOT
         else
             add1()
             state = DONE
@@ -241,18 +238,6 @@ function lexit.lex(program)
     local function handle_DIGIT()
         if isDigit(ch) then
             add1()
-        elseif ch == "." then
-            add1()
-            state = DIGDOT
-        else
-            state = DONE
-            category = lexit.NUMLIT
-        end
-    end
-
-    local function handle_DIGDOT()
-        if isDigit(ch) then
-            add1()
         else
             state = DONE
             category = lexit.NUMLIT
@@ -267,15 +252,6 @@ function lexit.lex(program)
             add1()
             state = DONE
             category = lexit.OP
-        elseif ch == "." then
-            if isDigit(nextChar()) then
-                add1()  -- add dot to lexeme
-                add1()  -- add digit to lexeme
-                state = DIGDOT
-            else  -- lexeme is just "+"; do not add dot to lexeme
-                state = DONE
-                category = lexit.OP
-            end
         else
             state = DONE
             category = lexit.OP
@@ -290,15 +266,6 @@ function lexit.lex(program)
             add1()
             state = DONE
             category = lexit.OP
-        elseif ch == "." then
-            if isDigit(nextChar()) then
-                add1()  -- add dot to lexeme
-                add1()  -- add digit to lexeme
-                state = DIGDOT
-            else  -- lexeme is just "-"; do not add dot to lexeme
-                state = DONE
-                category = lexit.OP
-            end
         else
             state = DONE
             category = lexit.OP
@@ -316,16 +283,6 @@ function lexit.lex(program)
         end
     end
 
-    local function handle_DOT()
-        if isDigit(ch) then
-            add1()
-            state = DIGDOT
-        else
-            state = DONE
-            category = lexit.OP
-        end
-    end
-
     -- ***** Table of State-Handler Functions *****
 
     handlers = {
@@ -337,7 +294,6 @@ function lexit.lex(program)
         [PLUS]=handle_PLUS,
         [MINUS]=handle_MINUS,
         [STAR]=handle_STAR,
-        [DOT]=handle_DOT
     }
 
     -- ***** Iterator Function *****
