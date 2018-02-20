@@ -93,6 +93,11 @@ end
 -- The Lexer
 -- *********************************************************************
 
+local preferOpFlag = false
+
+function lexit.preferOp()
+    preferOpFlag = true
+end
 
 -- lex
 -- Our lexer
@@ -124,7 +129,8 @@ function lexit.lex(program)
     local MINUS = 5
     local OP = 6
     local EXPONENT = 7
-    local STRLIT = 8
+    local EXP_AFTER_PLUS = 8
+    local STRLIT = 9
 
     -- ***** Character-Related Utility Functions *****
 
@@ -301,7 +307,19 @@ function lexit.lex(program)
     end
 
     local function handle_EXPONENT()
-        if isDigit(ch) or ch == "+" then
+        if ch == "+" then
+            add1()
+            state = EXP_AFTER_PLUS
+        elseif isDigit(ch) then
+            add1()
+        else
+            state = DONE
+            category = lexit.NUMLIT
+        end
+    end
+
+    local function handle_EXP_AFTER_PLUS()
+        if isDigit(ch) then
             add1()
         else
             state = DONE
@@ -310,8 +328,9 @@ function lexit.lex(program)
 
     end
 
+
     local function handle_PLUS()
-        if isDigit(ch) then
+        if isDigit(ch) and not preferOpFlag then
             add1()
             state = DIGIT
         else
@@ -321,7 +340,7 @@ function lexit.lex(program)
     end
 
     local function handle_MINUS()
-        if isDigit(ch) then
+        if isDigit(ch) and not preferOpFlag then
             add1()
             state = DIGIT
         elseif ch == "-" or ch == "=" then
@@ -371,6 +390,7 @@ function lexit.lex(program)
         [MINUS]=handle_MINUS,
         [OP]=handle_OP,
         [EXPONENT]=handle_EXPONENT,
+        [EXP_AFTER_PLUS]=handle_EXP_AFTER_PLUS,
         [STRLIT]=handle_STRLIT
     }
 
@@ -382,6 +402,7 @@ function lexit.lex(program)
     -- nil, nil if no more lexemes.
     local function getLexeme(dummy1, dummy2)
         if pos > program:len() then
+            preferOpFlag = false
             return nil, nil
         end
         lexstr = ""
@@ -392,6 +413,7 @@ function lexit.lex(program)
         end
 
         skipWhitespace()
+        preferOpFlag = false
         return lexstr, category
     end
 
