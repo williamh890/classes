@@ -263,7 +263,6 @@ function lexit.lex(program)
             add1()
             state = DIGIT
         elseif ch == "-" or ch == "=" then
-            add1()
             state = DONE
             category = lexit.OP
         else
