@@ -152,6 +152,7 @@ function lexit.lex(program)
             elseif currChar() == "" then
                 return
             end
+
             drop1()
         end
     end
@@ -161,13 +162,30 @@ function lexit.lex(program)
             while isWhitespace(currChar()) do
                 drop1()
             end
-            if currChar() == "#" then
-                drop1()
-                removeComment()
-            else
+
+            if currChar() ~= "#" then
                 break
             end
+
+            drop1()
+            removeComment()
         end
+    end
+
+    local function isKeyword(str)
+        return
+            str == "call"       or
+            str == "cr"         or
+            str == "else"       or
+            str == "elseif"     or
+            str == "end"        or
+            str == "false"      or
+            str == "func"       or
+            str == "if"         or
+            str == "input"      or
+            str == "print"      or
+            str == "true"       or
+            str == "while"
     end
 
     -- ***** State-Handler Functions *****
@@ -212,8 +230,7 @@ function lexit.lex(program)
             add1()
         else
             state = DONE
-            if lexstr == "begin" or lexstr == "end"
-              or lexstr == "print" then
+            if isKeyword(lexstr) then
                 category = lexit.KEY
             else
                 category = lexit.ID
