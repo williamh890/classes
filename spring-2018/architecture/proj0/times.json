@@ -1,0 +1,17 @@
+{
+    "init-python-draft": {
+        "devtime": 80,
+        "runtimes": {
+            "small-cat.jpg": 2.07,
+            "large-cat.jpg": 367.63
+        }
+    },
+
+    "to-c++": {
+        "devtime-sofar": 10,
+        "runtimes": {
+            "small-cat.jpg": 2.07,
+            "large-cat.jpg": 367.63
+        }
+    }
+}
