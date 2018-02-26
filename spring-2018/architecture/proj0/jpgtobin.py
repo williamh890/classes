@@ -63,4 +63,4 @@ def write_img_to_bin_file(input_path, output_path):
 
 if __name__ == '__main__':
     input_img, output_img = sys.argv[1], sys.argv[2]
-    write_img_to_bin_file(input_img, output_img)
+    process_img_python(input_img, output_img)
