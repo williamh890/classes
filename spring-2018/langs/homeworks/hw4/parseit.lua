@@ -5,7 +5,7 @@
 
 local parseit = {}  -- Our module
 
-lexer = require "lexit"
+lexit = require "lexit"
 
 
 -- Variables
@@ -27,24 +27,22 @@ local lexcat = 0    -- Category of current lexeme:
 -- NUMLIT_VAL = 2
 -- SIMPLE_VAR = 3
 
-STMT_LIST   = 1
-INPUT_STMT  = 2
-PRINT_STMT  = 3
-FUNC_STMT   = 4
-CALL_FUNC   = 5
-IF_STMT     = 6
-WHILE_STMT  = 7
-ASSN_STMT   = 8
-CR_OUT      = 9
-STRLIT_OUT  = 10
-BIN_OP      = 11
-UN_OP       = 12
-NUMLIT_VAL  = 13
-BOOLLIT_VAL = 14
-SIMPLE_VAR  = 15
-ARRAY_VAR   = 16
-
-
+local STMT_LIST   = 1
+local INPUT_STMT  = 2
+local PRINT_STMT  = 3
+local FUNC_STMT   = 4
+local CALL_FUNC   = 5
+local IF_STMT     = 6
+local WHILE_STMT  = 7
+local ASSN_STMT   = 8
+local CR_OUT      = 9
+local STRLIT_OUT  = 10
+local BIN_OP      = 11
+local UN_OP       = 12
+local NUMLIT_VAL  = 13
+local BOOLLIT_VAL = 14
+local SIMPLE_VAR  = 15
+local ARRAY_VAR   = 16
 
 -- Utility Functions
 function shouldPrefOp(string_form, category)
@@ -79,7 +77,7 @@ end
 -- init
 -- Initial call. Sets input for parsing functions.
 local function init(prog)
-    iter, state, lexer_out_s = lexer.lex(prog)
+    iter, state, lexer_out_s = lexit.lex(prog)
     advance()
 end
 
@@ -125,49 +123,128 @@ function parseit.parse(prog)
     init(prog)
 
     -- Get results from parsing
-    local good, ast = parse_statement_list()  -- Parse start symbol
+    local good, ast = parse_program()  -- Parse start symbol
     local done = atEnd()
 
     -- And return them
     return good, done, ast
 end
 
-function is_statement_start_keyword()
-    return matchString('input') or
-    matchString('print') or
-    matchString('func') or
-    matchString('call') or
-    matchString('if') or
-    matchString('while')
+-- parse_program
+-- Parsing function for nonterminal "program".
+-- Function init must be called before this function is called.
+function parse_program()
+    local good, ast
+
+    good, ast = parse_stmt_list()
+    return good, ast
 end
 
-function parse_statement_list()
+
+-- parse_stmt_list
+-- Parsing function for nonterminal "stmt_list".
+-- Function init must be called before this function is called.
+function parse_stmt_list()
+    print("PARSING STMT LIST")
     local good, ast, newast
 
-    good, ast = parse_statement()
-    if not good then
-        return false, nil
-    end
-    ast = {STMT_LIST, ast}
-
+    ast = { STMT_LIST }
     while true do
-        if not is_statement_start_keyword() then
-            break
+        if lexstr ~= "input"
+          and lexstr ~= "print"
+          and lexstr ~= "func"
+          and lexstr ~= "call"
+          and lexstr ~= "if"
+          and lexstr ~= "while"
+          and lexcat ~= lexit.ID then
+            return true, ast
         end
 
-        good, statement = parse_statement()
+        good, newast = parse_statement()
         if not good then
             return false, nil
         end
+
+        table.insert(ast, newast)
+    end
+end
+
+
+-- parse_statement
+-- Parsing function for nonterminal "statement"
+-- Function init must be called before this function is called.
+function parse_statement()
+    print("PARSING STMT")
+    local good, ast1, ast2, savelex
+
+    if matchString("input") then
+        good, ast1 = parse_lvalue()
+        if not good then
+            return false, nil
+        end
+
+        return true, { INPUT_STMT, ast1 }
+
+    elseif matchString("print") then
+        good, ast1 = parse_print_arg()
+        if not good then
+            return false, nil
+        end
+
+        ast2 = { PRINT_STMT, ast1 }
+
+        while true do
+            if not matchString(";") then
+                break
+            end
+
+            good, ast1 = parse_print_arg()
+            if not good then
+                return false, nil
+            end
+
+            table.insert(ast2, ast1)
+        end
+
+        return true, ast2
+
+    elseif matchString("func") then
+    elseif matchString("call") then
+    elseif matchString("if") then
+    elseif matchString("while") then
+    else
+        good, ast1 = parse_lvalue()
+        if not good then
+            return false, nil
+        end
+
+        if not matchString("=") then
+            return false, ast1
+        end
+
+        return true, { ASSN_STMT, ast1 }
+    end
+end
+
+function parse_lvalue()
+    print("PARSING LVALUE")
+
+    local savelex = lexstr
+
+    if matchString("[") then
+    elseif matchCat(lexit.ID) then
+
+        return true, {SIMPLE_VAR, savelex}
+    else
+        return false, nil
     end
 
-    return true, ast
 end
 
-function parse_statement()
-    return true, nil
+function parse_print_arg()
+    print( "PARSING PRINT ARG" )
+    return false, nil
 end
-
 
 function parse_expr()
     local good, ast, saveop, newast
@@ -223,9 +300,9 @@ function parse_factor()
     local savelex, good, ast
 
     savelex = lexstr
-    if matchCat(lexer.ID) then
+    if matchCat(lexit.ID) then
         return true, { SIMPLE_VAR, savelex }
-    elseif matchCat(lexer.NUMLIT) then
+    elseif matchCat(lexit.NUMLIT) then
         return true, { NUMLIT_VAL, savelex }
     elseif matchString("(") then
         good, ast = parse_expr()
