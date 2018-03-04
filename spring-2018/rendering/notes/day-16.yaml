@@ -1,0 +1,39 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Feb 28, 2018
+
+vec4 SunShadowVsCoordinate
+
+vec3 shadowCoord = vs.xyz / vs.w; (0, 0)
+
+shadowCoord.xy -- where
+shadowCoord.z -- what
+texelSize = 1 / 512
+vec2 offset = vec2(texelSize, texelSize) // 1/512
+
+pcf = 4
+for (i = pcf to pcf) // Seach on a grid
+for (j = pcf to pcf)
+    z = texture2D(sampler, xy + offset) * (or maybe its .) r
+    offset = texelSize * vec2(i, j)
+
+In GetSunDirection):
+    texture2DProj(SunShadowDepthMap, vSunShadowCoord.xyw).r
+
+Shadow Bias:
+    - move things closer or farther away from the light
+
+Sun HW Component:
+    phi = lon, sigma = lat
+    - use matrix in compute sun position class notes
+
+    - e = obliquity of the ecliptice = approx (23.somthiing)
+
+      this.tSinceJ2000 += this.uiSunSpeed * this.dt
+      sunPhysics.update(tSinceJ200)
+
+      // time effects sun position
+      this.scenegraph.sunlight.direction = // your vector goes here
+
+      m.LoadIdentity();
+      m.LoadRowMajor(mtx in notes)

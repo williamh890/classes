@@ -1,0 +1,6 @@
+Class: Intro To AI
+Name: William Horn
+Date: Feb 27, 2018
+
+Minimax:
+    - use nn to reorder nodes at each layer to search best first
