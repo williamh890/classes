@@ -237,7 +237,6 @@ function parse_lvalue()
     local id, ast1
 
     id = lexstr
-    print(savelex)
     if matchCat(lexit.ID) then
         if matchString("[") then
             print("PARSE ARR")
@@ -267,7 +266,22 @@ function parse_print_arg()
     return false, nil
 end
 
+-- ‘==’ | ‘!=’ | ‘<’ | ‘<=’ | ‘>’ | ‘>=’
+function is_not_bin_op()
+    return
+        not matchString("+") and
+        not matchString("-") and
+        not matchString("==") and
+        not matchString("!=") and
+        not matchString("<") and
+        not matchString("<=") and
+        not matchString(">") and
+        not matchString(">=")
+
+end
+
 function parse_expr()
+    print("EXPRESSION", lexstr)
     local good, ast, saveop, newast
 
     good, ast = parse_term()
@@ -277,7 +291,7 @@ function parse_expr()
 
     while true do
         saveop = lexstr
-        if not matchString("+") and not matchString("-") then
+        if  is_not_bin_op() then
             break
         end
 
@@ -293,6 +307,7 @@ function parse_expr()
 end
 
 function parse_term()
+    print("TERM", lexstr)
     local good, ast, saveop, newast
 
     good, ast = parse_factor()
@@ -302,7 +317,7 @@ function parse_term()
 
     while true do
         saveop = lexstr
-        if not matchString("*") and not matchString("/") then
+        if not matchString("*") and not matchString("/") and not matchString("%") then
             break
         end
 
@@ -318,14 +333,15 @@ function parse_term()
 end
 
 function parse_factor()
+    print("FACTOR", lexstr)
     local savelex, good, ast
 
     savelex = lexstr
-    if matchCat(lexit.ID) then
-        return true, { SIMPLE_VAR, savelex }
-    elseif matchCat(lexit.NUMLIT) then
+    if matchCat(lexit.NUMLIT) then
+        print("num lit")
         return true, { NUMLIT_VAL, savelex }
     elseif matchString("(") then
+        print("uniary op")
         good, ast = parse_expr()
         if not good then
             return false, nil
@@ -337,7 +353,13 @@ function parse_factor()
 
         return true, ast
     else
-        return false, nil
+        print("lvalue")
+        good, ast = parse_lvalue()
+        if not good then
+            return false, nil
+        end
+
+        return true, ast
     end
 end
 
