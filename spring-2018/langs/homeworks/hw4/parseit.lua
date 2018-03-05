@@ -314,7 +314,12 @@ function parse_statement()
             return false, ast1
         end
 
-        return true, { ASSN_STMT, ast1 }
+        good, ast2 = parse_expr()
+        if not good then
+            return false, nil
+        end
+
+        return true, {ASSN_STMT, ast1, ast2}
     end
 end
 
