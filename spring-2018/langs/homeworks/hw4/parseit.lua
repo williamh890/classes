@@ -210,6 +210,12 @@ function parse_statement()
 
     elseif matchString("func") then
     elseif matchString("call") then
+        local savelex = lexstr
+        if not matchCat(lexit.ID) then
+            return false, nil
+        end
+
+        return true, { CALL_FUNC, savelex }
     elseif matchString("if") then
     elseif matchString("while") then
     else
@@ -228,13 +234,28 @@ end
 
 function parse_lvalue()
     print("PARSING LVALUE")
+    local id, ast1
 
-    local savelex = lexstr
+    id = lexstr
+    print(savelex)
+    if matchCat(lexit.ID) then
+        if matchString("[") then
+            print("PARSE ARR")
+            good, ast1 = parse_expr()
 
-    if matchString("[") then
-    elseif matchCat(lexit.ID) then
+            if not good then
+                return false, nil
+            end
 
-        return true, {SIMPLE_VAR, savelex}
+            if matchString(']') then
+                return true, { ARRAY_VAR, id, ast1 }
+            end
+
+            return false, nil
+        else
+            print("PARSE SIMPLE")
+            return true, { SIMPLE_VAR, id }
+        end
     else
         return false, nil
     end
