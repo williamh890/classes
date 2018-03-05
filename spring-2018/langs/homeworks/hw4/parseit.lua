@@ -233,6 +233,36 @@ function parse_statement()
 
         return true, { CALL_FUNC, savelex }
     elseif matchString("if") then
+        good, ast1 = parse_expr()
+        if not good then
+            return false, nil
+        end
+
+        good, ast2 = parse_stmt_list()
+        if not good then
+            return false, nil
+        end
+        local if_ast = ast2
+        local else_ast
+
+        if matchString('else') then
+            good, else_ast = parse_stmt_list()
+            if not good then
+                return false, nil
+            end
+
+            if matchString('end') then
+                return true, { IF_STMT, ast1, if_ast, else_ast }
+            end
+
+            return false, { ast1, if_ast, else_ast }
+        end
+
+        if matchString('end') then
+            return true, { IF_STMT, ast1, ast2 }
+        end
+
+        return false, { ast1, ast2 }
     elseif matchString("while") then
         good, ast1 = parse_expr()
         if not good then
