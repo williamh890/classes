@@ -46,8 +46,8 @@ local ARRAY_VAR   = 16
 
 -- Utility Functions
 function shouldPrefOp(string_form, category)
-    return category == ID or
-    category == NUMLIT or
+    return category == lexit.ID or
+    category == lexit.NUMLIT or
     string_form == "]" or
     string_form == ")" or
     string_form == "true" or
@@ -66,7 +66,7 @@ local function advance()
     if lexer_out_s ~= nil then
         lexstr, lexcat = lexer_out_s, lexer_out_c
 
-        if not shouldPrefOp(lexstr, lexcat) then
+        if shouldPrefOp(lexstr, lexcat) then
             lexit.preferOp()
         end
     else
@@ -353,49 +353,63 @@ end
 
 function parse_print_arg()
     print( "PARSING PRINT ARG" )
-    local savelex, ast
+    local savelex, ast, good
     savelex = lexstr
 
     if matchString('cr') then
         return true, { CR_OUT }
     elseif matchCat(lexit.STRLIT) then
         return true, { STRLIT_OUT, savelex }
+    else
+        good, ast = parse_expr()
+        if not good then
+            return false, nil
+        end
+
+        return true, ast
     end
-    return false, nil
 end
 
 -- ‘==’ | ‘!=’ | ‘<’ | ‘<=’ | ‘>’ | ‘>=’
-function is_not_bin_op()
+function is_not_combine_op()
     return
-        not matchString("+") and
-        not matchString("-") and
-        not matchString("==") and
-        not matchString("!=") and
-        not matchString("<") and
-        not matchString("<=") and
-        not matchString(">") and
-        not matchString(">=") and
         not matchString("&&") and
         not matchString("||")
 
 end
 
-function parse_expr()
-    print("EXPRESSION", lexstr)
-    local good, ast, saveop, newast
+function is_not_logical_bin_op()
+    return
+        not matchString("==") and
+        not matchString("!=") and
+        not matchString("<") and
+        not matchString("<=") and
+        not matchString(">") and
+        not matchString(">=")
+end
 
-    good, ast = parse_term()
+function is_not_arithmetic_bin_op()
+    return
+        not matchString("+") and
+        not matchString("-")
+end
+
+function parse_expr()
+    print("PARSE EXPRESSION", lexstr)
+    local good, ast, saveop, newast
+    saveop = lexstr
+
+    good, ast = parse_comp_expr()
     if not good then
         return false, nil
     end
 
     while true do
-        saveop = lexstr
-        if is_not_bin_op() then
+        if is_not_combine_op() then
             break
         end
 
-        good, newast = parse_term()
+        good, newast = parse_comp_expr()
         if not good then
             return false, nil
         end
@@ -406,9 +420,71 @@ function parse_expr()
     return true, ast
 end
 
+function parse_comp_expr()
+    print("PARSE COMP EXPR", lexstr)
+    local good, ast, ast2, saveop
+    saveop = lexstr
+
+    if matchString("!") then
+        good, ast = parse_comp_expr()
+        if not good then
+            return false, nil
+        end
+
+        return true, { { UN_OP, saveop } , ast }
+    else
+        good, ast = parse_arith_expr()
+        if not good then
+            return false, nil
+        end
+
+        while true do
+            if is_not_logical_bin_op() then
+                break
+            end
+
+            good, ast2 = parse_arith_expr()
+            if not good then
+                return false, nil
+            end
+
+            ast = { { BIN_OP, saveop }, ast, ast2 }
+        end
+
+        return true, ast
+    end
+end
+
+function parse_arith_expr()
+    print("PARSE ARITH EXPR", lexstr)
+    local good, ast, ast2, saveop
+    saveop = lexstr
+
+    good, ast = parse_term()
+    if not good then
+        return false, nil
+    end
+
+    while true do
+        if is_not_arithmetic_bin_op() then
+            break
+        end
+
+        good, ast = parse_term()
+        if not good then
+            return false, nil
+        end
+
+        ast = { { BIN_OP, saveop }, ast, ast2 }
+    end
+
+    return true, ast
+end
+
 function parse_term()
     print("TERM", lexstr)
     local good, ast, saveop, newast
+    saveop = lexstr
 
     good, ast = parse_factor()
     if not good then
@@ -416,7 +492,6 @@ function parse_term()
     end
 
     while true do
-        saveop = lexstr
         if not matchString("*") and not matchString("/") and not matchString("%") then
             break
         end
@@ -434,13 +509,10 @@ end
 
 function parse_factor()
     print("FACTOR", lexstr)
-    local savelex, good, ast
-
+    local savelex, good, ast, ast2
     savelex = lexstr
-    if matchCat(lexit.NUMLIT) then
-        print("num lit")
-        return true, { NUMLIT_VAL, savelex }
-    elseif matchString("(") then
+
+    if matchString("(") then
         print("expression")
         good, ast = parse_expr()
         if not good then
@@ -452,8 +524,14 @@ function parse_factor()
         end
 
         return true, ast
-    elseif matchString("true") or matchString("false") then
-        return true, { BOOLLIT_VAL, savelex }
+    elseif matchString("+") or matchString("-") then
+        local op = savelex
+        good, ast2 = parse_factor()
+        if not good then
+            return false, nil
+        end
+
+        return true, {{ UN_OP, op}, ast2}
     elseif matchString("call") then
         savelex = lexstr
         if matchCat(lexit.ID) then
@@ -461,7 +539,11 @@ function parse_factor()
         else
             return false, nil
         end
-
+    elseif matchCat(lexit.NUMLIT) then
+        print("num lit")
+        return true, { NUMLIT_VAL, savelex }
+    elseif matchString("true") or matchString("false") then
+        return true, { BOOLLIT_VAL, savelex }
     else
         print("lvalue")
         good, ast = parse_lvalue()
