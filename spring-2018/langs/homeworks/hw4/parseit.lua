@@ -209,6 +209,22 @@ function parse_statement()
         return true, ast2
 
     elseif matchString("func") then
+        savelex = lexstr
+        if not matchCat(lexit.ID) then
+            return false, nil
+        end
+
+        good, ast1 = parse_stmt_list()
+        if not good then
+            return false, nil
+        end
+
+        if matchString('end') then
+            return true, { FUNC_STMT, savelex, ast1 }
+        end
+
+        return false, ast1
+
     elseif matchString("call") then
         local savelex = lexstr
         if not matchCat(lexit.ID) then
@@ -258,7 +274,6 @@ function parse_lvalue()
     else
         return false, nil
     end
-
 end
 
 function parse_print_arg()
@@ -269,7 +284,6 @@ function parse_print_arg()
     if matchString('cr') then
         return true, { CR_OUT }
     elseif matchCat(lexit.STRLIT) then
-
         return true, { STRLIT_OUT, savelex }
     end
     return false, nil
