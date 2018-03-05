@@ -319,7 +319,7 @@ function parse_statement()
             return false, nil
         end
 
-        return true, {ASSN_STMT, ast1, ast2}
+        return true, { ASSN_STMT, ast1, ast2 }
     end
 end
 
@@ -450,6 +450,16 @@ function parse_factor()
         end
 
         return true, ast
+    elseif matchString("true") or matchString("false") then
+        return true, { BOOLLIT_VAL, savelex }
+    elseif matchString("call") then
+        savelex = lexstr
+        if matchCat(lexit.ID) then
+            return true, { CALL_FUNC, savelex }
+        else
+            return false, nil
+        end
+
     else
         print("lvalue")
         good, ast = parse_lvalue()
