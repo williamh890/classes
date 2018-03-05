@@ -66,7 +66,7 @@ local function advance()
     if lexer_out_s ~= nil then
         lexstr, lexcat = lexer_out_s, lexer_out_c
 
-        if shouldPrefOp(lexstr, lexcat) then
+        if not shouldPrefOp(lexstr, lexcat) then
             lexit.preferOp()
         end
     else
@@ -374,7 +374,9 @@ function is_not_bin_op()
         not matchString("<") and
         not matchString("<=") and
         not matchString(">") and
-        not matchString(">=")
+        not matchString(">=") and
+        not matchString("&&") and
+        not matchString("||")
 
 end
 
@@ -389,7 +391,7 @@ function parse_expr()
 
     while true do
         saveop = lexstr
-        if  is_not_bin_op() then
+        if is_not_bin_op() then
             break
         end
 
@@ -439,7 +441,7 @@ function parse_factor()
         print("num lit")
         return true, { NUMLIT_VAL, savelex }
     elseif matchString("(") then
-        print("uniary op")
+        print("expression")
         good, ast = parse_expr()
         if not good then
             return false, nil
