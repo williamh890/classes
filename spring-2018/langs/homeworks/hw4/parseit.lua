@@ -263,6 +263,15 @@ end
 
 function parse_print_arg()
     print( "PARSING PRINT ARG" )
+    local savelex, ast
+    savelex = lexstr
+
+    if matchString('cr') then
+        return true, { CR_OUT }
+    elseif matchCat(lexit.STRLIT) then
+
+        return true, { STRLIT_OUT, savelex }
+    end
     return false, nil
 end
 
