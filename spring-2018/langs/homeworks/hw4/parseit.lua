@@ -233,6 +233,8 @@ function parse_statement()
 
         return true, { CALL_FUNC, savelex }
     elseif matchString("if") then
+        print("IF")
+        local if_total_ast = { IF_STMT }
         good, ast1 = parse_expr()
         if not good then
             return false, nil
@@ -242,27 +244,50 @@ function parse_statement()
         if not good then
             return false, nil
         end
-        local if_ast = ast2
-        local else_ast
 
-        if matchString('else') then
-            good, else_ast = parse_stmt_list()
+        table.insert(if_total_ast, ast1)
+        table.insert(if_total_ast, ast2)
+
+        while true do
+            if not matchString('elseif') then
+                break
+            end
+            print("ELSEIF")
+
+            good, ast1 = parse_expr()
             if not good then
                 return false, nil
             end
 
-            if matchString('end') then
-                return true, { IF_STMT, ast1, if_ast, else_ast }
+            good, ast2 = parse_stmt_list()
+            if not good then
+                return false, nil
             end
 
-            return false, { ast1, if_ast, else_ast }
+            table.insert(if_total_ast, ast1)
+            table.insert(if_total_ast, ast2)
+        end
+
+        local else_ast
+        if matchString('else') then
+            print("ELSE")
+            good, else_ast = parse_stmt_list()
+            if not good then
+                return false, nil
+            end
+            table.insert(if_total_ast, else_ast)
+            if matchString('end') then
+                return true, if_total_ast
+            end
+
+            return false, if_total_ast
         end
 
         if matchString('end') then
-            return true, { IF_STMT, ast1, ast2 }
+            return true, if_total_ast
         end
 
-        return false, { ast1, ast2 }
+        return false, if_total_ast
     elseif matchString("while") then
         good, ast1 = parse_expr()
         if not good then
