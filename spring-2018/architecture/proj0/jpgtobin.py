@@ -80,10 +80,15 @@ def process_img_python(input_img, output_img):
 def write_img_to_bin_file(input_path, output_path):
     img_np = open_image(input_path)
 
-    img_np.astype('uint8').tofile(output_path)
+    write_pixel_data(img_np, output_path)
 
 
 def write_pixel_data(data, output_path):
+    height, width = [
+        d.to_bytes(4, byteorder='big', signed=False) for d in data.shape[:-1]
+    ]
+    print(data.shape)
+
     flat_data = data.flatten()
     int_byte_data = [
         int(i).to_bytes(1, byteorder='big', signed=False) for i in flat_data
@@ -91,6 +96,8 @@ def write_pixel_data(data, output_path):
 
     print(f"writing to {output_path}")
     with open(output_path, "wb") as f:
+        f.write(width)
+        f.write(height)
         [f.write(i) for i in int_byte_data]
 
 
@@ -98,13 +105,18 @@ def read_bin_pixel_data(file_path):
     pixels = []
 
     with open(file_path, "rb") as f:
+        width = int.from_bytes(f.read(4), byteorder='big', signed=False)
+        height = int.from_bytes(f.read(4), byteorder='big', signed=False)
+
         byte = f.read(1)
         while byte != b"":
             num = int.from_bytes(byte, byteorder='big', signed=False)
             pixels.append(num)
             byte = f.read(1)
 
-    print(pixels)
+    pixels = np.array(pixels).reshape(height, width, 3)
+    print(pixels.shape)
+    save_image(pixels, 'test.jpg')
 
 
 dummy_data = np.array([
@@ -114,6 +126,6 @@ dummy_data = np.array([
 
 if __name__ == '__main__':
     input_img, output_img = sys.argv[1:3]
-    write_pixel_data(dummy_data, output_img)
+    write_img_to_bin_file(input_img, output_img)
     read_bin_pixel_data(output_img)
     # process_img_python(input_img, output_img)
