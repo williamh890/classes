@@ -63,7 +63,7 @@ local function advance()
 
     -- If we're not past the end, copy current lexeme into vars
     if lexer_out_s ~= nil then
-        if not shouldPrefOp(lexer_out_s, lexer_out_c) then
+        if shouldPrefOp(lexer_out_s, lexer_out_c) then
             lexit.preferOp()
         end
 
