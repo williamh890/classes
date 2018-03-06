@@ -1,10 +1,17 @@
 {
-    "time-units": "minutes",
+    "dev-time-units": "minutes",
+    "run-time-units": "sec",
     "init-python-draft": {
         "devtime": 80,
         "runtimes": {
-            "small-cat.jpg": 2.07,
-            "large-cat.jpg": 367.63
+            "with file io": {
+                "small-cat.jpg": 2.04,
+                "large-cat.jpg": 363.41
+            },
+            "just processing": {
+                "small-cat.jpg": 2.02,
+                "large-cat.jpg": 362.46
+            }
         }
     },
 
@@ -14,7 +21,26 @@
             "python-bin-files": 34.4,
             "convert-py-code/some setup": 20,
             "c++-read-bin-file": 44,
-            "c++-bin-file-loop (total)": 15
+            "c++-bin-file-loop (total)": 15,
+            "same-calulation": 21
+        },
+        "runtimes": {
+            "plain-c++": {
+                "with io": {
+                    "small-cat.jpg": 1.05,
+                    "large-cat.jpg": 190.22
+                },
+                "just processing": {
+                    "small-cat.jpg": 0.007,
+                    "large-cat.jpg": 0.11
+                }
+            },
+            "#pragma omp parallel": {
+                "just processing": {
+                    "small-cat.jpg": 0.0003,
+                    "large-cat.jpg": 0.6
+                }
+            }
         }
     }
 }

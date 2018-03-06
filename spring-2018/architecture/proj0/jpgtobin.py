@@ -52,16 +52,12 @@ def open_image(image_path):
 
 def process_img(colors, width, height):
     for x in range(width):
-        if x % 100 == 0:
-            print(f"{(x / width) * 100:2.1f} %")
-        process_row(x, colors, height, width)
-
-
-def process_row(x, colors, height, width):
-    for y in range(height):
-        colors[x][y][0] = mutate(colors[x][y][2], x, width, 100)
-        colors[x][y][1] = mutate(colors[x][y][1], x, width, 50)
-        colors[x][y][2] = mutate(colors[x][y][0], x, width, -50)
+        # if x % 100 == 0:
+            # print(f"{(x / width) * 100:2.1f} %")
+        for y in range(height):
+            colors[x][y][0] = mutate(colors[x][y][2], x, width, 100)
+            colors[x][y][1] = mutate(colors[x][y][1], x, width, 50)
+            colors[x][y][2] = mutate(colors[x][y][0], x, width, -50)
 
 
 def process_img_python(input_img, output_img):
@@ -75,7 +71,7 @@ def process_img_python(input_img, output_img):
     process_img(colors, width, height)
     end = time.time()
 
-    print(end - start)
+    print(f"Python just processing time: {end - start}")
 
     save_image(colors, output_img)
 
@@ -129,15 +125,21 @@ dummy_data = np.array([
 
 
 def process_img_cpp(input_img, output_img):
-    write_img_to_bin_file(input_img, output_img)
+    print("Processing image c++")
+    out_img_bin = "cpp-friendly.bin"
+    write_img_to_bin_file(input_img, out_img_bin)
 
-    os.system(f"./img-processor.out {output_img}")
+    print("calling c++ code...")
+    os.system(f"./img-processor.out {out_img_bin}")
 
-    pixels = read_bin_pixel_data(output_img)
-    save_image(pixels, 'test-cpp.jpg')
+    pixels = read_bin_pixel_data("from-cpp-large-cat.bin")
+    save_image(pixels, 'large-cat-cpp.jpg')
 
 
 if __name__ == '__main__':
     input_img, output_img = sys.argv[1:3]
+    start = time.time()
     process_img_cpp(input_img, output_img)
-    #process_img_python(input_img, output_img)
+    # process_img_python(input_img, output_img)
+    end = time.time()
+    print(f"Total time for python: {end - start}")

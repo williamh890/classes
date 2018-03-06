@@ -12,6 +12,8 @@ using std::string;
 using std::ifstream;
 using std::ofstream;
 using std::ios;
+#include <chrono>
+#include <ctime>
 
 struct Pixel {
     uint r, g, b;
@@ -47,6 +49,7 @@ def process(pixels, widht, height):
             colors[x][y][2] = mutate(colors[x][y][0], x, width, -50)
 */
 void process(Image & pixels) {
+    # pragma omp parallel for num_threads(7)
     for (size_t x = 0; x < pixels.size(); ++x) {
         for (size_t y = 0; y < pixels[x].size(); ++y) {
             auto max_size = pixels.size();
@@ -113,13 +116,23 @@ void writeImage(const string & outPath, const Image & image) {
     cout << "Done writing file" << endl;
 }
 
+double getTime() {
+    return 1.0e-9*std::chrono::duration_cast<std::chrono::nanoseconds>(
+            std::chrono::high_resolution_clock::now().time_since_epoch()
+            ).count();
+}
+
+
 int main(int argc, char** argv) {
     auto filePath = string(argv[1]);
 
     cout << "- Reading bin image data from " << filePath << endl;
     auto img = readImageFromFile(filePath);
 
+    auto start = getTime();
     process(img);
+    auto end = getTime();
+    cout << "c++ calculation time: " << end - start << endl;
 
     writeImage("from-cpp.bin", img);
 
