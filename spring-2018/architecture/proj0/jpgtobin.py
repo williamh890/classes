@@ -1,3 +1,25 @@
+'''
+    William Horn
+    CS 441 - System Architecture
+    Proj0 Rough Draft
+
+    Here is some python 3.6 code to do some dummy image processing. This
+    is meant to be the baseline for the quickest thing I could write. I
+    plan to write the image to a bin file for easy reading/writing in c++
+    where further parallel testing will be done.
+
+    Called from the command line:
+
+        python3 jpgtobin.py <input-img-path> <output-img-path>
+
+    The file name is a big lie at the moment. You might have to install numpy if its
+    not installed
+
+    The json files are where I'm storing the some metadata for the images
+    along with the dev time/and the runtime for each image. The dev time doesn't
+    take into account refactoring time.
+'''
+
 from PIL import Image
 import numpy as np
 import time
@@ -61,6 +83,37 @@ def write_img_to_bin_file(input_path, output_path):
     img_np.astype('uint8').tofile(output_path)
 
 
+def write_pixel_data(data, output_path):
+    flat_data = data.flatten()
+    int_byte_data = [
+        int(i).to_bytes(1, byteorder='big', signed=False) for i in flat_data
+    ]
+
+    print(f"writing to {output_path}")
+    with open(output_path, "wb") as f:
+        [f.write(i) for i in int_byte_data]
+
+
+def read_bin_pixel_data(file_path):
+    pixels = []
+
+    with open(file_path, "rb") as f:
+        byte = f.read(1)
+        while byte != b"":
+            num = int.from_bytes(byte, byteorder='big', signed=False)
+            pixels.append(num)
+            byte = f.read(1)
+
+    print(pixels)
+
+
+dummy_data = np.array([
+    [[1, 2, 3], [4, 5, 6]],
+    [[3, 2, 3], [4, 5, 4]]
+])
+
 if __name__ == '__main__':
-    input_img, output_img = sys.argv[1], sys.argv[2]
-    process_img_python(input_img, output_img)
+    input_img, output_img = sys.argv[1:3]
+    write_pixel_data(dummy_data, output_img)
+    read_bin_pixel_data(output_img)
+    # process_img_python(input_img, output_img)
