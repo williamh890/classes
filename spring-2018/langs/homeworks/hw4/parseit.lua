@@ -1,9 +1,8 @@
--- rdparser4.lua
--- Glenn G. Chappell
+-- parseit.lua
+-- William Horn
 -- 16 Feb 2018
 
-
-local parseit = {}  -- Our module
+local parseit = {}
 
 lexit = require "lexit"
 
@@ -21,11 +20,6 @@ local lexcat = 0    -- Category of current lexeme:
                     --  one of categories below, or 0 for past the end
 
 -- Symbolic Constants for AST
-
--- BIN_OP = 1
--- NUMLIT_VAL = 2
--- SIMPLE_VAR = 3
-
 local STMT_LIST   = 1
 local INPUT_STMT  = 2
 local PRINT_STMT  = 3
@@ -43,7 +37,6 @@ local BOOLLIT_VAL = 14
 local SIMPLE_VAR  = 15
 local ARRAY_VAR   = 16
 
--- Utility Functions
 function shouldPrefOp(string_form, category)
     return category == lexit.ID or
     category == lexit.NUMLIT or
@@ -53,15 +46,9 @@ function shouldPrefOp(string_form, category)
     string_form == "false"
 end
 
--- advance
--- Go to next lexeme and load it into lexstr, lexcat.
--- Should be called once before any parsing is done.
--- Function init must be called before this function is called.
 local function advance()
-    -- Advance the iterator
     lexer_out_s, lexer_out_c = iter(state, lexer_out_s)
 
-    -- If we're not past the end, copy current lexeme into vars
     if lexer_out_s ~= nil then
         if shouldPrefOp(lexer_out_s, lexer_out_c) then
             lexit.preferOp()
@@ -73,25 +60,15 @@ local function advance()
     end
 end
 
--- init
--- Initial call. Sets input for parsing functions.
 local function init(prog)
     iter, state, lexer_out_s = lexit.lex(prog)
     advance()
 end
 
--- atEnd
--- Return true if pos has reached end of input.
--- Function init must be called before this function is called.
 local function atEnd()
     return lexcat == 0
 end
 
--- matchString
--- Given string, see if current lexeme string form is equal to it. If
--- so, then advance to next lexeme & return true. If not, then do not
--- advance, return false.
--- Function init must be called before this function is called.
 local function matchString(s)
     if lexstr == s then
         advance()
@@ -101,11 +78,6 @@ local function matchString(s)
     end
 end
 
--- matchCat
--- Given lexeme category (integer), see if current lexeme category is
--- equal to it. If so, then advance to next lexeme & return true. If
--- not, then do not advance, return false.
--- Function init must be called before this function is called.
 local function matchCat(c)
     if lexcat == c then
         advance()
@@ -115,23 +87,15 @@ local function matchCat(c)
     end
 end
 
--- Primary Function for Client Code
-
 function parseit.parse(prog)
-    -- Initialization
     init(prog)
 
-    -- Get results from parsing
-    local good, ast = parse_program()  -- Parse start symbol
+    local good, ast = parse_program()
     local done = atEnd()
 
-    -- And return them
     return good, done, ast
 end
 
--- parse_program
--- Parsing function for nonterminal "program".
--- Function init must be called before this function is called.
 function parse_program()
     local good, ast
 
@@ -139,12 +103,7 @@ function parse_program()
     return good, ast
 end
 
-
--- parse_stmt_list
--- Parsing function for nonterminal "stmt_list".
--- Function init must be called before this function is called.
 function parse_stmt_list()
-    -- print("PARSING STMT LIST")
     local good, ast, newast
 
     ast = { STMT_LIST }
@@ -168,12 +127,7 @@ function parse_stmt_list()
     end
 end
 
-
--- parse_statement
--- Parsing function for nonterminal "statement"
--- Function init must be called before this function is called.
 function parse_statement()
-    -- print("PARSING STMT")
     local good, ast1, ast2, savelex
 
     if matchString("input") then
@@ -232,8 +186,8 @@ function parse_statement()
 
         return true, { CALL_FUNC, savelex }
     elseif matchString("if") then
-        -- print("IF")
         local if_total_ast = { IF_STMT }
+
         good, ast1 = parse_expr()
         if not good then
             return false, nil
@@ -251,7 +205,6 @@ function parse_statement()
             if not matchString('elseif') then
                 break
             end
-            -- print("ELSEIF")
 
             good, ast1 = parse_expr()
             if not good then
@@ -269,7 +222,6 @@ function parse_statement()
 
         local else_ast
         if matchString('else') then
-            -- print("ELSE")
             good, else_ast = parse_stmt_list()
             if not good then
                 return false, nil
@@ -323,13 +275,11 @@ function parse_statement()
 end
 
 function parse_lvalue()
-    -- print("PARSING LVALUE")
     local id, ast1
 
     id = lexstr
     if matchCat(lexit.ID) then
         if matchString("[") then
-            -- print("PARSE ARR")
             good, ast1 = parse_expr()
 
             if not good then
@@ -342,7 +292,6 @@ function parse_lvalue()
 
             return false, nil
         else
-            -- print("PARSE SIMPLE")
             return true, { SIMPLE_VAR, id }
         end
     else
@@ -351,7 +300,6 @@ function parse_lvalue()
 end
 
 function parse_print_arg()
-    -- print( "PARSING PRINT ARG" )
     local savelex, ast, good
     savelex = lexstr
 
@@ -369,16 +317,7 @@ function parse_print_arg()
     end
 end
 
-function is_not_logical_bin_op()
-    return
-end
-
-function is_not_arithmetic_bin_op()
-    return
-end
-
 function parse_expr()
-    -- print("PARSE EXPRESSION", lexstr)
     local good, ast, saveop, newast
 
     good, ast = parse_comp_expr()
@@ -404,7 +343,6 @@ function parse_expr()
 end
 
 function parse_comp_expr()
-    -- print("PARSE COMP EXPR", lexstr)
     local good, ast, ast2, saveop
 
     if matchString("!") then
@@ -422,7 +360,6 @@ function parse_comp_expr()
 
         while true do
             saveop = lexstr
-            -- io.write("In comp exper while with ", saveop)
             if not matchString("==") and
                 not matchString("!=") and
                 not matchString("<") and
@@ -431,7 +368,6 @@ function parse_comp_expr()
                 not matchString(">=") then
                 break
             end
-            -- io.write(" ... didn't break\n")
 
             good, ast2 = parse_arith_expr()
             if not good then
@@ -440,14 +376,12 @@ function parse_comp_expr()
 
             ast = { { BIN_OP, saveop }, ast, ast2 }
         end
-        -- io.write(" ... broke \n")
 
         return true, ast
     end
 end
 
 function parse_arith_expr()
-    -- print("PARSE ARITH EXPR", lexstr)
     local good, ast, ast2, saveop
 
     good, ast = parse_term()
@@ -473,7 +407,6 @@ function parse_arith_expr()
 end
 
 function parse_term()
-    -- print("TERM", lexstr)
     local good, ast, saveop, newast
 
     good, ast = parse_factor()
@@ -499,12 +432,10 @@ function parse_term()
 end
 
 function parse_factor()
-    -- print("FACTOR", lexstr)
     local savelex, good, ast, ast2
     savelex = lexstr
 
     if matchString("(") then
-        -- print("expression")
         good, ast = parse_expr()
         if not good then
             return false, nil
@@ -531,12 +462,10 @@ function parse_factor()
             return false, nil
         end
     elseif matchCat(lexit.NUMLIT) then
-        -- print("num lit")
         return true, { NUMLIT_VAL, savelex }
     elseif matchString("true") or matchString("false") then
         return true, { BOOLLIT_VAL, savelex }
     else
-        -- print("lvalue")
         good, ast = parse_lvalue()
         if not good then
             return false, nil
@@ -546,6 +475,4 @@ function parse_factor()
     end
 end
 
-
 return parseit
-
