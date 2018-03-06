@@ -24,7 +24,10 @@ from PIL import Image
 import numpy as np
 import time
 import sys
+import os
 import multiprocessing
+
+ENDIAN = 'little'
 
 
 def clamp(x):
@@ -85,13 +88,13 @@ def write_img_to_bin_file(input_path, output_path):
 
 def write_pixel_data(data, output_path):
     height, width = [
-        d.to_bytes(4, byteorder='big', signed=False) for d in data.shape[:-1]
+        d.to_bytes(4, byteorder=ENDIAN, signed=False) for d in data.shape[:-1]
     ]
     print(data.shape)
 
     flat_data = data.flatten()
     int_byte_data = [
-        int(i).to_bytes(1, byteorder='big', signed=False) for i in flat_data
+        int(i).to_bytes(4, byteorder=ENDIAN, signed=False) for i in flat_data
     ]
 
     print(f"writing to {output_path}")
@@ -105,18 +108,18 @@ def read_bin_pixel_data(file_path):
     pixels = []
 
     with open(file_path, "rb") as f:
-        width = int.from_bytes(f.read(4), byteorder='big', signed=False)
-        height = int.from_bytes(f.read(4), byteorder='big', signed=False)
+        width = int.from_bytes(f.read(4), byteorder=ENDIAN, signed=False)
+        height = int.from_bytes(f.read(4), byteorder=ENDIAN, signed=False)
 
-        byte = f.read(1)
+        byte = f.read(4)
         while byte != b"":
-            num = int.from_bytes(byte, byteorder='big', signed=False)
+            num = int.from_bytes(byte, byteorder=ENDIAN, signed=False)
             pixels.append(num)
-            byte = f.read(1)
+            byte = f.read(4)
 
     pixels = np.array(pixels).reshape(height, width, 3)
     print(pixels.shape)
-    save_image(pixels, 'test.jpg')
+    return pixels
 
 
 dummy_data = np.array([
@@ -124,8 +127,17 @@ dummy_data = np.array([
     [[3, 2, 3], [4, 5, 4]]
 ])
 
+
+def process_img_cpp(input_img, output_img):
+    write_img_to_bin_file(input_img, output_img)
+
+    os.system(f"./img-processor.out {output_img}")
+
+    pixels = read_bin_pixel_data(output_img)
+    save_image(pixels, 'test-cpp.jpg')
+
+
 if __name__ == '__main__':
     input_img, output_img = sys.argv[1:3]
-    write_img_to_bin_file(input_img, output_img)
-    read_bin_pixel_data(output_img)
-    # process_img_python(input_img, output_img)
+    process_img_cpp(input_img, output_img)
+    #process_img_python(input_img, output_img)

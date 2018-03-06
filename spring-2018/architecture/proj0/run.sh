@@ -1,3 +1,1 @@
-#!/bin/bash
-
-python3 jpgtobin.py pics/small-cat.jpg processed.jpg
+python3 jpgtobin.py pics/small-cat.jpg from-cpp.bin
