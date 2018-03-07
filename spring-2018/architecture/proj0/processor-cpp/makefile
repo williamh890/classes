@@ -1,6 +1,6 @@
 CMP=g++ -std=c++14 -Wall -O3 -fopenmp
 NAME=img-processor
-FILES=processor.cpp
+FILES=processor.cpp bin-img-io.cpp
 
 all: $(NAME).out
 

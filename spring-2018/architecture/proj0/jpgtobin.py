@@ -20,69 +20,39 @@
     take into account refactoring time.
 '''
 
-from PIL import Image
-import numpy as np
-import time
+from processor import open_image, save_image, timing
 import sys
-import os
-import multiprocessing
+import numpy as np
 
 ENDIAN = 'little'
 
 
-def clamp(x):
-    return max(0, min(x, 255))
+def main():
+    conversion = sys.argv[1]
+
+    if conversion == 'imgtobin':
+        input_img, output_bin = sys.argv[2:4]
+        write_img_to_bin_file(input_img, output_bin)
+    elif conversion == 'bintoimg':
+        input_bin, output_img = sys.argv[2:4]
+        save_bin_to_image(input_bin, output_img)
+    else:
+        print(f"UNKNOWN CONVERSION: {conversion}, must be 'imgtobin' or 'bintoimg'")
 
 
-def mutate(channel, height, max_height, diff):
-    return int(clamp(channel + diff * (height / max_height)))
+def write_img_to_bin_file(input_img, output_bin):
+    img_np = open_image(input_img)
+
+    write_pixel_data(img_np, output_bin)
 
 
-def save_image(arr, path):
-    result = Image.fromarray(arr.astype(np.uint8))
-    result.save(path)
+def save_bin_to_image(binary, output_image_path):
+    pixels = read_bin_pixel_data(binary)
+
+    save_image(pixels, output_image_path)
 
 
-def open_image(image_path):
-    jpgfile = Image.open(image_path)
-    pic_colors = np.array(jpgfile)
-
-    return pic_colors
-
-
-def process_img(colors, width, height):
-    for x in range(width):
-        # if x % 100 == 0:
-            # print(f"{(x / width) * 100:2.1f} %")
-        for y in range(height):
-            colors[x][y][0] = mutate(colors[x][y][2], x, width, 100)
-            colors[x][y][1] = mutate(colors[x][y][1], x, width, 50)
-            colors[x][y][2] = mutate(colors[x][y][0], x, width, -50)
-
-
-def process_img_python(input_img, output_img):
-    colors = open_image(input_img)
-
-    shape = colors.shape
-    width, height, num_channel = shape
-    print(shape, colors.dtype)
-
-    start = time.time()
-    process_img(colors, width, height)
-    end = time.time()
-
-    print(f"Python just processing time: {end - start}")
-
-    save_image(colors, output_img)
-
-
-def write_img_to_bin_file(input_path, output_path):
-    img_np = open_image(input_path)
-
-    write_pixel_data(img_np, output_path)
-
-
-def write_pixel_data(data, output_path):
+def write_pixel_data(data, output_bin):
     height, width = [
         d.to_bytes(4, byteorder=ENDIAN, signed=False) for d in data.shape[:-1]
     ]
@@ -93,8 +63,8 @@ def write_pixel_data(data, output_path):
         int(i).to_bytes(4, byteorder=ENDIAN, signed=False) for i in flat_data
     ]
 
-    print(f"writing to {output_path}")
-    with open(output_path, "wb") as f:
+    print(f"writing image binary data to -> {output_bin}")
+    with open(output_bin, "wb") as f:
         f.write(width)
         f.write(height)
         [f.write(i) for i in int_byte_data]
@@ -103,6 +73,7 @@ def write_pixel_data(data, output_path):
 def read_bin_pixel_data(file_path):
     pixels = []
 
+    print(f"reading image data from -> {file_path}")
     with open(file_path, "rb") as f:
         width = int.from_bytes(f.read(4), byteorder=ENDIAN, signed=False)
         height = int.from_bytes(f.read(4), byteorder=ENDIAN, signed=False)
@@ -114,32 +85,10 @@ def read_bin_pixel_data(file_path):
             byte = f.read(4)
 
     pixels = np.array(pixels).reshape(height, width, 3)
-    print(pixels.shape)
+
     return pixels
 
 
-dummy_data = np.array([
-    [[1, 2, 3], [4, 5, 6]],
-    [[3, 2, 3], [4, 5, 4]]
-])
-
-
-def process_img_cpp(input_img, output_img):
-    print("Processing image c++")
-    out_img_bin = "cpp-friendly.bin"
-    write_img_to_bin_file(input_img, out_img_bin)
-
-    print("calling c++ code...")
-    os.system(f"./img-processor.out {out_img_bin}")
-
-    pixels = read_bin_pixel_data("from-cpp-large-cat.bin")
-    save_image(pixels, 'large-cat-cpp.jpg')
-
-
-if __name__ == '__main__':
-    input_img, output_img = sys.argv[1:3]
-    start = time.time()
-    process_img_cpp(input_img, output_img)
-    # process_img_python(input_img, output_img)
-    end = time.time()
-    print(f"Total time for python: {end - start}")
+if __name__ == "__main__":
+    with timing('Time to convert: {}'):
+        main()
