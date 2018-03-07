@@ -2,11 +2,11 @@
 #define BIN_IMG_IO_H
 
 #include "models.h"
-// Image
+// ImageChanneled
 #include <string>
 // std::string
 
-Image readImageFromFile(const std::string & filePath);
-void writeImage(const std::string & outPath, const Image & image);
+ImageChanneled readImageFromFile(const std::string & filePath);
+void writeImage(const std::string & outPath, const ImageChanneled & image);
 
 #endif

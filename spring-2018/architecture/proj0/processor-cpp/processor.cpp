@@ -20,23 +20,36 @@ floats inline clamp(floats x) {
     return max(MIN_VAL, min(x, MAX_VAL));
 }
 
-floats inline mutate(floats channel, floats width, floats max_width, floats diff) {
-    floats calc = channel + (diff * (width / max_width));
+floats inline mutate(
+        ImageChannel & channel,
+        size_t x, size_t y,
+        const floats & width,
+        const floats & max_width,
+        const floats & diff) {
+    floats channelVals = &(channel[x][y]);
+    floats calc = channelVals + (diff * (width / max_width));
 
     return calc;
 }
 
-void process(FloatsVec & rChannel, FloatsVec & bChannel, FloatsVec & gChannel) {
-    const floats max_size = rChannel.size();
+void process(ImageChanneled & img) {
+    const floats max_size = img.r.size();
     const floats R_DIFF = 100.;
     const floats G_DIFF = 50.;
     const floats B_DIFF = -50.;
 
-    for (size_t x = 0; x < rChannel.size(); ++x) {
-        for (size_t y = 0; y < rChannel[x].size(); y+=8) {
-            pixels[x][y].r = mutate(pixels[x][y].b, x, max_size, 100);
-            pixels[x][y].g = mutate(pixels[x][y].g, x, max_size, 50);
-            pixels[x][y].b = mutate(pixels[x][y].r, x, max_size, -50);
+    for (size_t x = 0; x < img.r.size(); ++x) {
+        for (size_t y = 0; y < img.r[x].size(); y+=floats::n) {
+            const floats currWidth = x;
+            const floats rCalc = mutate(img.r, x, y, currWidth, max_size, R_DIFF);
+            const floats bCalc = mutate(img.g, x, y, currWidth, max_size, G_DIFF);
+            const floats gCalc = mutate(img.b, x, y, currWidth, max_size, B_DIFF);
+
+            for (size_t lane = 0; lane < floats::n; ++lane) {
+                img.r[x][y+lane] = rCalc[lane];
+                img.g[x][y+lane] = bCalc[lane];
+                img.b[x][y+lane] = gCalc[lane];
+            }
         }
     }
 }
@@ -62,6 +75,7 @@ int main(int argc, char** argv) {
     cout << "c++ calculation time: " << end - start << endl;
 
     writeImage(outputBinary, img);
+    cout << "done writing file" << endl;
 
     return 0;
 }

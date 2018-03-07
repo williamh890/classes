@@ -24,7 +24,8 @@
             "c++-bin-file-loop (total)": 15,
             "same-calulation": 21,
             "pragma": 5,
-            "floats-class-sofar": 24
+            "floats-class-init": 24,
+            "floats-class-compiling": 60
         },
         "runtimes": {
             "plain-c++": {

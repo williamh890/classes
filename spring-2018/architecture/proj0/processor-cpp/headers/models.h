@@ -3,10 +3,10 @@
 
 #include <vector>
 // std::vector
-#include "../osl/floats.h"
 
 using uint = unsigned int;
 using FloatsVec = std::vector<float>;
+using ImageChannel = std::vector<std::vector<float> >;
 
 struct Pixel {
     uint r, g, b;
@@ -14,15 +14,12 @@ struct Pixel {
     }
 };
 
-struct PixelSimd {
-    floats r, g, b;
-
-    PixelSimd(floats r, floats b, floats g) : r(r), g(g), b(b) {
-    }
-};
-
 using Image = std::vector<std::vector<Pixel> >;
-using ImageSimd = std::vector<std::vector<PixelSimd> >;
+struct ImageChanneled {
+    ImageChannel r;
+    ImageChannel g;
+    ImageChannel b;
+};
 
 
 #endif
