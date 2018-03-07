@@ -22,7 +22,8 @@
             "convert-py-code/some setup": 20,
             "c++-read-bin-file": 44,
             "c++-bin-file-loop (total)": 15,
-            "same-calulation": 21
+            "same-calulation": 21,
+            "pragma": 5
         },
         "runtimes": {
             "plain-c++": {
