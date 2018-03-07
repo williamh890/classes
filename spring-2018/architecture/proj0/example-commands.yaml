@@ -1,0 +1,9 @@
+Example Commands:
+    jpgtobin.py:
+        - python3 jpgtobin.py imgtobin pics/small-cat.jpg small.bin
+        - python3 jpgtobin.py bintoimg binarys/output/small-output.bin small.jpg
+    processor.py:
+        cpp:
+            - python3 processor.py cpp binarys/input/small-input.bin small-processed.bin
+        py:
+            - python processor.py py pics/small-cat.jpg processed-small.jpg
