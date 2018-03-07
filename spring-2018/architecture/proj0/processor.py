@@ -65,7 +65,7 @@ def process_img_cpp(input_bin, output_bin):
     print("Processing image c++")
 
     with timing('processing time: {} sec'):
-        os.system(f'./img-processor.out {input_bin} {output_bin}')
+        os.system(f'./processor-cpp/img-processor.out {input_bin} {output_bin}')
 
 
 def main():
