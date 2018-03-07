@@ -1,0 +1,74 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Mar 05, 2018
+
+More on Inverse Transpose:
+    (AB)^-1 == B^-1 A^-1
+            also
+    (AB)^T  == B^T  A^T
+
+
+BRDF (Bidirectional reflect):
+    Diffuse: rough surfaces
+        - light getting scattared in all directions
+        note: rho == absorbtion of material (color)
+
+        Types:
+            - Lambertion: rho / pi
+            - Oren-Nauyer (dusty):
+                note: if absorbtion == 1, then same as lambertion
+            - Disney (velvety):
+                - uses fernel to determine how light scatters
+                - not physically based
+
+
+    Specular: mirror surfaces
+        V-Cavities:
+            Blinn-Phong: cos^e(half_angle)
+                straight guassian distribution of v-cavities, easy to impiment
+                e = roughness
+                if e is high:
+                    more diffuse
+                if e is low:
+                    larger specular highlight
+            GGX: Trobridge-Reich
+                - elipsoid reflectors instead of v-cavities, harder, better for different materials
+                - good for car paint
+
+    5 angles:
+        Incoming light   (omega_i)
+        Outgoing light   (omega_o) == direction to eye
+        Half Angle       (omega_h) == || omega_i + omega_o || where the specular highlight will show up
+        Geometric Normal (omega_g)
+        Difference Angle (omega_d) == || omega_i + omega_h ||
+
+    Parts of BRDF:
+        - Distribution of Microfactes  D(omega_h)  determines size of specular highlight, materials roughness
+        - Fernel Effect                F(omega_d)  high reflectance at glancing angles
+        - Masking Shadow Function      G2(omega_i, omega_o) masking and shadowing on the microfactes
+            G2 takes into account both incoming and outgoing light for masking and shadowing
+
+    Physically Based Requirements:
+        Conservation of Energy:
+            - never get more reflectance, than the amount of light that comes in.
+            - Disney BRDF breaks this
+        Reciprocity:
+            - swap incoming, outgoing angles, result should be the same
+        Positivity:
+            - negative relectance is not possible
+
+        For Microfactes:
+            Conservation of Projected Area:
+                - mirco facets don't add area to the reflection
+                - this is due to shadowing masking function
+
+
+    Shadows:
+        Shadow Mapping:
+            - applied after effect that produces shadows
+        Ray Tracing:
+        Path Tracing:
+        Radiocity:
+            - simulate flow of light from surface to surface
+            - split scene up into patches and calculate flow of light at each patch
+        Shadow Volumes:

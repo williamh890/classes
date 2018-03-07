@@ -1,0 +1,44 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Mar 02, 2018
+
+Math:
+    Angle Between 2 Vectors: dot product
+    In between vector: vector addition
+    Perpendicular: cross product
+    Determine xes of a coordinate system from a matrix:
+        look at the column vector of the matrix
+
+        Scaling Matrix: diagonal matrix
+
+    How to rotate normals so they are in world space:
+        - Use the INVERSE-TRANSPOSE matrix
+        Note:
+            Really is Inverse USING the transpose
+
+        Note: if det of 3x3 mtx == 1, inverse is just transpose
+            - Scale okay if all weights are the same
+
+    Move from world space to coordinate to view-space or light-space:
+        - also use inverse matrix for this
+        - the inverse of the camera matrix or light-space
+
+    lookAt Matrix:
+        - inverse of rotation matrix == transpose
+
+Scenegraph:
+    What is a SceneGraph?:
+        - Directed Acyclic Graph
+    Adding Children:
+        - uses parents transformation to position its elements
+    Simpilest Impilmentation:
+        - list of objects that are not related
+
+Rendering Equation:
+    Six Parts:
+        - L_o(x => w_o) = light going from point x to the view = what the color of the thing should be.
+        - L_e(x => w_o) = light emitted from the object
+        - integrale = treat every incoming angle as a potential light source
+        - fr(w_i, w_0) = Bidirectional re
+        - Li(wi -> x) = light coming in from a direction in the integrale
+        - <w_i, w_g> = NdotOut = how much light is reflected off the surface = how much does incoming light match normal?
