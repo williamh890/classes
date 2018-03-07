@@ -1,4 +1,4 @@
-
+import multiprocessing as mp
 from PIL import Image
 import numpy as np
 import time
@@ -15,12 +15,13 @@ def timing(output_msg):
     print(output_msg.format(end - start))
 
 
-def clamp(x):
-    return max(0, min(x, 255))
+@contextmanager
+def pushd(directory):
+    save_dir = os.getcwd()
+    os.chdir(directory)
+    yield os.getcwd()
 
-
-def mutate(channel, height, max_height, diff):
-    return int(clamp(channel + diff * (height / max_height)))
+    os.chdir(save_dir)
 
 
 def save_image(arr, path):
@@ -35,14 +36,63 @@ def open_image(image_path):
     return pic_colors
 
 
+'''
+pool = mp.Pool(processes=4)
+results = [pool.apply(cube, args=(x,)) for x in range(1,7)]
+print(results)
+'''
+
+
+def store_row(result):
+    x, row = result
+    results[x] = row
+
+
+def process_img_async(colors, width, height):
+    global results
+    results = np.empty([width, height, 3])
+
+    pool = mp.Pool()
+    for x in range(width):
+        pool.apply_async(
+            process_row,
+            args=(colors[x], x, width, height,),
+            callback=store_row
+        )
+
+    pool.close()
+    pool.join()
+
+    return results
+
+
 def process_img(colors, width, height):
     for x in range(width):
-        # if x % 100 == 0:
-            # print(f"{(x / width) * 100:2.1f} %")
-        for y in range(height):
-            colors[x][y][0] = mutate(colors[x][y][2], x, width, 100)
-            colors[x][y][1] = mutate(colors[x][y][1], x, width, 50)
-            colors[x][y][2] = mutate(colors[x][y][0], x, width, -50)
+        process_row_colors(colors, x, width, height)
+
+
+def clamp(x):
+    return max(0, min(x, 255))
+
+
+def mutate(channel, height, max_height, diff):
+    return int(clamp(channel + diff * (height / max_height)))
+
+
+def process_row_colors(colors, x, width, height):
+    for y in range(height):
+        colors[x][y][0] = max(0, min(colors[x][y][2] + 100 * (x / width), 255))
+        colors[x][y][1] = max(0, min(colors[x][y][1] + 50 * (x / width), 255))
+        colors[x][y][2] = max(0, min(colors[x][y][0] - 50 * (x / width), 255))
+
+
+def process_row(row, x, width, height):
+    for y in range(height):
+        row[y][0] = max(0, min(row[y][2] + 100 * (x / width), 255))
+        row[y][1] = max(0, min(row[y][1] + 50 * (x / width), 255))
+        row[y][2] = max(0, min(row[y][0] - 50 * (x / width), 255))
+
+    return (x, row)
 
 
 def process_img_python(input_img, output_img):
@@ -53,19 +103,23 @@ def process_img_python(input_img, output_img):
     width, height, num_channel = shape
     print(shape, colors.dtype)
 
-    start = time.time()
     with timing('Processing time: {} sec'):
-        process_img(colors, width, height)
-    end = time.time()
+        result = process_img_async(colors, width, height)
 
-    save_image(colors, output_img)
+    save_image(result, output_img)
 
 
 def process_img_cpp(input_bin, output_bin):
     print("Processing image c++")
+    cpp_exe = 'processor-cpp/img-processor.out'
+    if not os.path.exists(cpp_exe):
+        print('img-processor executable not found')
+
+        with pushd('processor-cpp'):
+            os.system('make')
 
     with timing('processing time: {} sec'):
-        os.system(f'./img-processor.out {input_bin} {output_bin}')
+        os.system(f'./{cpp_exe} {input_bin} {output_bin}')
 
 
 def main():
