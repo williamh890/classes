@@ -21,20 +21,21 @@ Image readImageFromFile(const string & filePath) {
     }
 
     uint width, height;
-
     imageFile.read(( char * )(&height), sizeof(uint));
     imageFile.read(( char * )(&width), sizeof(uint));
 
     Image img;
     for (uint x = 0; x < width; ++x) {
-        vector<Pixel> col;
+        vector<float> col;
         for (uint y = 0; y < height; ++y) {
-            uint r,g,b;
+            uint r, g, b;
             imageFile.read(( char * )(&r), sizeof(uint));
             imageFile.read(( char * )(&b), sizeof(uint));
             imageFile.read(( char * )(&g), sizeof(uint));
 
-            col.push_back({ r, g, b });
+            col.push_back(r);
+            col.push_back(g);
+            col.push_back(b);
         }
 
         img.push_back(col);
