@@ -66,9 +66,39 @@ def process_img_async(colors, width, height):
     return results
 
 
-def process_img(colors, width, height):
+def process_np(img):
+    width, height, num_channels = img.shape
+
+    row_indices = np.tile(
+        np.arange(width),
+        (height, 1)
+    ).transpose()
+
+    percent = row_indices / width
+
+    r_diff = 100. * percent
+    g_diff = 50. * percent
+    b_diff = -50. * percent
+
+    r, g, b = np.dsplit(img, 3)
+
+    out = np.empty([width, height, 3])
+    out[..., 0] = b.reshape(width, height) + r_diff
+    out[..., 1] = g.reshape(width, height) + g_diff
+    out[..., 2] = r.reshape(width, height) + b_diff
+    np.clip(out, 0., 255., out=out)
+
+    return out
+
+
+def process_img(img):
+    width, height, num_channel = img.shape
     for x in range(width):
-        process_row_colors(colors, x, width, height)
+        for y in range(height):
+            img[x][y][0] = max(0, min(img[x][y][2] + 100 * (x / width), 255))
+            img[x][y][1] = max(0, min(img[x][y][1] + 50 * (x / width), 255))
+            img[x][y][2] = max(0, min(img[x][y][0] - 50 * (x / width), 255))
+    return img
 
 
 def clamp(x):
@@ -101,10 +131,9 @@ def process_img_python(input_img, output_img):
 
     shape = colors.shape
     width, height, num_channel = shape
-    print(shape, colors.dtype)
 
     with timing('Processing time: {} sec'):
-        result = process_img_async(colors, width, height)
+        result = process_np(colors)
 
     save_image(result, output_img)
 

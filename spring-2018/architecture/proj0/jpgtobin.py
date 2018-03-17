@@ -58,10 +58,13 @@ def write_pixel_data(data, output_bin):
     ]
     print(data.shape)
 
-    flat_data = data.flatten()
-    int_byte_data = [
-        int(i).to_bytes(4, byteorder=ENDIAN, signed=False) for i in flat_data
-    ]
+    with timing('converting to bytes: {:.2f} sec'):
+        int_byte_data = [
+            int(i).to_bytes(
+                4, byteorder=ENDIAN, signed=False
+            )
+            for i in data.flatten()
+        ]
 
     print(f"writing image binary data to -> {output_bin}")
     with open(output_bin, "wb") as f:

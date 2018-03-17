@@ -1,16 +1,36 @@
 {
     "dev-time-units": "minutes",
     "run-time-units": "sec",
-    "init-python-draft": {
-        "devtime": 80,
-        "runtimes": {
-            "with file io": {
-                "small-cat.jpg": 2.04,
-                "large-cat.jpg": 363.41
+    "python": {
+        "init": {
+            "devtime": {
+                "total": 80
             },
-            "just processing": {
-                "small-cat.jpg": 2.02,
-                "large-cat.jpg": 362.46
+            "runtimes": {
+                "with file io": {
+                    "small-cat.jpg": 2.04,
+                    "large-cat.jpg": 363.41
+                },
+                "just processing": {
+                    "small-cat.jpg": 2.02,
+                    "large-cat.jpg": 362.46
+                }
+            }
+        },
+        "thread-pool": {
+            "devtimes": {
+                "numpy-reasearch": 6,
+                "thread-pool": 34
+            },
+            "runtimes": {
+                "with file io": {
+                    "small-cat.jpg": 0.533,
+                    "large-cat.jpg": 87.87
+                },
+                "just processing": {
+                    "small-cat.jpg": 0.515,
+                    "large-cat.jpg": 86.95
+                }
             }
         }
     },
@@ -27,19 +47,19 @@
         },
         "runtimes": {
             "plain-c++": {
-                "with io": {
+                "with bin-to-image write": {
                     "small-cat.jpg": 1.05,
                     "large-cat.jpg": 190.22
                 },
                 "just processing": {
-                    "small-cat.jpg": 0.007,
-                    "large-cat.jpg": 0.11
+                    "small-cat.jpg": 0.000629,
+                    "large-cat.jpg": 0.112
                 }
             },
             "#pragma omp parallel": {
                 "just processing": {
-                    "small-cat.jpg": 0.0003,
-                    "large-cat.jpg": 0.6
+                    "small-cat.jpg": 0.000256,
+                    "large-cat.jpg": 0.0586
                 }
             }
         }

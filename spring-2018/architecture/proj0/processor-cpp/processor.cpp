@@ -46,11 +46,13 @@ int main(int argc, char** argv) {
 
     cout << "- Reading bin image data from " << inputBinary << endl;
     auto img = readImageFromFile(inputBinary);
-
+    auto iters = 200;
     auto start = getTime();
-    process(img);
+    for (auto i = 0; i < iters; ++i) {
+        process(img);
+    }
     auto end = getTime();
-    cout << "c++ calculation time: " << end - start << endl;
+    cout << "c++ calculation time: " << (end - start) / iters << endl;
 
     writeImage(outputBinary, img);
 
