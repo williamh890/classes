@@ -1,0 +1,180 @@
+%!
+
+/inch {72 mul} def      % Convert inches->points (1/72 inch)
+
+newpath                 % Start a new path
+1 inch 1 inch moveto    % an inch in from the lower left
+2 inch 1 inch lineto    % bottom side
+2 inch 2 inch lineto    % right side
+1 inch 2 inch lineto    % top side
+stroke                  % Draw the box on the paper
+showpage                % We're done... eject the page
+
+
+72 150 translate
+0 10 360 {              % Go from 0 to 360 degrees in 10 degree steps
+  newpath               % Start a new path
+  dup
+  gsave                 % Keep rotations temporary
+    144 144 moveto
+    rotate              % Rotate by degrees on stack from 'for'
+    0 rlineto
+    stroke
+  grestore              % Get back the unrotated state
+
+} for                   % Iterate over angles
+
+showpage
+
+/boxWidth 72 def
+
+/box {
+    newpath
+    moveto
+    72 0 rlineto
+    0 72 rlineto
+    -72 0 rlineto
+    closepath
+} def
+
+gsave
+    0 0 box stroke
+    boxWidth 0 translate
+    0 0 box stroke
+    boxWidth 0 translate
+    0 0 box stroke
+    boxWidth 0 translate
+grestore
+
+0 boxWidth translate
+gsave
+    0 0 box stroke
+    boxWidth 0 translate
+    0 0 box stroke
+    boxWidth 0 translate
+    0 0 box stroke
+    boxWidth 0 translate
+grestore
+
+0 boxWidth translate
+gsave
+    0 0 box stroke
+    boxWidth 0 translate
+    0 0 box stroke
+    boxWidth 0 translate
+    0 0 box stroke
+    boxWidth 0 translate
+grestore
+
+0 boxWidth translate
+
+showpage
+
+/box {
+  newpath
+  moveto				% Current point is on stack
+  0 72 rlineto			% Left
+  72 0 rlineto			% Top
+  0 -72 rlineto			% Right
+  closepath				% Bottom
+} def
+
+0 setgray				% 100% black
+1 setlinewidth			% One point thick lines
+72 72 moveto 72 144 lineto stroke	% Draw a one inch line
+
+gsave					% Save a copy of the current settings
+  0.5 setgray			% 50% black
+  10 setlinewidth		% 10 point wide lines
+  144 72 moveto 144 144 lineto stroke	% Draw a one inch wide line
+  216 72 box	                        % Build a square path...
+  0.35 setgray			%    make it a little darker...
+  fill	 				%    and fill it.
+grestore                % Go back to the original settings
+
+1 setlinewidth			% Make the box lines wider
+320 72 translate
+0 0 box stroke		% Draw a black box
+
+showpage
+
+/rotateCenter {
+    72 2 div dup translate
+    30 rotate
+    -72 2 div dup translate
+} def
+
+/box {
+  newpath
+  moveto				% Current point is on stack
+  0 72 rlineto			% Left
+  72 0 rlineto			% Top
+  0 -72 rlineto			% Right
+  closepath				% Bottom
+} def
+
+0 setgray				% 100% black
+1 setlinewidth			% One point thick lines
+72 72 moveto 72 144 lineto stroke	% Draw a one inch line
+
+gsave					% Save a copy of the current settings
+  0.5 setgray			% 50% black
+  10 setlinewidth		% 10 point wide lines
+  144 72 moveto 144 144 lineto stroke	% Draw a one inch wide line
+  216 72 box	                        % Build a square path...
+  0.35 setgray			%    make it a little darker...
+  fill	 				%    and fill it.
+grestore                % Go back to the original settings
+
+1 setlinewidth			% Make the box lines wider
+320 72 translate
+0 0 box stroke		% Draw a black box
+
+/rotateCenter {
+    72 2 div dup translate
+    30 rotate
+    -72 2 div dup translate
+} def
+
+rotateCenter
+0 0 box stroke		% Draw a black box
+
+rotateCenter
+0 0 box stroke		% Draw a black box
+
+rotateCenter
+0 0 box stroke		% Draw a black box
+
+showpage
+
+
+250 250 translate
+20 setlinewidth
+0 0 200 0 360 arc closepath
+stroke
+
+/xoff 80 def
+/yoff 40 def
+
+5 setlinewidth
+
+gsave
+80 70 translate
+0 0 20 0 360 arc closepath
+stroke                  % Draw the box on the paper
+grestore
+
+gsave
+-80 70 translate
+0 0 20 0 360 arc closepath
+stroke                   % Draw the box on the paper
+grestore
+
+gsave
+0 -10 translate
+.5 .5 scale
+10 setlinewidth
+0 0 250 180 360 arc closepath stroke
+grestore
+
+showpage

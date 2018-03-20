@@ -1,0 +1,31 @@
+%!
+250 250 translate
+20 setlinewidth
+0 0 200 0 360 arc closepath
+stroke
+
+/xoff 80 def
+/yoff 40 def
+
+5 setlinewidth
+
+gsave
+80 70 translate
+0 0 20 0 360 arc closepath
+stroke                  % Draw the box on the paper
+grestore
+
+gsave
+-80 70 translate
+0 0 20 0 360 arc closepath
+stroke                   % Draw the box on the paper
+grestore
+
+gsave
+0 -10 translate
+.5 .5 scale
+10 setlinewidth
+0 0 250 180 360 arc closepath stroke
+grestore
+
+showpage
