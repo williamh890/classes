@@ -1,0 +1,48 @@
+%!
+% Draw a box at 72, 72 using translate
+
+% operator box: xcoord ycoord box -
+% Creates one inch box at xcoord, ycoord
+/boxWidth 72 def
+
+/box {
+    newpath
+    moveto
+    72 0 rlineto
+    0 72 rlineto
+    -72 0 rlineto
+    closepath
+} def
+
+gsave
+    0 0 box stroke
+    boxWidth 0 translate
+    0 0 box stroke
+    boxWidth 0 translate
+    0 0 box stroke
+    boxWidth 0 translate
+grestore
+
+0 boxWidth translate
+gsave
+    0 0 box stroke
+    boxWidth 0 translate
+    0 0 box stroke
+    boxWidth 0 translate
+    0 0 box stroke
+    boxWidth 0 translate
+grestore
+
+0 boxWidth translate
+gsave
+    0 0 box stroke
+    boxWidth 0 translate
+    0 0 box stroke
+    boxWidth 0 translate
+    0 0 box stroke
+    boxWidth 0 translate
+grestore
+
+0 boxWidth translate
+
+showpage
