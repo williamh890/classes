@@ -36,13 +36,6 @@ def open_image(image_path):
     return pic_colors
 
 
-'''
-pool = mp.Pool(processes=4)
-results = [pool.apply(cube, args=(x,)) for x in range(1,7)]
-print(results)
-'''
-
-
 def store_row(result):
     x, row = result
     results[x] = row
@@ -67,28 +60,37 @@ def process_img_async(colors, width, height):
 
 
 def process_np(img):
-    width, height, num_channels = img.shape
+    img = img.astype("float")
+    width, height, channels = img.shape
 
-    row_indices = np.tile(
+    row_indices = get_row_indices(width, height)
+
+    percentages = row_indices / width
+    diffs = np.dstack(
+        get_diffs(percentages)
+    )
+
+    img = swap_channels(img) + diffs
+    np.clip(img, 0., 255., out=img)
+
+    return img
+
+def get_row_indices(width, height):
+    return np.tile(
         np.arange(width),
         (height, 1)
     ).transpose()
 
-    percent = row_indices / width
 
-    r_diff = 100. * percent
-    g_diff = 50. * percent
-    b_diff = -50. * percent
+def get_diffs(percentages):
+    return (scale * percentages for scale in [100., 50., -50.])
 
+
+def swap_channels(img):
     r, g, b = np.dsplit(img, 3)
+    img = np.dstack((b, g, r))
 
-    out = np.empty([width, height, 3])
-    out[..., 0] = b.reshape(width, height) + r_diff
-    out[..., 1] = g.reshape(width, height) + g_diff
-    out[..., 2] = r.reshape(width, height) + b_diff
-    np.clip(out, 0., 255., out=out)
-
-    return out
+    return img
 
 
 def process_img(img):
