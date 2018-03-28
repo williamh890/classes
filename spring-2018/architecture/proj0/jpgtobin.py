@@ -28,7 +28,10 @@ ENDIAN = 'little'
 
 
 def main():
-    conversion = sys.argv[1]
+    try:
+        conversion = sys.argv[1]
+    except:
+        print("python jpgtobin.py [imgtobin|bintoimg] <input> <output>")
 
     if conversion == 'imgtobin':
         input_img, output_bin = sys.argv[2:4]

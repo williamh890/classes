@@ -1,0 +1,26 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Mar 26, 2018
+
+Ray Tracing:
+    Step 1: Making an Image
+        P3              (format)
+        3 2             (width height)
+        255             (max color value)
+        0 0 0 255 255 255 0 0 0
+        255 255 255 0 0 0 255 255 255
+
+    Step 2: Math Library
+        Required:
+            vector: class 3 components (x, y, z)
+            ray class:
+                origin, direction
+
+    Step 3: Camera, Rays, Object
+        - shot rays into scene
+        - calculate direction of ray
+
+        Subpixel:
+            each pixel needs hundreds/thousands of rays to look good
+
+

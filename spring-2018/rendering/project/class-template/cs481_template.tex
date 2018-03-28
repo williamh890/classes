@@ -1,0 +1,56 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+%!TEX spellcheck
+%!TEX options = -shell-escape
+% Change the following line to whatever your file is
+%!TEX root = ./cs481_template.tex
+% -*- program: xelatex -*-
+% chktex-file 1
+% Comments start with a percent sign
+
+% To use ACM Article Format
+% \documentclass{acmart}
+% \setcopyright{none}
+
+% To use IEEE Transactions format
+\documentclass{IEEEtran}
+
+% To use default article style
+% \documentclass{article}
+
+\begin{document}
+
+\title{My Project Name}
+\author{My Name\\University of Alaska Fairbanks\\myemail@alaska.edu}
+\date{\today}
+\maketitle
+
+\section{Introduction}
+
+My project is ...
+
+\section{Previous Research}
+
+Bump mapping is a technique used to simulate wrinkled surfaces \cite{blinn1978simulation}.
+
+\section{Background Problem}
+
+Talk about the problem and how it's been solved before.
+
+\section{Proposed Solution}
+
+Talk about what you are going to do/did
+
+\section{Results and Analysis}
+
+Talk about your results here and why they are important.
+
+\section{Conclusion}
+
+Talk about your conclusion
+
+% myresearch is the file myresearch.bib where you copy/paste all your BiBTeX references
+\bibliographystyle{alpha}
+\bibliography{cs481_template}
+
+\end{document}

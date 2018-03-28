@@ -1,0 +1,25 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Mar 21, 2018
+
+G-Buffer:
+    render to texture technique
+
+    idea: save computations for later
+        - normals, albedo, specualr, depth
+
+    Two shaders:
+        NPR G-Buffer:
+            - FBO with color and depth, render to color and depth textures
+            - this is essentially the image with no shadows
+        NPR Shader:
+            - Bind color/depth texture
+            - iterate through lights and use their contributions
+
+    DOF:
+        mip maps to blug image down, blend mip maps based on depth
+
+    Edge Detection:
+        - do a convolution on the depth buffer to see if the pixel is an edge
+        - low variance -> no edge, high variance -> edge
+

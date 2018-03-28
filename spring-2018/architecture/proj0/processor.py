@@ -75,6 +75,7 @@ def process_np(img):
 
     return img
 
+
 def get_row_indices(width, height):
     return np.tile(
         np.arange(width),
@@ -154,7 +155,14 @@ def process_img_cpp(input_bin, output_bin):
 
 
 def main():
-    processor = sys.argv[1]
+    try:
+        processor = sys.argv[1]
+    except:
+        print("processor.py [py|cpp] <input> <output>")
+        print("              py  : inputs are jpg image files")
+        print("              cpp : inputs are bin files created by jpgtobin.py")
+        print("")
+        return
 
     if processor == "py":
         input_img, output_img = sys.argv[2:4]
