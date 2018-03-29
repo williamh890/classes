@@ -51,8 +51,14 @@ theRestOf list =
 
 -- operator ##
 (##) :: Eq a => [a] -> [a] -> Int
-_ ## _ = 42  -- DUMMY; REWRITE THIS!!!
+lhs ## rhs = getNumEqual lhs rhs startingCount -- DUMMY; REWRITE THIS!!!
 
+startingCount = 0
+getNumEqual [] _ n = n
+getNumEqual _ [] n = n
+getNumEqual (x:xs) (y:ys) n
+    | x == y = getNumEqual xs ys n+1
+    | otherwise = getNumEqual xs ys n
 
 -- filterAB
 filterAB :: (a -> Bool) -> [a] -> [b] -> [b]
