@@ -1,5 +1,5 @@
--- PA5.hs  INCOMPLETE
--- Glenn G. Chappell
+-- PA5.hs
+-- William Horn
 -- 21 Mar 2018
 --
 -- For CS F331 / CSCE A331 Spring 2018
@@ -8,8 +8,6 @@
 module PA5 where
 
 
--- collatzCounts
-collatzCounts :: [Integer]
 collatzCounts = map collatzCount [1..]
 
 collatzCount n
@@ -26,8 +24,6 @@ collatz n
     | otherwise = 3 * n + 1
 
 
--- findList
-findList :: Eq a => [a] -> [a] -> Maybe Int
 findList sub main =
     checkForSubListAtIndex 0 sub main
 
@@ -49,33 +45,39 @@ theRestOf list =
     drop 1 list
 
 
--- operator ##
-(##) :: Eq a => [a] -> [a] -> Int
-lhs ## rhs = getNumEqual lhs rhs startingCount -- DUMMY; REWRITE THIS!!!
+lhs ## rhs = getNumEqual lhs rhs startingCount
 
 startingCount = 0
 getNumEqual [] _ n = n
 getNumEqual _ [] n = n
 getNumEqual (x:xs) (y:ys) n
-    | x == y = getNumEqual xs ys n+1
+    | x == y    = getNumEqual xs ys n+1
     | otherwise = getNumEqual xs ys n
 
--- filterAB
-filterAB :: (a -> Bool) -> [a] -> [b] -> [b]
-filterAB _ _ bs = bs  -- DUMMY; REWRITE THIS!!!
+
+filterAB f mask values =
+    getMaskedValues f mask values []
+
+getMaskedValues _ [] _  trueValues = trueValues
+getMaskedValues _  _ [] trueValues = trueValues
+getMaskedValues f (m:mask) (v:values) trueValues
+    | isMaskTrue f m = getMaskedValues f mask values (trueValues ++ [v])
+    | otherwise      = getMaskedValues f mask values trueValues
+
+isMaskTrue f m = f m
 
 
--- sumEvenOdd
-sumEvenOdd :: Num a => [a] -> (a, a)
-{-
-  The assignment requires sumEvenOdd to be written using a fold.
-  Something like this:
+sumEvenOdd nums = totals where
+    tuplePieces = seperateOddsAndEvens nums
+    evens = foldr (+) 0 (first  tuplePieces)
+    odds  = foldr (+) 0 (second tuplePieces)
+    totals = (evens, odds)
 
-    sumEvenOdd xs = fold* ... xs where
-        ...
+seperateOddsAndEvens [] = ([], [])
+seperateOddsAndEvens [x] = ([x],[])
+seperateOddsAndEvens (even:odd:nums) =
+    (even:evens, odd:odds) where
+        (evens, odds) = seperateOddsAndEvens nums
 
-  Above, "..." should be replaced by other code. The "fold*" must be
-  one of the following: foldl, foldr, foldl1, foldr1.
--}
-sumEvenOdd _ = (0, 0)  -- DUMMY; REWRITE THIS!!!
-
+first  (x, _) = x
+second (_, y) = y
