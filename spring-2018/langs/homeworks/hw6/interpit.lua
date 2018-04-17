@@ -1,25 +1,13 @@
--- interpit.lua  INCOMPLETE
--- Glenn G. Chappell
--- 29 Mar 2018
--- Updated 2 Apr 2018
+-- interpit.lua
+-- William Horn
+-- 4/17/18
 --
 -- For CS F331 / CSCE A331 Spring 2018
 -- Interpret AST from parseit.parse
 -- For Assignment 6, Exercise B
 
 
--- *******************************************************************
--- * To run a Dugong program, use dugong.lua (which uses this file). *
--- *******************************************************************
-
-
 local interpit = {}  -- Our module
-
-
--- ***** Variables *****
-
-
--- Symbolic Constants for AST
 
 local STMT_LIST   = 1
 local INPUT_STMT  = 2
@@ -38,12 +26,6 @@ local BOOLLIT_VAL = 14
 local SIMPLE_VAR  = 15
 local ARRAY_VAR   = 16
 
-
--- ***** Utility Functions *****
-
-
--- numToInt
--- Given a number, return the number rounded toward zero.
 local function numToInt(n)
     assert(type(n) == "number")
 
@@ -95,6 +77,11 @@ local function boolToInt(b)
     end
 end
 
+local function strToBool(str)
+	assert(type(str) == "string")
+
+    return str == "true"
+end
 
 -- astToStr
 -- Given an AST, produce a string holding the AST in (roughly) Lua form,
@@ -145,120 +132,249 @@ function astToStr(x)
     end
 end
 
-
--- ***** Primary Function for Client Code *****
-
-
--- interp
--- Interpreter, given AST returned by parseit.parse.
--- Parameters:
---   ast     - AST constructed by parseit.parse
---   state   - Table holding Dugong variables & functions
---             - AST for function xyz is in state.f["xyz"]
---             - Value of simple variable xyz is in state.v["xyz"]
---             - Value of array item xyz[42] is in state.a["xyz"][42]
---   incall  - Function to call for line input
---             - incall() inputs line, returns string with no newline
---   outcall - Function to call for string output
---             - outcall(str) outputs str with no added newline
---             - To print a newline, do outcall("\n")
--- Return Value:
---   state, updated with changed variable values
 function interpit.interp(ast, state, incall, outcall)
-    -- Each local interpretation function is given the AST for the
-    -- portion of the code it is interpreting. The function-wide
-    -- versions of state, incall, and outcall may be used. The
-    -- function-wide version of state may be modified as appropriate.
+	function interp_stmt_list(ast)
+		for i = 2, #ast do
+			interp_stmt(ast[i])
+		end
+	end
 
+	function interp_stmt(ast)
+		local lvalue, stringCat
+        local statementType = ast[1]
 
-    function interp_stmt_list(ast)
+		if statementType == INPUT_STMT then
+            interp_input(ast[2])
+		elseif statementType == PRINT_STMT then
+            interp_print(ast)
+		elseif statementType == FUNC_STMT then
+            interp_func(ast)
+		elseif statementType == CALL_FUNC then
+            interp_call(ast)
+		elseif statementType == IF_STMT then
+            interp_if(ast)
+		elseif statementType == WHILE_STMT then
+            interp_while(ast)
+		else
+			assert(statementType == ASSN_STMT)
+			rvalue = interp_expr(ast[3])
+			interp_lvalue(ast[2], rvalue)
+		end
+	end
+
+    function interp_input(ast)
+        if ast[1] == SIMPLE_VAR then
+            local lvalue = ast[2]
+            local rvalue = incall()
+            state.v[lvalue] = numToInt(strToNum(rvalue))
+        end
+    end
+
+    function interp_print(ast)
         for i = 2, #ast do
-            interp_stmt(ast[i])
-        end
-    end
-
-
-    function interp_stmt(ast)
-        local name, body, str
-
-        if ast[1] == INPUT_STMT then
-            print("Input stmt; DUNNO WHAT TO DO!!!")
-        elseif ast[1] == PRINT_STMT then
-            for i = 2, #ast do
-                if ast[i][1] == CR_OUT then
-                    outcall("\n")
-                elseif ast[i][1] == STRLIT_OUT then
-                    str = ast[i][2]
-                    outcall(str:sub(2,str:len()-1))  -- Remove quotes
-                else
-                    print("Print stmt with expression; DUNNO WHAT TO DO!!!")
-                end
-            end
-        elseif ast[1] == FUNC_STMT then
-            name = ast[2]
-            body = ast[3]
-            state.f[name] = body
-        elseif ast[1] == CALL_FUNC then
-            name = ast[2]
-            body = state.f[name]
-            if body == nil then
-                body = { STMT_LIST }  -- Default AST
-            end
-            interp_stmt_list(body)
-        elseif ast[1] == IF_STMT then
-            print("If stmt; DUNNO WHAT TO DO!!!")
-        elseif ast[1] == WHILE_STMT then
-            print("While stmt; DUNNO WHAT TO DO!!!")
-        else
-            assert(ast[1] == ASSN_STMT)
-            print(astToStr(ast))
-            local expr_ast = ast[3]
-            local name_ast = ast[2]
-
-            local name = interp_lvalue(name_ast)
-            local expr_value = interp_expression(expr_ast)
-
-            state.v[name] = expr_value
-        end
-    end
-
-    function interp_lvalue(ast)
-        local ast_type = ast[1]
-        if ast_type == SIMPLE_VAR then
-            print(ast[2])
-            return ast[2]
-        elseif ast_type == ARRAY_VAR then
-            print("Array Var; DUNNO WHAT TO DO!!!")
-        end
-
-    end
-
-    function interp_expression(ast)
-        local ast_type, val = ast[1]
-        if ast_type == NUMLIT_VAL then
-            local val = strToNum(ast[2])
-            return val
-        elseif ast_type == BOOLLIT_VAL then
-            print(ast[2])
-
-            if ast[2] == 'true' then
-                return 1
+            if ast[i][1] == CR_OUT then
+                outcall("\n")
+            elseif ast[i][1] == STRLIT_OUT then
+                str = ast[i][2]
+                outcall(str:sub(2,str:len()-1))
             else
-                return 0
+                rvalue = interp_expr(ast[2])
+                outcall(numToStr(rvalue))
             end
-        else
-            print("Complicated Expression; DUNNO WHAT TO DO!!!")
         end
     end
 
-    -- Body of function interp
+    function interp_func(ast)
+        lvalue = ast[2]
+        rvalue = ast[3]
+
+        state.f[lvalue] = rvalue
+    end
+
+    function interp_call(ast)
+        lvalue = ast[2]
+        rvalue = state.f[lvalue]
+
+        if rvalue == nil then
+            rvalue = { STMT_LIST }
+        end
+
+        interp_stmt_list(rvalue)
+    end
+
+    function interp_if(ast)
+        local done = false
+        local elseIndex = 0
+
+        for i=2, #ast-1, 2 do
+            if interp_expr(ast[i]) ~= 0 and not done then
+                interp_stmt_list(ast[i+1])
+                done = true
+            end
+
+            elseIndex = i
+        end
+
+        if ast[elseIndex+2] ~= nil and not done then
+            interp_stmt_list(ast[elseIndex+2])
+        end
+    end
+
+    function interp_while(ast)
+        while interp_expr(ast[2]) ~= 0 do
+            interp_stmt_list(ast[3])
+        end
+    end
+
+	function interp_lvalue(ast, rvalue)
+		local lvalue
+
+		if ast[1] == SIMPLE_VAR then
+			lvalue = ast[2]
+
+			state.v[lvalue] = numToInt(rvalue)
+
+		elseif ast[1] == ARRAY_VAR then
+			lvalue = ast[2]
+
+			if state.a[lvalue] == nil then
+                state.a[lvalue] = {}
+            end
+
+			state.a[lvalue][interp_expr(ast[3])] = rvalue
+		end
+	end
+
+	function interp_expr(ast)
+		local value;
+
+		if ast[1] == NUMLIT_VAL then
+			value = strToNum(ast[2])
+
+		elseif ast[1] == SIMPLE_VAR then
+			value = state.v[ast[2]]
+
+		elseif ast[1] == ARRAY_VAR then
+			if state.a[ast[2]] ~= nil then
+				value = state.a[ast[2]][interp_expr(ast[3])]
+			else
+				value = 0
+			end
+
+		elseif ast[1] == BOOLLIT_VAL then
+			value = boolToInt(strToBool(ast[2]))
+
+		elseif ast[1] == CALL_FUNC then
+			interp_stmt(ast)
+			value = state.v["return"]
+
+		elseif type(ast[1]) == "table" then
+            value = interp_table(ast)
+		end
+
+		if value == nil then
+            return 0
+		else
+            return value
+		end
+	end
+
+    function interp_table(ast)
+        local value
+        if ast[1][1] == UN_OP then
+            local operand = interp_expr(ast[2])
+
+            value = interp_un_op(ast[1], operand)
+
+        elseif ast[1][1] == BIN_OP then
+            local lhs = interp_expr(ast[2])
+            local rhs = interp_expr(ast[3])
+
+            value = interp_bin_op(ast[1], lhs, rhs)
+
+        end
+
+        return value
+    end
+
+    function interp_un_op(ast, operand)
+        local value
+
+        if ast[2] == "+" then
+            value = operand
+        elseif ast[2] == "-" then
+            value = -(operand)
+        else
+            if operand == 0 then
+                value = 1
+            else
+                value = 0
+            end
+        end
+
+        return value
+    end
+
+    function interp_bin_op(ast, lhs, rhs)
+        local op = ast[2]
+        local isEq = lhs == rhs
+        local value
+
+
+        if op == "+" then
+            value = lhs + rhs
+        elseif op == "-" then
+            value = lhs - rhs
+        elseif op == "*" then
+            value = lhs * rhs
+        elseif op == "/" then
+            if rhs == 0 then
+                value = rhs
+            else
+                value = numToInt(lhs / rhs)
+            end
+        elseif op == "%" then
+            if rhs == 0 then
+                value = rhs
+            else
+                value = numToInt(lhs % rhs)
+            end
+        elseif op == "==" then
+            value = boolToInt(lhs == rhs)
+        elseif op == "!=" then
+            value = boolToInt(lhs ~= rhs)
+        elseif op == "<=" then
+            value = boolToInt(lhs <= rhs)
+        elseif op == ">=" then
+            value = boolToInt(lhs >= rhs)
+        elseif op == "<" then
+            value = boolToInt(lhs < rhs)
+        elseif op == ">" then
+            value = boolToInt(lhs > rhs)
+        elseif op == "&&" then
+            if lhs == 0 and rhs == 0 then
+                value = 0
+            elseif isEq then
+                value = boolToInt(isEq)
+            else
+                value = boolToInt(isEq)
+            end
+        elseif op == "||" then
+            if lhs == 0 and rhs == 0 then
+                value = 0
+            elseif lhs ~= 0 or rhs ~= 0 then
+                value = 1
+            elseif isEq then
+                value = boolToInt(isEq)
+            end
+        end
+
+        return value
+    end
+
     interp_stmt_list(ast)
+
     return state
 end
 
-
--- ***** Module Export *****
-
-
 return interpit
-
