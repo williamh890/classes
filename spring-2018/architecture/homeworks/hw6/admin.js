@@ -21,7 +21,7 @@ const onBidsFetched = (err, auction) => {
     if ('add' in expressRequest.query || 'remove' in expressRequest.query) {
         const { add, remove } = expressRequest.query;
 
-        if (!!add) {
+        if (!!add && add != '') {
             bids[add] = getNewEmptyBid();
             const message = {
                 style: 'success',
@@ -40,6 +40,8 @@ const onBidsFetched = (err, auction) => {
 
             messages.push(message);
         }
+
+        setBids(bids);
     }
 
     return send(getWrapperHtml(getAllBids(bids, messages)));
@@ -48,7 +50,7 @@ const onBidsFetched = (err, auction) => {
 const getNewEmptyBid = () => {
     return {
         "user": "none",
-        "amount": -1
+        "amount": 0
     };
 }
 
@@ -93,6 +95,7 @@ const getAllBids = (bids, messages) => {
             <th scope="row">${veg}</th>
             <td>${user}</td>
             <td>${amount}</td>
+            <td>${getRemoveButton(veg)}</td>
         `;
 
         bidsHtml += `<tr>${bid}</tr>`;
@@ -101,18 +104,43 @@ const getAllBids = (bids, messages) => {
     const messagesHtml = getMessageHtml(messages);
     return `
         ${messagesHtml}
+        <form action="?">
+        <input type="hidden" name="password" value="beet"> <!-- Super Secure! --!>
         <table class="table">
         <thead><tr>
             <th scope="col">Root</th>
             <th scope="col">Bidder IZ</th>
             <th scope="col">Amount</th>
+            <th scope="col">Modify</th>
         </tr></thead>
         <tbody>
             ${bidsHtml}
+            <td colspan="3">
+                <input type="text" class="form-control" name="add" placeholder="Enter Root Vegtable">
+            </td>
+            <td>
+                <input type="submit" class="btn btn-success" value="Add">
+            </td>
         </tbody>
         </table>
+        </form>
     `;
 };
+
+const getRemoveButton = veg => {
+    return `
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-danger" >
+        <input
+            style="position:fixed;opacity:0"
+            type="radio"
+            name="remove"
+            value="${veg}"
+            onclick="this.form.submit()"
+        >X</label>
+    </div>
+    `;
+}
 
 const getMessageHtml = messages => {
     let messagesHtml = ``;
@@ -151,6 +179,14 @@ const getAdminLoginForm = (err) => {
 
         </form>
     `;
+};
+
+const setBids = (bids) => {
+    mongo.updateOne(
+        {auction:"data"},
+        {$set: {auction:"data", bids}},
+        {upsert:true}
+    );
 };
 
 main();

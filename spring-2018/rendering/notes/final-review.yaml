@@ -1,0 +1,38 @@
+Class: Graphical Rendering
+Name: William Horn
+Date: Apr 25, 2018
+
+Final Review:
+    A non-photorealistic lighting model for automatic technical illustration:
+        - phong is bad for rendering techniacl illistrations
+        - use different color palets
+
+    Rendering of unbounded volumes:
+        - ray marching
+
+    Distributed Ray Tracing:
+        - Jitter rays at pixel level
+        - average out over multiple rays
+        Soft Shadows:
+            - sample light source from area light for soft shadows
+
+        Outcomes:
+            - aliasing
+            - glossiness
+            - depth of field
+            - motion blur
+
+    Monte Carlo Method:
+        Lo = Le = + integrat{sphere}(fr * li * N.L dow)
+
+        - Randomly decide weather to reflect or refract a ray at each step
+
+    Bidirectional BRDF:
+        - shoot rays from both camera point and light lource
+        - connect rays up at the end
+
+    Perlin Noise:
+        - smooth random numbers
+
+    Edge Detection:
+        Sobel, Prewitt, Robert's Cross

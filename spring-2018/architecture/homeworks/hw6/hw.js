@@ -199,11 +199,7 @@ class RootVeggieAuction {
 
 const auction = new RootVeggieAuction();
 const main = () => {
-    if (!isMakingABid() && !loggingIn()) {
-        return send(auction.getPage());
-    }
-
-    makeBid();
+    fetchBids();
 };
 
 const loggingIn = () => !!expressRequest.query.password;
@@ -214,13 +210,23 @@ const isMakingABid = () => {
     return !!user && !!amount && !!root;
 };
 
-const makeBid = () => {
+const fetchBids = () => {
     mongo.findOne({auction: "data"}, onBidsFetched)
 };
 
+const getVeggiesFrom = bids => {
+    return Object.keys(bids);
+};
+
 const onBidsFetched = (err, auctionData) => {
+    let { bids } = auctionData;
+    auction.veggies = getVeggiesFrom(bids)
+
+    if (!isMakingABid() && !loggingIn()) {
+        return send(auction.getPage());
+    }
+
     try {
-        let { bids } = auctionData;
 
         let {user, amount, root} = expressRequest.query;
 
@@ -243,7 +249,10 @@ const onBidsFetched = (err, auctionData) => {
             return send(html);
         }
 
-        let userTotal = newAmount;
+        const oldBids = {...bids};
+        bids[root] = newBid;
+
+        let userTotal = 0;
         for (const checkBid of Object.values(bids)) {
             if (checkBid.user === user) {
                 userTotal += checkBid.amount;
@@ -252,13 +261,12 @@ const onBidsFetched = (err, auctionData) => {
 
         if (userTotal >= auction.limit) {
             const errorPageHtml = auction.getPage("error", {
-                bids, newBid
+                oldBids, newBid
             });
 
             return send(errorPageHtml);
         }
 
-        bids[root] = newBid;
         setBids(bids);
 
         const pageHtml = auction.getPage("good-bid", {

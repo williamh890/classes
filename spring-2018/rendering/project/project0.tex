@@ -1,6 +1,7 @@
 \documentclass{IEEEtran}
 
 \usepackage{graphicx}
+\usepackage{amsmath}
 \usepackage{refstyle}
 \def\RSfigtxt{Fig.\,}%
 \def\RSfigstxt{Figs~}%
@@ -36,9 +37,9 @@ shader \figref{original}.
 To generate a realistic snow texture, there are many components that need to be
 considered. The previous technique took three into account:
 \begin{itemize}
-    \item Snowflake level interaction.
+    \item Glint i.e. Snowflake level interaction.
     \item Larger features like snow drifts
-    \item The mixing of surrounding light.
+    \item The reflection of surrounding light.
 \end{itemize}
 
 \subsection{Snowflake}
@@ -50,18 +51,18 @@ implement the glint effect, granularity and changing the brightness of the glint
 with movement.
 
 These effects are from the normals of each individual snowflake being different.
-To simulate these effects semi random normals generated with a glsl
+To simulate these effects semi random normals generated with a GLSL
 implementation \cite{noiseglsl} of Perlin noise
-\cite{wiki:perlin} were used in the specular component of the blinn phong model
+\cite{wiki:perlin} were used in the specular component of the Blinn Phong model
 \cite{blinn1977models}. The noise was used to generate a smooth vector field of
-random normals. Each normal took 2 perlin random numbers, one for
+random normals. Each normal took 2 Perlin random numbers, one for
 the vertical direction and another for the vertical origination.
 
-In retrospect using perlin noise to generate the normals was a mistake. The
-reasoning was that perlin noise was a method for getting a deterministic random
-sudo random number inside the shader and as an attempt to get the smooth phasing
+In retrospect using Perlin noise to generate the normals was a mistake. The
+reasoning was that Perlin noise is a method for getting a deterministic random
+pseudo random number inside the shader as an attempt to get the smooth phasing
 in and out with movement. This however would have been taken care of by the
-blinn phong model \cite{blinn1977models}. The perlin technique can accomplish
+Blinn Phong model \cite{blinn1977models}. The Perlin technique can accomplish
 this effect but it doesn't allow for fine grained control over the size of the
 sparkle and the speed of the phasing effect.
 
@@ -73,14 +74,14 @@ a rough uneven texture. The previous method simulated the snow melting unevenly 
 does not take into account drifting.
 
 To get around the fact that the diffuse component was being ignored a texture
-was used in its place. Perlin noise was again used to generate a 1/fnoise
+was used in its place. Perlin noise was again used to generate a \(\frac{1}{f}\) noise
 pattern to simulate the roughness in the snow \figref{fnoise}.  This created a
 nice rough texture that was used to simulate both the large, and the small
 deformities in the snow.
 
 \begin{figure}
     \includegraphics[width=\linewidth]{images/fnoise.jpg}
-    \caption{Plain 1/fnoise pattern from original implementation.}
+    \caption{Plain \(\tfrac{1}{f}\) noise pattern from original implementation.}
     \label{fig:fnoise}
 \end{figure}
 
@@ -128,16 +129,89 @@ objects.
 
 Instead of calculating random numbers every frame, and even every pixel, a noise
 texture can be generated prior to runtime and used to lookup the random numbers
-that will be needed for the new sparkle algorithm. To make the 1/fnoise
+that will be needed for the new sparkle algorithm. To make the \(\frac{1}{f}\) noise
 pattern which requires multiple levels of detail, multiple noise textures can be
 used to get the layered, detailed rough look that is required. Also a texture
 will be used to get better fidelity on larger features in the snow like drifts that
-are not accurately simulated by the 1/fnoise pattern.
+are not accurately simulated by the \(\frac{1}{f}\) noise pattern.
 
-\subsection{Mesh}
+\section{Conclusion}
 
-Instead of rendering the snow on a flat plain like in the original, a mesh will
-be used to give the scene more of a realistic feel.
+\subsection{Texture}
+
+\subsubsection{Implementation}
+
+May textures were tried to get the look of the snow looking more realistic. A problem
+that was encountered was that the WebGL code being used to upload textures only took
+png's with square dimensions that were powers of 2. The code for loading/displaying the
+textures before was badly tangled into the previous code, so a big portion of the
+implementation time was spent cleaning up this code and figuring out how to cleanly
+implement this.
+
+Also a lot of time was spent trying different textures that were into powers of two.
+Using the algorithm on the Mozilla docs \cite{webgl-tex} only square images with powers
+of two dimensions can be used. Images with in png format are used to store the textures.
+Prior to the project the code for creating the texture was duplicated in the objects
+responsible for rendering the moon and the snowflakes, but now that code is factored out
+into a separate function. There is still a small amount of duplication in uploading the
+texture to the shader. In the future this could be solved using polymorphism but
+that seems to be a little out of the scope of this project.
+
+\subsubsection{Results}
+
+The snow texture does look far better then the  \(\frac{1}{f}\) noise even though it is being tiled,
+its detailed enough so that no patterns are easily visible. The texture is 512x512 and
+get repeated in the X and Y directions to tile the texture across the entire material.
+Applying the snow shader to a object with some dimesion would be an interesting
+improvement to see who the shader holds up in different scenarios.
+
+Another improvement the texture gave was performance. The \(\frac{1}{f}\) noise that was being generated
+every frame in the shader was not very efficient as it required multiple perlin noise numbers
+to be calculated for every fragment.  Using a snow texture for this saves clock cycles and makes
+the overall snow shader more efficient. A downside to this is that it is less dynamic because
+the texture is tiled across the entire material, in this case, a flat square representing the ground.
+
+\subsection{Glint Algorithm}
+
+\subsubsection{Implementation}
+
+To try and get a more flexible shader a different glint algorithm was implemented. Originally
+the glint algorithm from \cite{sparkle} was attempted, but the paper did not go into
+enough technical details to easily implement the algorithm, so instead the algorithm
+the paper improved on was used instead \cite{shopf}. This was a good way to incrementally
+develop because shopf was much simpler.
+
+The main challenge with the algorithm was the number of parameters and constants
+that were not explained in the paper itself \cite{sparkle}. With more time it would
+be possible to get it to work but a good intermediate point was the original shopf.
+
+\subsubsection{Results}
+
+The original shopf was a simple combination of the 3D noise and the view vector. There
+were 5 constants that were not explained but it was very helpful to hook up sliders to
+the parameters to change the values. While the glints are nicely shaped with no noise
+they were in a grid. The way the noise was applied to the glints actually changed there
+shape. One improvements applied to the algorithm in \cite{sparkle} was to apply the noise
+to the center point of the glint instead of the glint as a whole.
+
+\figref{shopf-sparkle} shows the results with the Shopf sparkle and the snow texture.
+The color of the fog is also mixed with the sparkle to prevent sparkles from showing up
+inside of the fog. I still prefer the original sparkle implementation but it was a step
+in the right direction.
+
+One thing that was nice about Shopf was that it was formatted as slides as apposed to a
+technical paper. Although the technical details about the method were nice in \cite{sparkle}
+they were not helpful in applying there solution. More effort should be made in explaining the
+applied solution. This may be in a separate document like a blog post or a presentation,
+but the academic paper medium makes it very hard to pull out the relevant details needed
+to apply the method.
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{images/results.png}
+    \caption{Using Shopf sparkle algorithm and snow texture}
+    \label{fig:shopf-sparkle}
+\end{figure}
+
 
 \bibliographystyle{alpha}
 \bibliography{project0}
