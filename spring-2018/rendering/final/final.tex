@@ -1,0 +1,178 @@
+\documentclass{article}
+
+\usepackage[italic]{mathastext}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+
+\begin{document}
+
+\newcommand{\vect}[1]{\mathbf{#1}}
+
+\title{\textbf{Graphical Rendering Final}}
+
+\author{
+  William Horn\\
+  \texttt{wbhorn@alaska.edu}
+}
+\date{\today}
+\maketitle
+
+\section{Ray Tracing}
+
+\begin{itemize}
+    \item[\textbf{(a)}] Whitted's paper solved accurately Simulating refraction, shadows, and reflections
+    \item[\textbf{(b)}] With using traditional rendering techniques, these shapes are approximated using
+        triangles. Ray marching allows for these shapes to be rendered exactly using there mathematical.
+        Also reflections, refractions, and shadows can be naturally rendered. With traditional methods
+        these effects have to be added and don't come free with the technique.
+    \item[\textbf{(c)}] The ray marching algorithm can speed up ray tracing by marching rays from both
+        the viewpoint and the light sources and then connecting the viewpoint rays to the light rays.
+\end{itemize}
+
+\section{Research}
+
+\subsection{Whitted}
+
+Allowed for realistic looking scenes to be rendered using ray tracing to improve visual fidelity with
+shadows, refractions and reflections. It allowed for light and objects to more realistically interact with
+one another within the scene. This is following the rays recursively as they interact throughout the scene,
+just like real light rays would.
+
+\subsection{Blinn}
+
+Computationally cheap method for rendering surfaces other than smooth ones. While previous methods just tried
+to slap a wrinkly texture onto the surfaces, Blinn's technique was to move the normals themselves to change the
+lighting of the surfaces. The values used to perturb the normals were look up from a texture to be computationally
+efficient.
+
+\subsection{Hart et al.}
+
+Provided a more computationally efficient way of rendering complex mathematical structures.
+Previously only surfaces with Euclidean function could be rendered efficiently, this did not
+include fractals.
+
+\subsection{Cook and Torrance}
+
+This paper was to add some softness to ray traced images. Previously shadows, reflections and
+edges were all sharp and exact. By distributing rays temporally, these sharp edges are softened.
+Effects such as motion blur and depth of field can be implemented using distributed ray tracing.
+
+\subsection{Kajiya}
+
+The rendering equation combined a collection of algorithms that were attempting to simulate
+the physical phenomena of light bouncing off of an object. It put into context the little
+pieces and parts into something that could be applied more generally to different types of
+surfaces.
+
+\subsection{Perlin}
+
+Method for generating smooth random numbers. A giant leap forward in procedural generation
+of textures. Great for generating textures like wood and marble. It can even be used for creating
+3d objects like clouds/fire or level and terrain generation. Pretty much the swiss army knife
+of procedural generation.
+
+\subsection{Veach and Guibas}
+
+Applies different Monte Carlo sampling techniques to produce a lower variance, higher quality
+image. With any Monte Carlo integration, the output is going to be non-exact because of the
+randomness inherent in the method. This aim is to reduce the variance and improve the overall
+quality of the output by weighting the samples from multiple techniques.
+
+\subsection{Gooch et al.}
+
+Uses non-photo realistic rendering to accentuate geometric information using color and lighting.
+It is an attempt to mimic professionally drawn technical drawings and is a substitute for
+the Blinn Phong Lighting model.
+
+\section{Path Tracing}
+
+\begin{itemize}
+    \item[\textbf{(a)}] approximated 1.32
+    \item[\textbf{(b)}] Yes, my guess in the difference is that because this is an exponential function
+        the higher values have a greater output on the approximation then the lower ones. The samples
+        given have $\mu = 1.037$ and $\sigma = 0.524$, meaning that the both small and large values are
+        equally represented. This seems like a logical way to sample values, but because larger values have a
+        greater weight on the final answer, these samples lead to an incorrect answer using Monte
+        Carlo method.
+    \item[\textbf{(c)}] Instead of sampling multiple times at the same moment in time, the rays through
+        a range of time are combined. Depth of field, motion blur effects can be implicated using distributed
+        ray tracing.
+\end{itemize}
+
+\section{Physically Based Rendering}
+
+\begin{itemize}
+    \item[\textbf{(a)}] An equation for determining the color of a surface.
+$$
+    \mathbf{L}_o(\mathbf{x} \rightarrow{} \omega{}_o) =
+    \mathbf{L}_e(\omega{}_o \rightarrow{} \mathbf{x}) +
+    \int_{\Omega{}}^{} fr (\omega{}_i, \omega{}_o)
+    \mathbf{L}_i (\omega{}_i \rightarrow{} x)
+    \langle{}\omega{}_i, \omega{}_g\rangle{}
+    d_\omega{}
+$$
+
+\begin{itemize}
+    \item[$L_o$] Light out at an angle
+    \item[$L_e$] Light emitted from the point
+    \item[$\int_{\Omega{}}^{}$] Take into account all angles
+    \item[$L_i$] Light coming in from
+    \item[$fr$] bidirectional reflectance distribution function
+    \item[$ \langle{}\omega{}_i, \omega{}_g\rangle{} $] positive cosine for Glancing angles
+    \item[$ d_\omega{} $] Take all angles of incoming light into account
+\end{itemize}
+
+\item[\textbf{(b)}] The color at incident angles is what the fresnel reflectance controls. If the
+    color on the display is not calibrated correctly the picture could look wrong. Absorptive materials
+    don't reflect light uniformly so there is no specular. Dielectrics have both reflections and
+    refractions with incoming light.
+
+\end{itemize}
+
+\section{Ray Marching}
+
+\begin{itemize}
+    \item[\textbf{(a)}]
+        \begin{itemize}
+            \item[\textbf{a.}] UNION $\rightarrow{} min(d_1, d_2)$
+            \item[\textbf{b.}] INTERSECTION $\rightarrow{} max(d_1, d_2) $
+            \item[\textbf{c.}] SUBTRACTION $\rightarrow{} max(d_1, -d_2) $
+        \end{itemize}
+
+    \item[\textbf{(b)}]
+        \begin{itemize}
+            \item[\textbf{a.}] SPHERE $\rightarrow{} f(\vect{p}) = ||\vect{p}|| - 1$
+            \item[\textbf{b.}] BOX $\rightarrow{} f(\vect{p}, \vect{b}) = ||\max{(0, ||\vect{p}||-\vect{b})}||$
+
+            \item[\textbf{c.}] TORUS $\rightarrow{} f(\vect{p}, r_x, r_y) = ||(||p_{xz}|| - r_x, p_y)|| - r_y$
+
+            \item[\textbf{d.}] PLANE $\rightarrow{} f(\vect{p}, \vect{n}, d) = \vect{p} \cdot \vect{n} + d$
+
+            \item[\textbf{e.}] CYLINDER $\rightarrow{} f(\vect{p}, \vect{c}) = ||p_{xz} - c_{xy}|| - c_z$
+
+            \item[\textbf{f.}] CONE $\rightarrow{} f(\vect{p}, \vect{c}) = \vect{c} \cdot (||p_{xy}||, p_z)$
+        \end{itemize}
+    \item[\textbf{(c)}] In the negative sign means that of the 2 signed distances, the one that gets subtracted
+        gets taken out of the overall shape.
+\end{itemize}
+
+\section{Nonphotorealistic Rendering}
+
+\begin{itemize}
+    \item[\textbf{(a)}] Sobel, Prewitt,  Robert's cross are all edge detection methods
+    \item[\textbf{(b)}] Toon Shading $\rightarrow$ X-Toon, CAD Technical Illustrations $\rightarrow$ Gooch Shading
+    \item[\textbf{(c)}] Use banded shading to approximate painterly
+\end{itemize}
+
+\section{Procedural Generation}
+
+\begin{itemize}
+    \item[\textbf{(a)}] Perline Noise
+    \item[\textbf{(b)}] Procedural generation is a method of creating data algorithmically as opposed to manually.
+    \item[\textbf{(c)}] User Perlin noise to generate positions for objects in a procedurally generated world. Objects
+        would be things like foliage, trees, rocks and other terrain. Also noise could be used to create a height map to give the
+        world dimension.
+\end{itemize}
+
+\end{document}
