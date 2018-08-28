@@ -1,0 +1,29 @@
+Class: Analysis of Algorithms
+Name: William Horn
+Date: Aug 27, 2018
+
+Why Algorithms:
+    - Core of computer science
+    - Problem Solving Stragegies
+    - Study of efficiency
+    - Analytical Skills
+
+What is an Algorithms:
+    - sequence of unabiguos instructions and
+      terminate in finite time
+
+Algorithms:
+    - Exact Approximate
+    - Specification (Language, Pseudo-code, programming language)
+    - Good (Efficiency, Simplicity, Generality)
+
+    Note: efficiency with any resource (time, space, other...)
+
+Problem Classes:
+    - Sorting, Searching, String processing, graph,
+      combinatorial, geometric, numerical
+
+Data Structures:
+    - Arrays+LL
+    - Graphs (Adjacency Matxrix/List, Weighted Graphs, Rooted/Ordered Trees)
+    - Sets+Maps

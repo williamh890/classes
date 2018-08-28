@@ -1,0 +1,37 @@
+Class: Senior Capstone I
+Name: William Horn
+Date: Aug 27, 2018
+
+Class Overview:
+    - Overview of Software Engineering
+    - Don't Make Me Think (Book)
+    - Software Requirements
+    - Software Project Management Approaches
+        - Waterfall
+        - Kanban <- Focus
+
+    - Take Home Midterm
+
+    - Software Testing
+    - Code Review
+    - Look At CS472 Proposals
+    - Presentations (Case Study)
+
+Software Engineering Overview:
+    - methods
+    - all aspects (from spec. to maintenance)
+    - large systems
+
+    Quality Software:
+        - maintainability, dependability, security, efficiency, acceptablilty
+
+    Costs:
+        - More to maintane software to develope
+
+    Processes:
+        Plan-Driven:
+            - Everything is planned out in advance
+            - Like real world construction
+        Agile:
+            - Change the plan as you go
+
