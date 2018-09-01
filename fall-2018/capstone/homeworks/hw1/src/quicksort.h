@@ -3,7 +3,7 @@
 #include <cstddef> // size_t
 #include <iostream>
 
-using IndexType = long long;
+using IndexType = int;
 
 
 template<class T>

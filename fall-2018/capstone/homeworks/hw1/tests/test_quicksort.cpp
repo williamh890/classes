@@ -4,22 +4,47 @@
 
 #include <vector> // std::vector
 #include <algorithm> // std::is_sorted
+#include <cassert> // assert
 
 #include <fstream> // std::ifstream
-#include <iostream>
-#include <string>
-#include <sstream>
+#include <string> // std::string
+#include <sstream> // std::istringstream
+
 
 const std::string TESTING_DATA_FILE = "tests/testing_data.txt";
+using TestValueType = int;
 
-std::vector<std::vector<IndexType>> loadTestingDataFrom(const std::string & file) {
+
+std::vector<std::vector<TestValueType>>
+loadTestingDataFrom(const std::string & file);
+
+
+TEST_CASE("Lists are sorted after sorting", "[quicksort]") {
+    auto testingLists = loadTestingDataFrom(TESTING_DATA_FILE);
+
+    assert(
+        testingLists.size() > 0 &&
+        "Testing needs to be from root directory to load testing data properly"
+    );
+
+    for (auto & l : testingLists) {
+        quicksort(l, 0, l.size() - 1);
+        auto isSorted = std::is_sorted(l.begin(), l.end());
+
+        REQUIRE(isSorted);
+    }
+}
+
+
+std::vector<std::vector<TestValueType>>
+loadTestingDataFrom(const std::string & file) {
     std::ifstream infile(file);
 
     std::string line = "";
-    std::vector<std::vector<IndexType>> testingArrays;
+    std::vector<std::vector<TestValueType>> testingArrays;
 
     while (std::getline(infile, line)) {
-        IndexType val;
+        TestValueType val;
         std::vector<IndexType> vals = {};
         std::istringstream ss(line);
 
@@ -35,24 +60,3 @@ std::vector<std::vector<IndexType>> loadTestingDataFrom(const std::string & file
 
     return testingArrays;
 }
-
-void print(std::vector<IndexType> & l) {
-    for (auto & v : l) {
-        std::cout << v << " ";
-    }
-
-    std::cout << std::endl;
-}
-
-TEST_CASE("Lists are sorted after sorting", "[quicksort]") {
-    auto testingLists = loadTestingDataFrom(TESTING_DATA_FILE);
-
-    for (auto & l : testingLists) {
-        quicksort(l, 0, l.size() - 1);
-        auto isSorted = std::is_sorted(l.begin(), l.end());
-
-        REQUIRE(isSorted);
-    }
-}
-
-
