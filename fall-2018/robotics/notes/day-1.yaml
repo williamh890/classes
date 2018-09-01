@@ -1,0 +1,14 @@
+Class: 3D Printing and Robotics
+Name: William Horn
+Date: Aug 28, 2018
+
+Computer Aided Manufacturing (CAM):
+    Additive:
+        - 3D Printing
+    Subtractive:
+        - Laser Cutting
+        - CNC Machining
+
+    GCode Toolpaths:
+        - Assembly language of machining
+        - Used for both 3D Printing and laser cutting

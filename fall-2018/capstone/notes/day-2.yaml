@@ -1,0 +1,46 @@
+Class: Senior Capstone I
+Name: William Horn
+Date: Aug 29, 2018
+
+
+Software Process:
+    - Specification (HARD) -> Implementation -> Validation -> Evolution
+
+    Waterfall Model:
+        Method:
+            Requirements Definition: Reqs Document
+            System+Software Design: Plan Document
+            Impl+Unit Testing: Actual coding
+            Integration+System Testing: uses Testing Plan Document
+            Maintenance/Evolution: Modify Software+Update documents
+
+        Issues:
+            - difficult to respond to change
+            - large projects with little communication
+
+        Pros:
+            - Cost of failure is extreamly high
+              e.g. NASA, Flight Control
+
+    Rapid Prototyping:
+        Method:
+            - Prototype to demonstrate concepts
+            - Discard prototype
+            - Now Waterfall for real thing
+
+        Issues:
+            - Cost of requirements is high
+
+What is Software Engineering, and why is it worth while?:
+    As computers become integrated more and more peoples lives and busnesses, the
+    complexity of software requirements increase. Instead of small teams, working on
+    small, focused software programs whole companies are devoted to developing one
+    program. With this increase in scale and complexity comes many challenges. Software
+    engineering is focused on solving, or at least lessening, these challenges.
+
+    Many tecniques and methods used when devoping on smaller systems break down or degrade
+    entierly. How do you handle the kind of traffic that Google, Netflix, or Facebook has?
+    How do you stay agile in a rapidly changing market, and keep an upper hand on your competitors?
+    How do you deligate work when there are hundreds of developers working on a single project?
+    Architectures, Design Patterns, Performance, Scalability all become vitily important
+    when tackling these challenges and all are related to software engineering.

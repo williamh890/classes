@@ -1,0 +1,56 @@
+Class: Senior Capstone I
+Name: William Horn
+Date: Aug 31, 2018
+
+Incremental Devolpement:
+    Pros:
+        - Reduce cost of changing requirements
+        - Allows for early feedback
+
+    Issues:
+        - Keeping docs updated
+        - Pressure to produce new versions
+        - System structure is hard to maintain
+          (refactoring falls by the wayside)
+
+Boehm's Spiral Model:
+    - Mini waterfall, repeated over and over
+    - Process is spriral instead of backtracking
+
+    Note: Not used today but was a step in the right direction
+
+Rise of Agile Methods:
+    Late 90s:
+        - High profile failures
+        - internet moving to quick for waterfall
+        - Businesses more reliant on software
+
+    Goals:
+        - Respond quickally to changing requirements
+        - Focus on code instead of design (refactoring+architectural refactoring)
+        - Deliever quickally
+
+    Agile Manifesto:
+        - Individuals and interactive
+        - Working software
+        - Customer collaboration
+        - Respond to change
+
+    Principles:
+        - Incremental delivery
+        - Maintain simplicity
+
+    Issues:
+        - Keeping stakeholder involvment
+        - Prioritize changes
+        - Maintain simplicity is hard
+        - No fixed contracts
+        - Difficult to scale to large projects
+
+Extreme Programming (XP):
+    Methods:
+        - Full time stackholder engagment
+        - Pair Programming and collective ownership
+        - Change support through small and frequent system releases
+        - Maintain simplicity through constant refactoring of code
+

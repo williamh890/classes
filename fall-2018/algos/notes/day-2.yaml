@@ -1,0 +1,39 @@
+Class: Analysis of Algorithms
+Name: William Horn
+Date: Aug 29, 2018
+
+Quiz:
+    - Time complexity
+    - Algo runtim measuring
+    - Amortized
+
+Model of Computation:
+    Measuring inputers: usually 'n', or 'b' for bits
+        Numbers: num_digits = 1 + floor(log(k))
+            Note:
+                - lg (log base 2), ln (natural log), log (log base 10)
+                - base doesn't matter
+
+        Graphs: V for vertices and E for Edges
+
+    What to count:
+        Items: words, ints, bits? Edges or vertices?
+
+        Running Time: basic operation (single op or class of ops)
+        Running space: memory units (data items? pointers?)
+
+        T(n) = c_op * C(n) # c_op is time for basic op, C(n) times c_op was executed
+
+        Note: specify if not clear (size of input, basic operation)
+
+    Order Of Growth: heights order term, ignoring constant infront of it
+        Types:
+            - Worst Case (Default)
+            - Average Case (Over all inputs given a size)
+            - Best case
+
+        Amortized Efficiency: average over large num of consecutive execs
+
+        Note: (p/n)(1+2+3+...+n) == n(n+1)/2
+
+
