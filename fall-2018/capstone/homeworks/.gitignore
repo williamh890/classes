@@ -1,5 +1,5 @@
 .hypothesis
-test_hypothesis
+test_quicksort
 
 # Prerequisites
 *.d
