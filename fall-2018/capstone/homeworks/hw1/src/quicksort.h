@@ -1,7 +1,5 @@
 #include <vector> // std::vector
 #include <algorithm> // std::swap
-#include <cstddef> // size_t
-#include <iostream>
 
 using IndexType = int;
 
@@ -13,8 +11,7 @@ IndexType partition(std::vector<T> & A, IndexType lo, IndexType hi) {
 
     for (auto j = lo; j < hi; ++j) {
         if (A[j] < pivot) {
-            std::swap(A[i], A[j]);
-            ++i;
+            std::swap(A[i++], A[j]);
         }
     }
 

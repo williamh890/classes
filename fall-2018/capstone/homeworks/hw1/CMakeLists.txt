@@ -13,3 +13,6 @@ add_executable(
     tests/test_main.cpp
     tests/test_quicksort.cpp
 )
+
+add_subdirectory("dependencies/rapidcheck")
+target_link_libraries(test_quicksort rapidcheck)
