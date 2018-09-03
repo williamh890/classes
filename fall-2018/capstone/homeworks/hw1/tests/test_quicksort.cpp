@@ -10,29 +10,28 @@
 
 void print(const std::vector<int> & l);
 
-TEST_CASE("ints are sorted after calling quicksort", "[quicksort]") {
-    rc::check("ints are sorted with quicksort",
-        [](const std::vector<int> &l0) {
-            std::vector<int> l = l0;
 
+TEST_CASE("ints are sorted after calling quicksort", "[quicksort]") {
+    auto is_sorted_property_test =
+        [](std::vector<int> &&l) {
             quicksort(l, 0, l.size() - 1);
 
-            auto isSorted = std::is_sorted(l.begin(), l.end());
-            REQUIRE(isSorted);
-    });
+            REQUIRE(std::is_sorted(l.begin(), l.end()));
+        };
+
+    rc::check(is_sorted_property_test);
 }
 
 
 TEST_CASE("strs are sorted after calling quicksort", "[quicksort]") {
-    rc::check("strings are sorted correctly with quicksort",
-        [](const std::vector<std::string> &l0) {
-            std::vector<std::string> l = l0;
-
+    auto is_sorted_property_test =
+        [](std::vector<std::string> &&l) {
             quicksort(l, 0, l.size() - 1);
 
-            auto isSorted = std::is_sorted(l.begin(), l.end());
-            REQUIRE(isSorted);
-    });
+            REQUIRE(std::is_sorted(l.begin(), l.end()));
+        };
+
+    rc::check(is_sorted_property_test);
 }
 
 
