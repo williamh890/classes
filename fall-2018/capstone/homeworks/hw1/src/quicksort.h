@@ -6,18 +6,20 @@ using IndexType = int;
 
 template<class T>
 IndexType partition(std::vector<T> & A, IndexType lo, IndexType hi) {
-    auto pivot = A[hi];
-    auto i = lo;
+    auto pivot = A[lo];
+    auto i = lo - 1;
+    auto j = hi + 1;
 
-    for (auto j = lo; j < hi; ++j) {
-        if (A[j] < pivot) {
-            std::swap(A[i++], A[j]);
+    while (true) {
+        do { ++i; } while(A[i] < pivot);
+        do { --j; } while(A[j] > pivot);
+
+        if (i >= j) {
+            return j;
         }
+
+        std::swap(A[i], A[j]);
     }
-
-    std::swap(A[i], A[hi]);
-
-    return i;
 }
 
 
@@ -25,7 +27,7 @@ template<class T>
 void quicksort(std::vector<T> & A, IndexType lo, IndexType hi) {
     if (lo < hi) {
         auto p = partition(A, lo, hi);
-        quicksort(A, lo, p - 1);
+        quicksort(A, lo, p);
         quicksort(A, p + 1, hi);
     }
 }
