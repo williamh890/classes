@@ -23,6 +23,8 @@ IndexType partition(std::vector<T> & A, IndexType lo, IndexType hi) {
 }
 
 
+namespace qs {
+
 template<class T>
 void quicksort(std::vector<T> & A, IndexType lo, IndexType hi) {
     if (lo < hi) {
@@ -31,3 +33,5 @@ void quicksort(std::vector<T> & A, IndexType lo, IndexType hi) {
         quicksort(A, p + 1, hi);
     }
 }
+
+} // namespace qs
