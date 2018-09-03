@@ -8,7 +8,7 @@
 #include <string> // std::string
 
 
-TEST_CASE("ints are sorted after calling quicksort") {
+TEST_CASE("values are sorted after quicksort") {
     rc::check([](std::vector<int> && l) {
         qs::quicksort(l, 0, l.size() - 1);
 
