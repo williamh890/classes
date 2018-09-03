@@ -8,12 +8,10 @@
 #include <string> // std::string
 
 
-TEST_CASE("ints are sorted after calling quicksort", "[quicksort]") {
-    auto is_sorted_property_test = [](std::vector<int> && l) {
+TEST_CASE("ints are sorted after calling quicksort") {
+    rc::check([](std::vector<int> && l) {
         qs::quicksort(l, 0, l.size() - 1);
 
-        REQUIRE(std::is_sorted(l.begin(), l.end()));
-    };
-
-    rc::check(is_sorted_property_test);
+        REQUIRE(std::is_sorted(begin(l), end(l)));
+    });
 }
