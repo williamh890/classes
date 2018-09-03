@@ -9,12 +9,11 @@
 
 
 TEST_CASE("ints are sorted after calling quicksort", "[quicksort]") {
-    auto is_sorted_property_test =
-        [](std::vector<int> &&l) {
-            qs::quicksort(l, 0, l.size() - 1);
+    auto is_sorted_property_test = [](std::vector<int> && l) {
+        qs::quicksort(l, 0, l.size() - 1);
 
-            REQUIRE(std::is_sorted(l.begin(), l.end()));
-        };
+        REQUIRE(std::is_sorted(l.begin(), l.end()));
+    };
 
     rc::check(is_sorted_property_test);
 }
