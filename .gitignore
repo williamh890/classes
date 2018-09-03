@@ -13,7 +13,6 @@ class-repo/*
 *.log
 *.pdf
 
-*_main.cpp
 *_suites.cpp
 
 fps-snow/*
