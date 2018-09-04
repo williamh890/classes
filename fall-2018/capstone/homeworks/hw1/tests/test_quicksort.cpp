@@ -5,7 +5,6 @@
 
 #include <vector> // std::vector
 #include <algorithm> // std::is_sorted
-#include <string> // std::string
 
 
 TEST_CASE("values are sorted after quicksort") {
