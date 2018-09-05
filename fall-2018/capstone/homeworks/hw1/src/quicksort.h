@@ -9,9 +9,11 @@ IndexType partition(std::vector<T> & A, IndexType lo, IndexType hi) {
     auto pivot = A[hi];
     auto i = lo;
 
-    for (auto j = lo; j < hi; ++j)
-        if (A[j] < pivot)
+    for (auto j = lo; j < hi; ++j) {
+        if (A[j] < pivot) {
             std::swap(A[i++], A[j]);
+        }
+    }
 
     std::swap(A[i], A[hi]);
 

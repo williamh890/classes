@@ -1,4 +1,4 @@
-#include "../src/quicksort.h" // qs::quicksort
+#include "quicksort.h" // qs::quicksort
 
 #include "catch.hpp"
 #include <rapidcheck.h> // rc::check
