@@ -1,0 +1,43 @@
+Class: Analysis of Algorithms
+Name: William Horn
+Date: Sep 05, 2018
+
+Reading:
+    - Appendix A
+    - Section 2.4
+
+Quiz:
+    - Rewrite summation notation as ordinary sum + vice versa
+    - Evaluate simple summation
+    - Eval large sum, given rules from Appendix A
+
+
+Overview:
+    - recursive vs. norecursive (very different)
+
+Need To Know:
+    - sum i=l to u of 1 = u - l + 1
+
+    - sum i=1 to n of i = n(n+1> / 2)      approx n^2 / 2
+    - sum i=1 to n of i^2 = n(n+1)(2n+1)/6 approx n^3 / 3
+    - sum i=1 to n of i^k =                approx n^3 / 3
+
+    - sum i=0 to n of a^i = 1 + a + a^2 + ... + a^n  <- !important
+      = (a^(n+1) - 1) / (a - 1)
+
+      sum (c * a_i) = c * sum(a_i)
+      sum(a_i + b_i) = sum(a_i) + sum(b_i)
+      sum i=l to u (a_i - a_i-1) = a_u - a_l
+
+Analyzing Non-Recursive Algorithms:
+    - choose way of measuring input size
+    - choose basic operation
+    - does num of basic ops depend only on the size of input
+        - if yes best/worst/avg may differ
+        - if other things outcome change output, redefine input
+    - set up a summation
+    - evaluate summation
+
+    Rule:
+        c nested non-trivial loops => O(n^c)
+

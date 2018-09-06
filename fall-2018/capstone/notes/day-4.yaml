@@ -1,0 +1,45 @@
+Class: Senior Capstone I
+Name: William Horn
+Date: Sep 05, 2018
+
+Lean Software Development:
+    Principles:
+        - Eliminate waste, amplify learning, decide late, deliver fast,
+          empower team, build integrity in, see the whole
+
+        Eliminate Waste:
+            - everything not adding value (compelxity)
+            - knowledge loss
+            - waiting/multitasking
+
+Kanban:
+    - Vis. flow of work
+    - minimize work in progress
+    - devs pull work
+    - customer focused
+
+Don't Make Me Think:
+    Usability Consultant:
+        - evalutates interfaces
+        - determines where users will get confused
+
+    Extremely Rare Bread:
+        - This ends up being the teams responsibility
+
+    Usablity:
+        - Average person can figure out how to accomplish something with
+          it being more trouble then its worth.
+
+        Dont Make Me Think:
+            - get it, without thinking about it
+            - make buttons obvious
+
+        Take Advantage Of Convensions:
+            - visual hierarchies
+            - clearly break up page
+            - make items purpose obviouse
+            - format content to support scanning
+
+        Omit Needless Workds:
+            - 'happy talk' no one is going to read
+            - instructions are a source of needless words
