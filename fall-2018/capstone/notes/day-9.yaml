@@ -1,0 +1,23 @@
+Class: Senior Capstone I
+Name: William Horn
+Date: Sep 17, 2018
+
+
+Software Requirements:
+    - Need to know when system/project is "done"
+    - Limit scope creep, keep problem domain realistically limited
+
+    Example:
+        Prompt:
+            Determine whether method X can successfully identify
+            different kinds of fish
+        Non-Functional Requirement:
+            - Needs to be able to function without an internet connection
+            - Train model to id new fish in less then a day
+
+    Software Requirements Document (SWR):
+        - What the system should do, not how it should do it
+        - Written in natural language, diagrams, and tables
+
+
+

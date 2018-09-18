@@ -1,0 +1,31 @@
+Class: Senior Capstone I
+Name: William Horn
+Date: Sep 07, 2018
+
+
+Navigation:
+    Ask first (search) vs. Browse first (links)
+
+    Hierarrchy:
+        - what the site contains
+        - go down for more info
+
+    Persistent Navigation:
+        - search bar
+        - nav bar
+
+    Trunk Test:
+        - print out and hold at arms length
+        - check for
+            - site id
+            - page name
+            - sections
+            - local nav
+            - 'you are here' indicators
+            - search
+
+    Homepage Objectives:
+        - show me what im looking for
+        - show me something new
+        - where to start
+        - establish credibility+trust

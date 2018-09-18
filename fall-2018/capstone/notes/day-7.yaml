@@ -1,0 +1,23 @@
+Class: Senior Capstone I
+Name: William Horn
+Date: Sep 12, 2018
+
+
+Usability Tests:
+    - Have people use the product, from outside the project
+      (3 is a good number)
+    - Test early in the project
+
+Software Requirements: WHAT the software should do
+    - Abstract statements of service
+    - System Restraints
+
+    Functional:
+        provided services, react to input, what system should not do
+    Non-Functional:
+        Dev constraints, timing
+
+        Note: Often apply to the system as a whole
+        Examples: reliability, uptime
+
+    - Should be, complete and consistent

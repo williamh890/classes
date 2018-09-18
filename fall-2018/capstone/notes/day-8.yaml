@@ -1,0 +1,27 @@
+Class: Senior Capstone I
+Name: William Horn
+Date: Sep 14, 2018
+
+
+Software Requirements:
+    Complete: include descriptions of all functionlaity required
+    Consistent: no conflicts or contradictions
+
+    Goal:
+        - What users want, not very persciese
+        - Turn them into verifiable non-func reqs with
+          metrics that can be mesured
+
+    Non-Func Metrics:
+        - speed, size, ease of use,
+          reliability, robustness, portability
+
+    Demo:
+        Prompt: Want to write software to allow for online grocery shopping
+
+        Funcational Requirements:
+            - Have a running list of groceries to order
+            - Save payment information for easy checkout
+        Non-Functional Requirements:
+            - System must update quickly for fast order turn around
+            - Site must be up for peek shopping times

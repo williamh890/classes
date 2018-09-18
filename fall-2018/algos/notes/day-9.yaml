@@ -1,0 +1,28 @@
+Class: Analysis of Algorithms
+Name: William Horn
+Date: Sep 17, 2018
+
+Homework 2:
+    Subsets:
+        Finding all subsets is just counting up in binary
+
+    Hint: Use backtracking to generate subsets
+
+Quiz:
+    What is dfs/bfs and what do they mean?
+
+
+Search Spaces and Graphs:
+    Representations:
+        - Adjacency Matrix
+        - Adjacency Lists
+
+    DFS: Explore graph using stack
+        Uses:
+            - finds spanning tree of graph
+            - connectedness
+
+        Analysis: e = edges, n = vertices
+            Matrix => n^2 + e => O(n^2)
+            Matrix => n + e => O(n + e)
+    BFS: Explore graph using queue

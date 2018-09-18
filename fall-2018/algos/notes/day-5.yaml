@@ -1,0 +1,35 @@
+Class: Analysis of Algorithms
+Name: William Horn
+Date: Sep 07, 2018
+
+Reading: 2.5 + more Appendix B
+Quiz:
+    -  What to do about factorials
+    -  Summation as ordinary sum vice versa
+    -  Eval simple summs
+    -  Recurrence relations
+    -  The smoothness rule
+
+Recursion:
+    - Algo calls itself, must have base case
+
+    Analysing Factorial:
+        Recurrence: recurrence relation defines func in terms of itself
+
+        Plan:
+            - measuring input size
+            - basic op, what case to analyz
+            - setup recurrence
+            - SOLVE recurrence
+
+        Solving Methods:
+            Forward Substitution: Starting with what you know calc successive values
+            Backward Substitution:
+                Using recurrence, express x(n-1) as a function of x(n-2) and substitute
+                into original expression. Want to find x(n-i) then plug into initial
+                condition
+
+        Smoothness Rule:
+            If: Eventually Non-decreasing and F is Smooth
+            Then: T(n) is O(f(n)) for all n
+

@@ -1,0 +1,43 @@
+Class: Analysis of Algorithms
+Name: William Horn
+Date: Sep 12, 2018
+
+
+Homework 1:
+    sum 1 / (i(i+1)) == sum (1 / i) - (1 / (i+1))
+
+
+Quiz:
+    - Brute force?
+    - Selection sort/bubble
+    - Why is selection better?
+
+Algo Strategies:
+    Brute Force: Straightforward directly based on problem statement
+        Force: Computational force
+
+        Advatages: Always applicable, easier to code
+
+    Selection Sort:
+        Look through the input for the smallest item, move to begining,
+        move one up from the input, continue...
+
+                     |                | (unoptimized)| (optimized) |
+                     | Selection Sort |  Bubble Sort | Bubble Sort |
+      ---------------+----------------+--------------+-------------+
+        Comparisions |     O(n^2)     |    O(n^2)    |    O(n^2)   |
+      ---------------+----------------+--------------+-------------+
+        Swaps        |     O(n)       |    O(n^2)    |    O(n^2)   |
+      ---------------+----------------+--------------+-------------+
+        Stable?      |     No         |    Yes       |    Yes      |
+      ---------------+----------------+--------------+-------------+
+        Close        |     O(n^2)     |    O(n^2)    |    O(n)     |
+      ---------------+----------------+--------------+-------------+
+
+    Sorting:
+        - Selection bubble, sort
+    Searching:
+        - Sequential Search
+
+
+

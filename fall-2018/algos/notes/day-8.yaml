@@ -1,0 +1,40 @@
+Class: Analysis of Algorithms
+Name: William Horn
+Date: Sep 14, 2018
+
+Closest Pair:
+    Goal: Set of points, find closest 2 points
+    Distance: euclidean distance, hamming distance, taxi cab
+    Class: easy solution is O(n^2)
+
+Convex Hull:
+    Any 2 points in a set of points form a line segment inside the set
+
+    Uses: Collisison detection, outliers, diameter
+    Returns: A squence of points
+
+    Solution:
+        - brute force => O(n^3)
+        - any 2 points in sequence where all points lie on
+          on side of the line created by the 2 points
+
+          y = mx + b =>
+          y = x(y2 - y1)/(x2 - x1) + 0
+
+Exhaustive Search:
+    Traveling sales person (TSP):
+        Give list of cities, find shortest path to visit them all
+        and end at the same city
+
+        Note: Without euclidean distance is np complete
+
+    Knapsack problem:
+        Bunch of items with value+weight
+
+        Solution: Need to generate subsets => O(2^n)
+
+    Assigment problem:
+        Brute force exponential
+
+        Hungarian Method: fast solution polynomial
+
