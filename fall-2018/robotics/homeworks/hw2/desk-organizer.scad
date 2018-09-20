@@ -4,23 +4,41 @@ width = dim[0];
 depth = dim[1];
 height = dim[2];
 
-wall = 1;
+wall = 2;
 drawer_width = dim[0] / 2 - 2.*wall;
 
-organizer();
+s=3.6;
+slop = 2;
+drawer_offset = 5;
+wall = 2;
+drawer_width = dim[0] / 2 - 2.*wall;
+
+scale([1/s, 1/s, 1/s])
+    organizer();
 
 module organizer() {
 
-organizer_body();
+    function add_const(vec, val) =
+        [for (v = vec) val + v];
 
-drawer_slop = 1;
-drawer_offset = 20;
+    to_left_drawer = add_const(
+        [slop/2, drawer_offset, slop/2],
+        wall
+    );
 
-translate([wall + drawer_slop / 2, wall+drawer_offset, wall + drawer_slop / 2])
-    organizer_drawer(inner_wall=1, slop=drawer_slop);
+    to_right_drawer = add_const(
+        [width / 2 + slop / 2, drawer_offset, slop / 2],
+        wall
+    );
 
-translate([width / 2 + .5*wall, wall + drawer_offset - 10, wall])
-    organizer_drawer(inner_wall=1, slop=drawer_slop);
+    rotate([90, 0, 0])
+        organizer_body();
+
+    translate(to_left_drawer)
+        organizer_drawer(inner_wall=wall, slop=slop);
+
+    translate(to_right_drawer)
+        organizer_drawer(inner_wall=wall, slop=slop);
 }
 
 module organizer_body() {
@@ -36,7 +54,7 @@ difference() {
 
     translate([wall, wall, wall])
         cube(drawer_cutout);
-    translate([width / 2 + .5*wall, wall, wall])
+    translate([width / 2 + wall, wall, wall])
         cube(drawer_cutout);
 }
 
@@ -45,14 +63,17 @@ difference() {
 module organizer_drawer(inner_wall, slop) {
 
 difference(){
-    cube([drawer_width-slop, depth - wall-slop, height-2*wall-slop]);
+    cube([drawer_width-slop, depth-wall-slop/10, height-2*wall-slop]);
 
     translate([inner_wall, inner_wall, inner_wall])
         cube([
             drawer_width-2*inner_wall-slop,
-            depth-wall-2*inner_wall-slop,
+            depth-wall-2*inner_wall-slop/10,
             height-2*wall
         ]);
+
+    translate([(drawer_width-slop) / 2, depth-slop/10, height])
+        sphere(d=width/3.5);
 }
 }
 
