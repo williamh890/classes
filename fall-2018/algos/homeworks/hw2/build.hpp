@@ -6,7 +6,7 @@
 
 struct Bridge {
     const int e, w, toll;
-    Bridge(int e, int w, int t): e(e), w(w), toll(t) {}
+    Bridge(const std::vector<int> & b): e(b[0]), w(b[1]), toll(b[2]) {}
     Bridge() = default;
 };
 
