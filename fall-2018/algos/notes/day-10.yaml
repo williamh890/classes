@@ -1,0 +1,14 @@
+Class: Analysis of Algorithms
+Name: William Horn
+Date: Sep 19, 2018
+
+Three Major Variations:
+    Decrease by a constant (usually 1): exponentiation
+    Decrease by a constant factor: exponentiation
+    Variable size decrease: gcd
+
+Insertion Sort Example:
+    Top Down:
+    Bottom Up:
+
+

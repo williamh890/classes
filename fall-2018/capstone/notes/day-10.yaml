@@ -1,0 +1,15 @@
+Class: Senior Capstone I
+Name: William Horn
+Date: Sep 19, 2018
+
+For Friday:
+    prompt: Modile app for course registration
+    task: Consider what a user story for this app might be like
+
+    Functional:
+        Select courses to register from a graph based on degree progression.
+        Search box for finding courses to register for.
+    Non Functional:
+        Needs to be hosted on-premise.
+
+
