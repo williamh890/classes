@@ -6,11 +6,12 @@ using std::swap;
 #include <vector>
 using std::vector;
 
+
 struct Bridge {
     int w, e, toll;
 
     Bridge() = default;
-    Bridge(const std::vector<int> & b): w(b[1]), e(b[0]), toll(b[2]) {}
+    Bridge(const vector<int> & b): w(b[1]), e(b[0]), toll(b[2]) {}
     Bridge& operator=(const Bridge& other) noexcept {
         if (this != &other) {
             w = other.w;
@@ -21,6 +22,7 @@ struct Bridge {
         return *this;
     }
 };
+
 
 using Bridges = std::vector<Bridge>;
 
@@ -97,7 +99,7 @@ int bestToll(const Bridges & bridges) noexcept {
 Bridges convert(const vector<vector<int> > & bridgeVecs) noexcept {
     Bridges bridges;
 
-    for (const auto & bridgeVec : bridgeVecs ) {
+    for (const auto & bridgeVec : bridgeVecs) {
         bridges.push_back(
             Bridge(bridgeVec)
         );
