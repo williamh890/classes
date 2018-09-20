@@ -45,7 +45,7 @@ inline bool areCrossing(const Bridge & b1, const Bridge & b2) noexcept {
 bool validSubset(const Bridges & bridges) noexcept {
     for (auto b1 = begin(bridges); b1 != end(bridges); ++b1) {
         for (auto b2 = begin(bridges); b2 != end(bridges); ++b2) {
-            if (b1 == b2)  {
+            if (b1 == b2) {
                 continue;
             }
 
@@ -53,9 +53,9 @@ bool validSubset(const Bridges & bridges) noexcept {
                 return false;
             }
 
-            if (areCrossing(*b1, *b2))
+            if (areCrossing(*b1, *b2)) {
                 return false;
-
+            }
         }
     }
 
