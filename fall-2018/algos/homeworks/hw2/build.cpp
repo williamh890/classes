@@ -5,14 +5,23 @@ using std::max;
 #include <vector>
 using std::vector;
 
+struct Bridge {
+    const int w, e, toll;
+
+    Bridge() = default;
+    Bridge(const std::vector<int> & b): w(b[1]), e(b[0]), toll(b[2]) {}
+};
+
+using Bridges = std::vector<Bridge>;
+
 
 inline bool haveDuplicateCity(const Bridge & b1, const Bridge & b2) noexcept {
-    return b1.e == b2.e || b1.w == b2.w;
+    return b1.w == b2.w || b1.e == b2.e;
 }
 
 
 inline bool areCrossing(const Bridge & b1, const Bridge & b2) noexcept {
-    return b1.e < b2.e && b1.w > b2.w;
+    return b1.w < b2.w && b1.e > b2.e;
 }
 
 
@@ -30,7 +39,6 @@ int tollFor(const Bridges & bridges) noexcept {
 
         toll += b1->toll;
     }
-
     return toll;
 }
 
