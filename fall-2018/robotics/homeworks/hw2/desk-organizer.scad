@@ -7,7 +7,7 @@ height = dim[2];
 wall = 2;
 drawer_width = dim[0] / 2 - 2.*wall;
 
-s=3.6;
+s=2;
 slop = 2;
 drawer_offset = 5;
 wall = 2;
@@ -27,17 +27,21 @@ module organizer() {
     );
 
     to_right_drawer = add_const(
-        [width / 2 + slop / 2, drawer_offset, slop / 2],
+        [width / 2 + slop / 2, drawer_offset+2*wall, slop / 2],
         wall
     );
+
+    r = [width / 2+2*wall+slop, drawer_offset+wall,0];
+    l = [0, drawer_offset+wall, 0];
+
 
     rotate([90, 0, 0])
         organizer_body();
 
-    translate(to_left_drawer)
+    translate(r)
         organizer_drawer(inner_wall=wall, slop=slop);
 
-    translate(to_right_drawer)
+    translate(l)
         organizer_drawer(inner_wall=wall, slop=slop);
 }
 

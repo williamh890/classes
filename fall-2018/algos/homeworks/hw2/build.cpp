@@ -75,24 +75,24 @@ int tollFor(const Bridges & bridges) noexcept {
 
 
 int bestToll(const Bridges & bridges) noexcept {
-    vector<Bridges> totalSubsets{{}};
-    vector<Bridges> subsets;
+    vector<Bridges> subsets{{}};
+    vector<Bridges> newSubsets;
 
     auto bestToll = 0;
 
     for (const auto & bridge: bridges) {
-        subsets = totalSubsets;
+        newSubsets = subsets;
 
-        for (auto & subset : subsets) {
-            subset.push_back(bridge);
+        for (auto & newSubset : newSubsets) {
+            newSubset.push_back(bridge);
 
-            if(validSubset(subset)) {
+            if(validSubset(newSubset)) {
                 bestToll = max(
-                    tollFor(subset),
+                    tollFor(newSubset),
                     bestToll
                 );
 
-                totalSubsets.push_back(subset);
+                subsets.push_back(newSubset);
             }
         }
     }
