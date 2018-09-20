@@ -1,3 +1,8 @@
+// build.cpp
+// William Horn
+// Sept 20, 2018
+// CS 411 HW2
+
 #include "build.hpp"
 
 #include<algorithm>
