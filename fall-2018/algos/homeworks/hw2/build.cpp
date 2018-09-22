@@ -45,17 +45,14 @@ inline bool areCrossing(const Bridge & b1, const Bridge & b2) noexcept {
 bool validSubset(const Bridges & bridges) noexcept {
     for (auto b1 = begin(bridges); b1 != end(bridges); ++b1) {
         for (auto b2 = begin(bridges); b2 != end(bridges); ++b2) {
-            if (b1 == b2) {
+            if (b1 == b2)
                 continue;
-            }
 
-            if (haveDuplicateCity(*b1, *b2)) {
+            if (haveDuplicateCity(*b1, *b2))
                 return false;
-            }
 
-            if (areCrossing(*b1, *b2)) {
+            if (areCrossing(*b1, *b2))
                 return false;
-            }
         }
     }
 
@@ -76,24 +73,23 @@ int tollFor(const Bridges & bridges) noexcept {
 
 int bestToll(const Bridges & bridges) noexcept {
     vector<Bridges> subsets{{}};
-    vector<Bridges> newSubsets;
 
     auto bestToll = 0;
 
     for (const auto & bridge: bridges) {
-        newSubsets = subsets;
+        for (int i = subsets.size()-1; i >= 0; --i) {
+            subsets[i].push_back(bridge);
 
-        for (auto & newSubset : newSubsets) {
-            newSubset.push_back(bridge);
-
-            if(validSubset(newSubset)) {
+            if(validSubset(subsets[i])) {
                 bestToll = max(
-                    tollFor(newSubset),
+                    tollFor(subsets[i]),
                     bestToll
                 );
 
-                subsets.push_back(newSubset);
+                subsets.push_back(subsets[i]);
             }
+
+            subsets[i].pop_back();
         }
     }
 
