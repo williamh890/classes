@@ -77,7 +77,7 @@ int bestToll(const Bridges & bridges) noexcept {
     auto bestToll = 0;
 
     for (const auto & bridge: bridges) {
-        for (int i = subsets.size()-1; i >= 0; --i) {
+        for (auto i = (int)subsets.size()-1; i >= 0; --i) {
             subsets[i].push_back(bridge);
 
             if(validSubset(subsets[i])) {
