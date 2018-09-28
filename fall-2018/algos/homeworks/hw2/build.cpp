@@ -6,17 +6,17 @@
 #include "build.hpp"
 
 #include<algorithm>
-using std::max;
-using std::swap;
+#include<numeric>
+#include<functional>
+#include<iterator>
 #include <vector>
-using std::vector;
 
 
 struct Bridge {
     int w, e, toll;
 
     Bridge() = default;
-    Bridge(const vector<int> & b): w(b[1]), e(b[0]), toll(b[2]) {}
+    Bridge(const std::vector<int> & b): w(b[1]), e(b[0]), toll(b[2]) {}
     Bridge& operator=(const Bridge& other) noexcept {
         if (this != &other) {
             w = other.w;
@@ -44,69 +44,71 @@ inline bool areCrossing(const Bridge & b1, const Bridge & b2) noexcept {
 
 
 bool validSubset(const Bridge & newBridge, const Bridges & bridges) noexcept {
-    for (const auto & bridge: bridges) {
-        if (haveDuplicateCity(bridge, newBridge))
-            return false;
-
-        if (areCrossing(bridge, newBridge))
-            return false;
-    }
-
-    return true;
+    return std::none_of(begin(bridges), end(bridges),
+        [&newBridge](const Bridge & bridge) -> bool {
+        return
+            haveDuplicateCity(bridge, newBridge) ||
+            areCrossing(bridge, newBridge);
+    });
 }
 
 
 int tollFor(const Bridges & bridges) noexcept {
-    auto toll = 0;
-
-    for (const auto & bridge : bridges) {
-        toll += bridge.toll;
-    }
-
-    return toll;
+    return std::accumulate(begin(bridges), end(bridges), 0,
+        [](const int& total, const Bridge& bridge) {
+            return total + bridge.toll;
+    });
 }
 
 
-int bestToll(const Bridges & bridges) noexcept {
-    auto subsets = vector<Bridges>{{}};
-    auto bestToll = 0;
+std::vector<Bridges> allValidSubsets(const Bridges & bridges) noexcept {
+    auto subsets = std::vector<Bridges>{{}};
 
     for (const auto & bridge: bridges) {
-        for (auto i = (int)subsets.size()-1; i >= 0; --i) {
-            if(validSubset(bridge, subsets[i])) {
-                auto newSubset = subsets[i];
-                newSubset.push_back(bridge);
-
-                bestToll = max(
-                    tollFor(newSubset),
-                    bestToll
-                );
-
-                subsets.push_back(newSubset);
+        for (auto i = (int)subsets.size() - 1; i >= 0; --i) {
+            if(!validSubset(bridge, subsets[i])) {
+                continue;
             }
+
+            auto validSubset = subsets[i];
+            validSubset.push_back(bridge);
+            subsets.push_back(validSubset);
 
         }
     }
 
-    return bestToll;
+    return subsets;
 }
 
 
-Bridges convert(const vector<vector<int> > & bridgeVecs) noexcept {
+int bestToll(const std::vector<Bridges> & subsets) {
+    std::vector<int> tolls;
+
+    std::transform(begin(subsets), end(subsets), back_inserter(tolls),
+        [](const Bridges & subset) -> int {
+            return tollFor(subset);
+    });
+
+    return *std::max_element(begin(tolls), end(tolls), std::less<int>());
+}
+
+
+Bridges convert(const std::vector<std::vector<int> > & bridgeVecs) noexcept {
     Bridges bridges;
 
-    for (const auto & bridgeVec : bridgeVecs) {
-        bridges.push_back(
-            Bridge(bridgeVec)
-        );
-    }
+    std::transform(begin(bridgeVecs), end(bridgeVecs), back_inserter(bridges),
+        [](const std::vector<int> & vec) -> Bridge {
+            return Bridge(vec);
+    });
 
     return bridges;
 }
 
 
-int build(int w, int e, const vector<vector<int> > & bridgeVecs) {
+int build(int w, int e, const std::vector<std::vector<int> > & bridgeVecs) {
     auto bridges = convert(bridgeVecs);
 
-    return bestToll(bridges);
+    auto subsets = allValidSubsets(bridges);
+
+    return bestToll(subsets);
 }
