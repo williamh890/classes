@@ -5,18 +5,18 @@
 #include <algorithm>
 #include <iostream>
 
-struct Values {
-    int gcs = 0;
-    int gcsWLeft = 0;
-    int gcsWRight = 0;
-    int sum = 0;
+struct RunningValues {
+    const int gcs = 0;
+    const int gcsWLeft = 0;
+    const int gcsWRight = 0;
+    const int sum = 0;
 
-    Values() = default;
-    Values(int gcs, int left, int right, int sum) :
+    RunningValues() = default;
+    RunningValues(int gcs, int left, int right, int sum) :
         gcs(gcs), gcsWLeft(left), gcsWRight(right), sum(sum) {}
 
-    Values operator+(const Values & r) {
-        return Values(
+    RunningValues operator+(const RunningValues & r) const {
+        return RunningValues(
             std::max({gcs, r.gcs, gcsWRight + r.gcsWLeft}),
             std::max(gcsWLeft, sum + r.gcsWLeft),
             std::max(r.gcsWRight, r.sum + gcsWRight),
@@ -26,32 +26,31 @@ struct Values {
 };
 
 template<typename RAIter>
-Values baseCase(RAIter first, int len) {
+RunningValues baseCase(const RAIter first, const int len) {
     if (len == 0)
-        return Values();
+        return RunningValues();
 
     const auto gcs = std::max(*first, 0);
-    return Values(gcs, gcs, gcs, *first);
+    return RunningValues(gcs, gcs, gcs, *first);
 }
 
 
 template<typename RAIter>
-Values contigSumVals(RAIter first, RAIter last) {
+RunningValues quickContigSum(const RAIter first, const RAIter last) {
     const auto len = std::distance(first, last);
 
     if (len < 2)
         return baseCase(first, len);
 
-    auto middle = first;
-    std::advance(middle, len/2);
+    const auto middle = first + len/2;
 
-    return contigSumVals(first, middle) + contigSumVals(middle, last);
+    return quickContigSum(first, middle) + quickContigSum(middle, last);
 }
 
 
 template<typename RAIter>
 int contigSum(RAIter first, RAIter last) {
-    return contigSumVals(first, last).gcs;
+    return quickContigSum(first, last).gcs;
 }
 
 #endif
