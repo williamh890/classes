@@ -1,3 +1,9 @@
+// contigsum.hpp
+// William Horn
+// 08-11-2018
+// Algorithms HW3
+
+
 #ifndef CONTIGSUM_HPP
 #define CONTIGSUM_HPP
 
@@ -7,23 +13,25 @@
 
 struct RunningValues {
     const int gcs = 0;
-    const int gcsWLeft = 0;
-    const int gcsWRight = 0;
+    const int gcsWithLeft = 0;
+    const int gcsWithRight = 0;
     const int sum = 0;
 
     RunningValues() = default;
+
     RunningValues(int gcs, int left, int right, int sum) :
-        gcs(gcs), gcsWLeft(left), gcsWRight(right), sum(sum) {}
+        gcs(gcs), gcsWithLeft(left), gcsWithRight(right), sum(sum) {}
 
     RunningValues operator+(const RunningValues & r) const {
         return RunningValues(
-            std::max({gcs, r.gcs, gcsWRight + r.gcsWLeft}),
-            std::max(gcsWLeft, sum + r.gcsWLeft),
-            std::max(r.gcsWRight, r.sum + gcsWRight),
+            std::max({gcs, r.gcs, gcsWithRight + r.gcsWithLeft}),
+            std::max(gcsWithLeft, sum + r.gcsWithLeft),
+            std::max(r.gcsWithRight, r.sum + gcsWithRight),
             sum + r.sum
         );
     }
 };
+
 
 template<typename RAIter>
 RunningValues baseCase(const RAIter first, const int len) {
